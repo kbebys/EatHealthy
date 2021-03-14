@@ -29,7 +29,7 @@ class SendDatabase extends AbstractDatabase
 
         $stmt = $this->checkUser('login', $login);
         if ($stmt == false) {
-            throw new ErrorException('Niepoprawna nazwa użytkownika');
+            throw new ErrorException('Niepoprawna nazwa użytkownika lub hasło');
         }
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -69,8 +69,8 @@ class SendDatabase extends AbstractDatabase
         }
 
         $passValid = $this->validatePassword($password, $passRepeat);
-        if ($passValid !== 'true') {
-            throw new ErrorException($passValid);
+        if ($passValid !== true) {
+            throw new ErrorException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
         }
 
         //Email validation
@@ -107,17 +107,16 @@ class SendDatabase extends AbstractDatabase
     }
 
     //validate and insert new user data
-    public function sendUserData(array $uData): string
+    public function sendUserData(array $uData): bool
     {
         $uName = $this->validateName($uData['uName']);
-        if (is_string($uName)) {
-            return $uName;
+        if (!$uName) {
+            throw new Exception('Problem z odczytaniem wartości. Spróbuj jeszce raz');
         }
-        $uName = $uName[0];
 
         $phone = $this->validatePhone($uData['phone']);
-        if (is_string($phone)) {
-            return $phone;
+        if (!$phone) {
+            throw new Exception('Problem z odczytaniem wartości. Spróbuj jeszce raz');
         }
 
         $id = (int) $_SESSION['id'];
@@ -130,23 +129,20 @@ class SendDatabase extends AbstractDatabase
             $stmt->bindParam(3, $phone, PDO::PARAM_INT);
             $stmt->execute();
 
-            return 'added';
+            return true;
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }
 
     //function to changing user first name
-    public function changeName(string $uName): string
+    public function changeName(string $uName): bool
     {
         $uName = $this->validateName($uName);
 
-        if (is_string($uName)) {
-            return $uName;
+        if (!$uName) {
+            throw new Exception('Problem z odczytaniem wartości. Spróbuj jeszce raz');
         }
-
-        $uName = $uName[0];
-
 
         $id = (int) $_SESSION['id'];
 
@@ -158,7 +154,7 @@ class SendDatabase extends AbstractDatabase
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
 
-            return "changed";
+            return true;
         } catch (Exception $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -168,8 +164,8 @@ class SendDatabase extends AbstractDatabase
     {
         $phone = $this->validatePhone($phone);
 
-        if (is_string($phone)) {
-            return $phone;
+        if (!$phone) {
+            throw new ErrorException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
         }
 
         $id = (int) $_SESSION['id'];
@@ -188,12 +184,12 @@ class SendDatabase extends AbstractDatabase
     }
 
     //Validate and insert new password
-    public function changePassword(array $data): string
+    public function changePassword(array $data): bool
     {
         $data = array_map('trim', $data);
 
         if ($this->validateEmpty($data)) {
-            return  'Wprowadź dane';
+            throw new ErrorException('Wprowadź dane');
         }
 
         $old = $data['old'];
@@ -202,35 +198,35 @@ class SendDatabase extends AbstractDatabase
         $id = (int) $_SESSION['id'];
 
         if ($old === $new) {
-            return 'Nowe hasło musi być inne od aktualnego';
+            throw new ErrorException('Nowe hasło musi być inne od aktualnego');
         }
 
+
+        $stmt = $this->checkUser('id', $id);
+
+        // if (!$stmt) {
+        //     throw new Exception("Błąd");
+        // }
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!password_verify($old, $result['password'])) {
+            throw new ErrorException('Niepoprawne aktualne hasło');
+        }
+
+        $passValid = $this->validatePassword($new, $newRepeat);
+        if ($passValid !== true) {
+            throw new ErrorException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
+        }
+
+        $passwordHashed = password_hash($new, PASSWORD_DEFAULT);
         try {
-            $stmt = $this->checkUser('id', $id);
-
-            // if (!$stmt) {
-            //     throw new Exception("Błąd");
-            // }
-
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!password_verify($old, $result['password'])) {
-                return  'Niepoprawne aktualne hasło';
-            }
-
-            $passValid = $this->validatePassword($new, $newRepeat);
-            if ($passValid !== 'true') {
-                return $passValid;
-            }
-
-            $passwordHashed = password_hash($new, PASSWORD_DEFAULT);
-
             $query = "UPDATE user SET password = ? WHERE id = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $passwordHashed, PDO::PARAM_STR);
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
 
-            return 'changed';
+            return true;
         } catch (Exception $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -266,21 +262,21 @@ class SendDatabase extends AbstractDatabase
         return false;
     }
 
-    private function validatePassword(string $pass, string $passR): string
+    private function validatePassword(string $pass, string $passR): bool
     {
         //Password validation(5 - 20 characters, minimum of 1 uppercase char, minimum of 1 lowercase char, minimum 1 digit )
         $passValidPattern1 = '/^(?=.*[!@#$%^&*-])(?=.*[0-9])(?=.*[A-Z]).{5,20}$/';
         //Passwor only can contain this char
         $passValidPattern2 = '/^[a-zA-Z0-9!@#$%^&*-]+$/';
         if (preg_match($passValidPattern1, $pass) == 0) {
-            return 'Podane hasło nie spełnia wymogów!!';
+            throw new ErrorException('Podane hasło nie spełnia wymogów!!');
         } elseif (preg_match($passValidPattern2, $pass) == 0) {
-            return 'Podane hasło zawiera niedozwolone znaki!!';
+            throw new ErrorException('Podane hasło zawiera niedozwolone znaki!!');
         } //checking if both passwords are the same
         elseif ($pass !== $passR) {
-            return 'podane hasła nie są takie same!!';
+            throw new ErrorException('podane hasła nie są takie same!!');
         } else {
-            return 'true';
+            return true;
         }
     }
 
@@ -291,11 +287,11 @@ class SendDatabase extends AbstractDatabase
         $phone = str_replace(['-', ' '], '', $phone);
 
         if (empty($phone)) {
-            return 'Wprowadź dane do formularza';
+            throw new ErrorException('Wprowadź dane do formularza');
         }
 
         if (preg_match('/^[0-9]{9}$/', $phone) == 0) {
-            return 'Nieprawidłowy numer telefonu';
+            throw new ErrorException('Nieprawidłowy numer telefonu');
         }
 
         return (int) $phone;
@@ -306,11 +302,11 @@ class SendDatabase extends AbstractDatabase
         $uName = trim($uName);
 
         if (empty($uName)) {
-            return 'Wprowadź dane do formularza';
+            throw new ErrorException('Wprowadź dane do formularza');
         }
 
         if (preg_match('/^[a-zA-ZżźćńółęąśŻŹĆĄŚĘŁÓŃ]+$/', $uName) == 0) {
-            return 'Niedozwolone znaki w imieniu';
+            throw new ErrorException('Niedozwolone znaki w imieniu');
         }
 
         //string to lowercase
@@ -319,6 +315,6 @@ class SendDatabase extends AbstractDatabase
         $uName = ucfirst($uName);
 
 
-        return $uName = [$uName];
+        return $uName;
     }
 }

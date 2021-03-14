@@ -48,7 +48,7 @@ abstract class AbstractController
             $this->$action();
         } catch (ErrorException $e) {
             $param['error'] = $e->getMessage();
-            $this->view->render($action, '', $param);
+            $this->view->render($action, '', $param ?? []);
         }
     }
 

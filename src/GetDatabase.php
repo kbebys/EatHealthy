@@ -6,6 +6,7 @@ namespace Market;
 
 use Exception;
 use Market\Exception\DatabaseException;
+use Market\Exception\ErrorException;
 use PDO;
 use Throwable;
 
@@ -34,12 +35,12 @@ class GetDatabase extends AbstractDatabase
         }
     }
 
-    public function checkPassword(string $password): string
+    public function checkPassword(string $password): bool
     {
         $password = trim($password);
 
         if (empty($password)) {
-            return 'Wprowadź hasło';
+            throw new ErrorException('Wprowadź hasło');
         }
 
         $id = (int) $_SESSION['id'];
@@ -52,9 +53,9 @@ class GetDatabase extends AbstractDatabase
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!password_verify($password, $result['password'])) {
-            return 'Podałeś nieprawidłowe hasło';
+            throw new ErrorException('Podałeś nieprawidłowe hasło');
         }
 
-        return 'success';
+        return true;
     }
 }

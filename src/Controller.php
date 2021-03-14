@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Market;
 
+use Market\Exception\ErrorException;
+
 session_start();
 
 //class uses to control what content will display
@@ -58,7 +60,8 @@ class Controller extends AbstractController
 
     public function userPanel(): void
     {
-        if ($_SESSION['loggedin']) {
+        $loggedin = $_SESSION['loggedin'] ?? '';
+        if ($loggedin) {
             $this->runWindow();
         } else {
             $this->view->render('main');
@@ -78,12 +81,17 @@ class Controller extends AbstractController
 
     public function runWindow(): void
     {
-        $subpage = $this->subpage();
-        //if exist given window variable 
-        if (!method_exists($this, $subpage)) {
-            $subpage = self::DEFAULT_SUBPAGE;
+        try {
+            $subpage = $this->subpage();
+            //if exist given window variable 
+            if (!method_exists($this, $subpage)) {
+                $subpage = self::DEFAULT_SUBPAGE;
+            }
+            $this->$subpage();
+        } catch (ErrorException $e) {
+            $param['errorWindow'] = $e->getMessage();
+            $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
         }
-        $this->$subpage();
     }
 
     public function addAdv(): void
@@ -105,17 +113,21 @@ class Controller extends AbstractController
 
         if ($uData) {
             $param['uData'] = $uData;
+            try {
+                switch ($this->request->getParam('change')) {
+                    case 'name':
+                        $data = $this->changeUserData('name');
+                        $param = array_merge($param, $data);
+                        break;
 
-            switch ($this->request->getParam('change')) {
-                case 'name':
-                    $data = $this->changeUserData('name');
-                    $param = array_merge($param, $data);
-                    break;
-
-                case 'phone':
-                    $data = $this->changeUserData('phone');
-                    $param = array_merge($param, $data);
-                    break;
+                    case 'phone':
+                        $data = $this->changeUserData('phone');
+                        $param = array_merge($param, $data);
+                        break;
+                }
+            } catch (ErrorException $e) {
+                $param['errorWindow'] = $e->getMessage();
+                $this->view->render(self::DEFAULT_PAGE, 'myData', $param ?? []);
             }
         } else {
 
@@ -123,12 +135,9 @@ class Controller extends AbstractController
                 $uData = [
                     'uName' => $this->request->postParam('first-name'),
                     'phone' => $this->request->postParam('phone-number')
-                ];
-
-                $param['errorWindow'] = $this->sendDatabase->sendUserData($uData);
-                if ($param['errorWindow'] === 'added') {
+                ];;
+                if ($this->sendDatabase->sendUserData($uData) === true) {
                     $param = [
-                        'errorWindow' => null,
                         'messageWindow' => 'Dane zostały dodane pomyślnie',
                         'uData' => $this->getDatabase->getUserData()
                     ];
@@ -147,12 +156,9 @@ class Controller extends AbstractController
                 'newRepeat' => $this->request->postParam('new-repeat-password'),
             ];
 
-            $param['errorWindow'] = $this->sendDatabase->changePassword($passwords);
-            if ($param['errorWindow'] === 'changed') {
-                $param = [
-                    'errorWindow' => null,
-                    'messageWindow' => 'Hasło zostało zmienione'
-                ];
+
+            if ($this->sendDatabase->changePassword($passwords) === true) {
+                $param['messageWindow'] = 'Hasło zostało zmienione';
             }
         }
 
@@ -162,6 +168,7 @@ class Controller extends AbstractController
     public function deleteAcc(): void
     {
         $save = $this->request->postParam('save');
+
         if ($save) {
             switch ($save) {
                 case 'tak':
@@ -174,13 +181,8 @@ class Controller extends AbstractController
             }
 
             $password = $this->request->postParam('password');
-
-            $param['errorWindow'] = $this->getDatabase->checkPassword($password);
-            if ($param['errorWindow'] === 'success') {
-                $param = [
-                    'errorWindow' => null,
-                    'confirm' => true,
-                ];
+            if ($this->getDatabase->checkPassword($password) === true) {
+                $param['confirm'] = true;
             }
         }
         $this->view->render(self::DEFAULT_PAGE, 'deleteAcc', $param ?? []);
@@ -193,10 +195,8 @@ class Controller extends AbstractController
             $uData = $this->request->postParam($data);
             $fun = 'change' . ucfirst($data);
 
-            $param['errorWindow'] = $this->sendDatabase->$fun($uData);
-            if ($param['errorWindow'] === 'changed') {
+            if ($this->sendDatabase->$fun($uData)) {
                 $param = [
-                    'errorWindow' => null,
                     'messageWindow' => 'Dane zostały zmienione pomyślnie',
                     'uData' => $this->getDatabase->getUserData(),
                     'change' => null
