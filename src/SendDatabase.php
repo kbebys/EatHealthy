@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Market;
 
 use Exception;
+use Market\Exception\DatabaseException;
 use Market\Exception\ErrorException;
 use PDO;
 use Throwable;
@@ -101,7 +102,7 @@ class SendDatabase extends AbstractDatabase
 
             return true;
         } catch (Throwable $e) {
-            throw new Exception('Problem z połączeniem z bazą danych ' . $e->getMessage());
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }
 
@@ -131,7 +132,7 @@ class SendDatabase extends AbstractDatabase
 
             return 'added';
         } catch (Throwable $e) {
-            throw new Exception('Problem z połączeniem z bazą danych ' . $e->getMessage());
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }
 
@@ -159,7 +160,7 @@ class SendDatabase extends AbstractDatabase
 
             return "changed";
         } catch (Exception $e) {
-            throw new Exception('Problem z połączeniem z bazą danych ' . $e->getMessage());
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }
 
@@ -182,7 +183,7 @@ class SendDatabase extends AbstractDatabase
 
             return "changed";
         } catch (Throwable $e) {
-            throw new Exception('Problem z połączeniem z bazą danych ' . $e->getMessage());
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }
 
@@ -207,9 +208,9 @@ class SendDatabase extends AbstractDatabase
         try {
             $stmt = $this->checkUser('id', $id);
 
-            if (!$stmt) {
-                throw new Exception("Błąd");
-            }
+            // if (!$stmt) {
+            //     throw new Exception("Błąd");
+            // }
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             if (!password_verify($old, $result['password'])) {
@@ -231,7 +232,7 @@ class SendDatabase extends AbstractDatabase
 
             return 'changed';
         } catch (Exception $e) {
-            throw new Exception('Problem z połączeniem z bazą danych ' . $e->getMessage());
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }
 
@@ -251,7 +252,7 @@ class SendDatabase extends AbstractDatabase
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
         } catch (Exception $e) {
-            throw new Exception('Problem z połączeniem z bazą danych ' . $e->getMessage());
+            throw new DatabaseException('Problem z połączeniem z bazą danych ' . $e->getMessage());
         }
     }
 

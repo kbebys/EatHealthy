@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Market;
 
 use Exception;
+use Market\Exception\DatabaseException;
 use PDO;
+use PDOException;
 use Throwable;
 
 abstract class AbstractDatabase
@@ -17,8 +19,8 @@ abstract class AbstractDatabase
         try {
             $this->validateConfig($config);
             $this->createConneciton($config);
-        } catch (Exception $e) {
-            throw new Exception('Błąd połączenia ' . $e->getMessage());
+        } catch (PDOException $e) {
+            throw new Exception('Błąd połączenia');
         }
     }
 
@@ -44,7 +46,7 @@ abstract class AbstractDatabase
             || empty($config['user'])
             || empty($config['password'])
         ) {
-            throw new Exception('Błąd połączenia z bazą danych');
+            throw new Exception('Błąd konfiguracji bazy danych');
         }
     }
 
@@ -66,7 +68,7 @@ abstract class AbstractDatabase
                 return $stmt;
             }
         } catch (Throwable $e) {
-            throw new Exception('Problem z połączeniem z bazą danych ' . $e->getMessage());
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }
 }

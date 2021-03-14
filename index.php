@@ -15,6 +15,7 @@ $configuration = require_once("config/config.php");
 
 use Market\AbstractController;
 use Market\Controller;
+use Market\Exception\DatabaseException;
 use Market\Request;
 
 $request = new Request($_GET, $_POST);
@@ -22,7 +23,12 @@ $request = new Request($_GET, $_POST);
 try {
     AbstractController::initConfiguration($configuration);
     (new Controller($request))->run();
+} catch (DatabaseException $e) {
+    echo '<h3>Wystąpił problem z Aplikacją. Spróbuj ponownie za chwilę.<h3>';
+    echo $e->getMessage();
+    dump($e);
 } catch (\Throwable $e) {
-    echo '<h3>Wystąpił błąd w aplikacji: ' . $e->getMessage() . '<h3>';
+    echo '<h3>Wystąpił błąd w aplikacji<h3>';
+    echo $e->getMessage();
     dump($e);
 }

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Market;
 
 use Exception;
+use Market\Exception\DatabaseException;
 use PDO;
+use Throwable;
 
 class GetDatabase extends AbstractDatabase
 {
@@ -27,8 +29,8 @@ class GetDatabase extends AbstractDatabase
             }
 
             return $result;
-        } catch (Exception $e) {
-            throw new Exception('Problem z połączeniem z bazą danych ' . $e->getMessage());
+        } catch (Throwable $e) {
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }
 
@@ -43,9 +45,9 @@ class GetDatabase extends AbstractDatabase
         $id = (int) $_SESSION['id'];
         $stmt = $this->checkUser('id', $id);
 
-        if (!$stmt) {
-            throw new Exception('Problem z połączeniem z bazą danych ');
-        }
+        // if (!$stmt) {
+        //     throw new Exception('Problem z połączeniem z bazą danych ');
+        // }
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
