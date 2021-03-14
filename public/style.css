@@ -1,0 +1,256 @@
+@import url('https://fonts.googleapis.com/css2?family=Reggae+One&family=Roboto+Condensed:wght@400;700&display=swap');
+
+/* font-family: 'Reggae One', cursive;
+font-family: 'Roboto Condensed', sans-serif; */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 10px;
+}
+
+body {
+    font-family: 'Roboto Condensed', sans-serif;
+    background-color: #DFCEB7;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+.message {
+    align-self: center;
+    margin-bottom: 10px;
+    margin-left: 0;
+    font-size: 2rem;
+    color: #000;
+}
+
+.success {
+    color: #0f0;
+}
+
+.error {
+    color: #f00;
+}
+
+
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: 1400px;
+    min-height: 100vh;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    background-color: #2E3D59;
+}
+
+header a {
+    display: inline-block;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+header .logo {
+    flex-grow: 1;
+}
+
+header .logo a {
+    padding: 10px 0 10px 20px;
+    font-size: 4rem;
+    color: #8A8C51;
+    font-family: 'Reggae One', cursive;
+}
+
+
+header .menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+header .menu a {
+    padding-right: 20px;
+    font-size: 2rem;
+    color: #BFAC95;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 10px 0 10px;
+    border-radius: 2px;
+    background-color: #fff;
+    box-shadow: 0 0 3px #2E3D59;
+}
+
+main .content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+main .content form {
+    display: flex;
+    flex-direction: column;
+    font-size: 2rem;
+}
+
+form input[type=text],
+form input[type=tel],
+form input[type=password],
+form input[type=email] {
+    padding: 8px;
+    border: 1px solid #8A8C51;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    outline: none;
+    transition: all .3s ease-in-out;
+}
+
+form input[type=text]:focus,
+form input[type=tel]:focus,
+form input[type=password]:focus,
+form input[type=email]:focus {
+    box-shadow: 0 0 10px #8A8C51;
+}
+
+form input[type=submit],
+button {
+    padding: 10px 20px;
+    border: none;
+    border: 1px solid #2E3D59;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    text-transform: uppercase;
+    background-color: #8A8C51;
+    cursor: pointer;
+    color: #2E3D59;
+}
+
+button a {
+    text-decoration: none;
+}
+
+main .content p.info {
+    margin-left: 20px;
+    align-self: flex-start;
+    font-size: 1rem;
+}
+
+main .user-panel {
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+main .user-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 15%;
+    margin: 5px;
+    box-shadow: 0 0 3px #2E3D59;
+    background-color: #4A608C;
+}
+
+main .user-menu ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+main .user-menu li {
+    margin: 5px 0;
+}
+
+main .user-menu a {
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    color: #BFAC95;
+}
+
+main .logo {
+    margin: 20px 0 40px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #8A8C51;
+}
+
+/* Style for User window -------------------------- */
+
+.user-window {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 3px #BFAC95;
+    margin: 5px;
+    background-color: #fff;
+}
+
+.user-window form p {
+    margin-left: 0;
+    font-size: 1.5rem;
+}
+
+.user-window table {
+    margin-bottom: 50px;
+    margin-top: 20px;
+    font-size: 2rem;
+}
+
+.user-window th,
+.user-window td {
+    padding: 5px 10px;
+    border-bottom: 20px solid #fff;
+    border-right: 10px solid #fff;
+    background-color: #6c82ae;
+}
+
+.user-window td {
+    background-color: #BFAC95;
+    text-align: center;
+}
+
+.user-window tr:nth-of-type(3) td {
+    background-color: #fff;
+}
+
+.user-window tr:nth-of-type(3) a,
+.user-window a {
+    padding: 5px 10px;
+    background-color: #2E3D59;
+    color: #fff;
+}
+
+footer {
+    background-color: #2E3D59;
+    font-size: 1.5rem;
+    color: #BFAC95;
+    text-align: center;
+}
+
+footer p {
+    padding: 10px 0;
+}
