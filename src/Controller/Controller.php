@@ -179,11 +179,12 @@ class Controller extends AbstractController
                 case 'nie':
                     $this->view->render(self::DEFAULT_PAGE, 'deleteAcc');
                     break;
-            }
-
-            $password = $this->request->postParam('password');
-            if ($this->readModel->checkPassword($password) === true) {
-                $param['confirm'] = true;
+                case 'usuń':
+                    $password = $this->request->postParam('password');
+                    if ($this->readModel->checkPassword($password) === true) {
+                        $param['confirm'] = true;
+                    }
+                    break;
             }
         }
         $this->view->render(self::DEFAULT_PAGE, 'deleteAcc', $param ?? []);
