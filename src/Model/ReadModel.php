@@ -2,16 +2,49 @@
 
 declare(strict_types=1);
 
-namespace Market;
+namespace Market\Model;
 
-use Exception;
 use Market\Exception\DatabaseException;
 use Market\Exception\ErrorException;
 use PDO;
 use Throwable;
 
-class GetDatabase extends AbstractDatabase
+class ReadModel extends AbstractModel
 {
+    //Validate login system
+    public function login(array $data): bool
+    {
+        //trim() delete  whitespaces from beginning and end fo string
+        $data = array_map('trim', $data);
+        //check if given data are empty
+        if ($this->validateEmpty($data)) {
+            throw new ErrorException('Wprowadź dane logowania');
+        }
+
+        $login = $data['login'];
+        $password = $data['password'];
+
+        $stmt = $this->checkUser('login', $login);
+        if ($stmt == false) {
+            throw new ErrorException('Niepoprawna nazwa użytkownika lub hasło');
+        }
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        //veryfing passwords, both given from user and hashed from db
+        if (!password_verify($password, $result['password'])) {
+            throw new ErrorException('Niepoprawna nazwa użytkownika lub hasło');
+        }
+
+        //Creating session to know the user is logged in
+        session_regenerate_id();
+
+        $_SESSION['loggedin'] = true;
+        $_SESSION['name'] = $login;
+        $_SESSION['id'] = $result['id'];
+
+        return true;
+    }
+
     public function getUserData(): array
     {
         $id = (int) $_SESSION['id'];
@@ -20,7 +53,7 @@ class GetDatabase extends AbstractDatabase
             $query = "SELECT user_data.first_name AS name, user_data.phone_number AS phone, user.email AS email
             FROM user_data
             INNER JOIN user ON user_data.id_user = user.id AND user.id = ?";
-            $stmt = $this->conn->prepare($query);
+            $stmt = self::$conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
             if ($stmt->rowCount() === 0) {
@@ -34,6 +67,7 @@ class GetDatabase extends AbstractDatabase
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }
+
 
     public function checkPassword(string $password): bool
     {

@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Market;
+namespace Market\Controller;
 
+use Market\Controller\AbstractController;
 use Market\Exception\ErrorException;
 
 session_start();
@@ -28,7 +29,7 @@ class Controller extends AbstractController
                 'password' => $this->request->postParam('password')
             ];
 
-            if ($this->sendDatabase->login($loginData) === true) {
+            if ($this->readModel->login($loginData) === true) {
                 $this->userPanel();
             }
         }
@@ -50,7 +51,7 @@ class Controller extends AbstractController
                 'email' => $this->request->postParam('email')
             ];
 
-            if ($this->sendDatabase->register($registerData) === true) {
+            if ($this->createModel->register($registerData) === true) {
                 $page = 'login';
                 $param['message'] = 'Rejestracja powiodła się';
             }
@@ -109,7 +110,7 @@ class Controller extends AbstractController
     public function myData(): void
     {
 
-        $uData = $this->getDatabase->getUserData();
+        $uData = $this->readModel->getUserData();
 
         if ($uData) {
             $param['uData'] = $uData;
@@ -136,10 +137,10 @@ class Controller extends AbstractController
                     'uName' => $this->request->postParam('first-name'),
                     'phone' => $this->request->postParam('phone-number')
                 ];;
-                if ($this->sendDatabase->sendUserData($uData) === true) {
+                if ($this->createModel->sendUserData($uData) === true) {
                     $param = [
                         'messageWindow' => 'Dane zostały dodane pomyślnie',
-                        'uData' => $this->getDatabase->getUserData()
+                        'uData' => $this->readModel->getUserData()
                     ];
                 }
             }
@@ -157,7 +158,7 @@ class Controller extends AbstractController
             ];
 
 
-            if ($this->sendDatabase->changePassword($passwords) === true) {
+            if ($this->updateModel->changePassword($passwords) === true) {
                 $param['messageWindow'] = 'Hasło zostało zmienione';
             }
         }
@@ -172,7 +173,7 @@ class Controller extends AbstractController
         if ($save) {
             switch ($save) {
                 case 'tak':
-                    $this->sendDatabase->deleteAcc();
+                    $this->deleteModel->deleteAcc();
                     $this->logout();
                     break;
                 case 'nie':
@@ -181,7 +182,7 @@ class Controller extends AbstractController
             }
 
             $password = $this->request->postParam('password');
-            if ($this->getDatabase->checkPassword($password) === true) {
+            if ($this->readModel->checkPassword($password) === true) {
                 $param['confirm'] = true;
             }
         }
@@ -195,10 +196,10 @@ class Controller extends AbstractController
             $uData = $this->request->postParam($data);
             $fun = 'change' . ucfirst($data);
 
-            if ($this->sendDatabase->$fun($uData)) {
+            if ($this->updateModel->$fun($uData)) {
                 $param = [
                     'messageWindow' => 'Dane zostały zmienione pomyślnie',
-                    'uData' => $this->getDatabase->getUserData(),
+                    'uData' => $this->readModel->getUserData(),
                     'change' => null
                 ];
             }

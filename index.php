@@ -13,8 +13,8 @@ spl_autoload_register(function (string $classNamespace) {
 require_once("src/Utils/debug.php");
 $configuration = require_once("config/config.php");
 
-use Market\AbstractController;
-use Market\Controller;
+use Market\Controller\Controller;
+use Market\Controller\AbstractController;
 use Market\Exception\DatabaseException;
 use Market\Request;
 

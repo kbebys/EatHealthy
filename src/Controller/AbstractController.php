@@ -2,10 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Market;
+namespace Market\Controller;
 
 use Exception;
 use Market\Exception\ErrorException;
+use Market\Model\AbstractModel;
+use Market\Model\CreateModel;
+use Market\Model\DeleteModel;
+use Market\Model\ReadModel;
+use Market\Model\UpdateModel;
+use Market\Request;
+use Market\View;
 
 abstract class AbstractController
 {
@@ -13,8 +20,10 @@ abstract class AbstractController
 
     private static array $configuration = [];
 
-    protected SendDatabase $sendDatabase;
-    protected GetDatabase $getDatabase;
+    protected CreateModel $createModel;
+    protected ReadModel $readModel;
+    protected UpdateModel $updateModel;
+    protected DeleteModel $deleteModel;
     protected Request $request;
     protected View $view;
 
@@ -29,8 +38,12 @@ abstract class AbstractController
         if (empty(self::$configuration['db'])) {
             throw new Exception("Błąd konfiguracji");
         }
-        $this->sendDatabase = new SendDatabase(self::$configuration['db']);
-        $this->getDatabase = new GetDatabase(self::$configuration['db']);
+
+        AbstractModel::initConnection(self::$configuration['db']);
+        $this->createModel = new CreateModel();
+        $this->readModel = new ReadModel();
+        $this->updateModel = new UpdateModel();
+        $this->deleteModel = new DeleteModel();
 
         $this->request = $request;
         $this->view = new View();
