@@ -33,7 +33,10 @@ abstract class AbstractModel
             $dsn,
             $config['user'],
             $config['password'],
-            [ //Throw PDOException by default]
+            [
+                //Turn off emulated prepare statements and use real
+                PDO::ATTR_EMULATE_PREPARES => false,
+                //Throw PDOException by default]
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ]
         );

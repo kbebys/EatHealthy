@@ -70,6 +70,50 @@ class CreateModel extends AbstractModel
         }
     }
 
+    //Creating new advertisment
+    public function addAdvertisment(array $advData): bool
+    {
+        $advData = array_map('trim', $advData);
+
+        if ($this->validateEmpty($advData)) {
+            throw new ErrorException('Uzupełnij wszytkie pola');
+        }
+
+        $title = $advData['title'];
+        $kind = $advData['kind'];
+        $content = $advData['content'];
+        $place = $advData['place'];
+        $id = (int) $_SESSION['id'];
+
+        if (strlen($title) > 150) {
+            throw new ErrorException('Wpisałeś za długi tytuł');
+        }
+
+        if ($kind !== 'sell' && $kind !== 'buy') {
+            throw new ErrorException('Błąd wysyłania danych. Spróbuj jeszce raz');
+        }
+
+        if (strlen($place) > 150) {
+            throw new ErrorException('Wpisałeś za długi tytuł');
+        }
+
+        try {
+            $query = "INSERT INTO advertisment (id_user, title, content, kind_of_transaction, place) 
+            VALUES (?, ?, ?, ?, ?)";
+            $stmt = self::$conn->prepare($query);
+            $stmt->bindParam(1, $id, PDO::PARAM_INT);
+            $stmt->bindParam(2, $title, PDO::PARAM_STR);
+            $stmt->bindParam(3, $content, PDO::PARAM_STR);
+            $stmt->bindParam(4, $kind, PDO::PARAM_STR);
+            $stmt->bindParam(5, $place, PDO::PARAM_STR);
+            $stmt->execute();
+        } catch (DatabaseException $e) {
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
+        }
+
+        return true;
+    }
+
     //Insert user data
     public function sendUserData(array $uData): bool
     {

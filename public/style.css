@@ -116,7 +116,9 @@ main .content form {
 form input[type=text],
 form input[type=tel],
 form input[type=password],
-form input[type=email] {
+form input[type=email],
+textarea,
+select {
     padding: 8px;
     border: 1px solid #8A8C51;
     border-radius: 4px;
@@ -128,7 +130,9 @@ form input[type=email] {
 form input[type=text]:focus,
 form input[type=tel]:focus,
 form input[type=password]:focus,
-form input[type=email]:focus {
+form input[type=email]:focus,
+textarea:focus,
+select:focus {
     box-shadow: 0 0 10px #8A8C51;
 }
 
@@ -147,6 +151,10 @@ button {
 
 button a {
     text-decoration: none;
+}
+
+textarea {
+    resize: none;
 }
 
 main .content p.info {

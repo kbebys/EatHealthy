@@ -30,7 +30,7 @@ class Controller extends AbstractController
             ];
 
             if ($this->readModel->login($loginData) === true) {
-                $this->userPanel();
+                $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_SUBPAGE);
             }
         }
 
@@ -98,6 +98,25 @@ class Controller extends AbstractController
     public function addAdv(): void
     {
         $subpage = 'addAdv';
+
+        if (!$this->readModel->getUserData()) {
+            $this->view->render(self::DEFAULT_PAGE, 'myData');
+        }
+        dump($this->request->postParam('save'));
+        if ($this->request->postParam('save')) {
+            $advData = [
+                'title' => $this->request->postParam('title'),
+                'kind' => $this->request->postParam('kind'),
+                'content' => $this->request->postParam('content'),
+                'place' => $this->request->postParam('place')
+            ];
+
+            if ($this->createModel->addAdvertisment($advData)) {
+                $param['messageWindow'] = 'Dodałeś ogłoszenie';
+                $this->view->render(self::DEFAULT_PAGE, 'myAdv', $param);
+            }
+        }
+
         $this->view->render(self::DEFAULT_PAGE, $subpage);
     }
 
@@ -197,7 +216,7 @@ class Controller extends AbstractController
             $uData = $this->request->postParam($data);
             $fun = 'change' . ucfirst($data);
 
-            if ($this->updateModel->$fun($uData)) {
+            if ($this->updateModel->$fun($uData) === true) {
                 $param = [
                     'messageWindow' => 'Dane zostały zmienione pomyślnie',
                     'uData' => $this->readModel->getUserData(),

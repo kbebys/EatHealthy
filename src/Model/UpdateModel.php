@@ -38,7 +38,7 @@ class UpdateModel extends AbstractModel
     }
 
     //Changing user phone number
-    public function changePhone(string $phone): string
+    public function changePhone(string $phone): bool
     {
         $phone = $this->validatePhone($phone);
 
@@ -55,7 +55,7 @@ class UpdateModel extends AbstractModel
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
 
-            return "changed";
+            return true;
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
