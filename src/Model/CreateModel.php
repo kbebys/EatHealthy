@@ -107,7 +107,7 @@ class CreateModel extends AbstractModel
             $stmt->bindParam(4, $kind, PDO::PARAM_STR);
             $stmt->bindParam(5, $place, PDO::PARAM_STR);
             $stmt->execute();
-        } catch (DatabaseException $e) {
+        } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
 

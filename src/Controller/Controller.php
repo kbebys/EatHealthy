@@ -30,7 +30,7 @@ class Controller extends AbstractController
             ];
 
             if ($this->readModel->login($loginData) === true) {
-                $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_SUBPAGE);
+                $this->userPanel();
             }
         }
 
@@ -99,10 +99,14 @@ class Controller extends AbstractController
     {
         $subpage = 'addAdv';
 
+        if ($this->readModel->getCountUserAdvertisment() > 0) {
+            $this->myAdv();
+        }
+
         if (!$this->readModel->getUserData()) {
             $this->view->render(self::DEFAULT_PAGE, 'myData');
         }
-        dump($this->request->postParam('save'));
+
         if ($this->request->postParam('save')) {
             $advData = [
                 'title' => $this->request->postParam('title'),
@@ -122,8 +126,11 @@ class Controller extends AbstractController
 
     public function myAdv(): void
     {
-        $subpage = 'myAdv';
-        $this->view->render(self::DEFAULT_PAGE, $subpage);
+        // $subpage = 'myAdv';
+
+        $param['userAdverts'] = $this->readModel->getUserAdvertisment();
+        dump($param);
+        $this->view->render(self::DEFAULT_PAGE, 'myAdv', $param);
     }
 
     public function myData(): void

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Market\Model;
 
+use Exception;
 use Market\Exception\DatabaseException;
 use Market\Exception\ErrorException;
 use PDO;
@@ -43,6 +44,49 @@ class ReadModel extends AbstractModel
         $_SESSION['id'] = $result['id'];
 
         return true;
+    }
+
+    public function getUserAdvertisment(): array
+    {
+        $id = (int) $_SESSION['id'];
+        try {
+            $query =  "SELECT ud.first_name, ud.phone_number, a.id, a.title, a.content, a.kind_of_transaction, a.place, a.date
+            FROM user AS u 
+            INNER JOIN user_data AS ud ON u.id = ud.id_user
+            INNER JOIN advertisment AS a ON u.id = a.id_user
+            WHERE u.id = ?";
+
+            $stmt = self::$conn->prepare($query);
+            $stmt->bindParam(1, $id, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $result ?? [];
+        } catch (Throwable $e) {
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
+        }
+    }
+
+    public function getCountUserAdvertisment(): int
+    {
+        $id = (int) $_SESSION['id'];
+        try {
+            $query =  "SELECT count(*) AS count
+            FROM user AS u 
+            INNER JOIN user_data AS ud ON u.id = ud.id_user
+            INNER JOIN advertisment AS a ON u.id = a.id_user
+            WHERE u.id = ?";
+
+            $stmt = self::$conn->prepare($query);
+            $stmt->bindParam(1, $id, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = (int) $result['count'];
+
+            return $result ?? 0;
+        } catch (Throwable $e) {
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
+        }
     }
 
     public function getUserData(): array
