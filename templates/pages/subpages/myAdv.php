@@ -5,6 +5,8 @@ if (empty($params['access'])) {
 }
 
 $userAdverts = $params['userAdverts'] ?? [];
+
+$action = '/?action=userPanel&subpage=myAdv';
 ?>
 <div class="user-adverts">
     <?php if (!$userAdverts) : ?>
@@ -13,14 +15,18 @@ $userAdverts = $params['userAdverts'] ?? [];
         <?php for ($i = 0; $i < count($userAdverts); $i++) :
             $advert = $userAdverts[$i]; ?>
             <div class="user-advert">
-                <div class="title">
-                    <h3><?php echo $advert['title'] ?></h3>
+                <div class="advert-data">
+                    <div class="title"><?php echo $advert['title'] ?></div>
+                    <div class="data">
+                        <span><?php echo $advert['first_name'] ?></span>
+                        <span><?php echo $advert['place'] ?></span>
+                        <span><?php echo $advert['date'] ?></span>
+                    </div>
                 </div>
-                <div class="name"><?php echo $advert['first_name'] ?></div>
-                <div class="phone"><?php echo $advert['phone_number'] ?></div>
-                <div class="place"><?php echo $advert['place'] ?></div>
-                <div class="date"><?php echo $advert['date'] ?></div>
-
+                <div class="options">
+                    <a href="<?php echo $action ?>&option=details&id=<?php echo $advert['id'] ?>">Sczegóły</a>
+                    <a href="<?php echo $action ?>&option=delete&id=<?php echo $advert['id'] ?>">Usuń</a>
+                </div>
             </div>
         <?php endfor ?>
     <?php endif ?>

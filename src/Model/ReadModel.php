@@ -46,11 +46,11 @@ class ReadModel extends AbstractModel
         return true;
     }
 
-    public function getUserAdvertisment(): array
+    public function getUserAdvertisments(): array
     {
         $id = (int) $_SESSION['id'];
         try {
-            $query =  "SELECT ud.first_name, ud.phone_number, a.id, a.title, a.content, a.kind_of_transaction, a.place, a.date
+            $query =  "SELECT ud.first_name, a.id, a.title, a.place, a.date
             FROM user AS u 
             INNER JOIN user_data AS ud ON u.id = ud.id_user
             INNER JOIN advertisment AS a ON u.id = a.id_user
@@ -87,6 +87,37 @@ class ReadModel extends AbstractModel
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
+    }
+
+    public function getUserAdvertisment(int $idAdv): array
+    {
+        $id = (int) $_SESSION['id'];
+        $idAdv = $idAdv;
+
+
+
+        try {
+            $query = "SELECT id, title, content, place, date
+            FROM advertisment
+            WHERE id = ? and id_user = ?";
+            $stmt = self::$conn->prepare($query);
+            $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);
+            $stmt->bindParam(2, $id, PDO::PARAM_INT);
+            $stmt->execute();
+            if ($stmt->rowCount() === 0) {
+                throw new ErrorException('Nie można odnaleźć notatki o takim id');
+            }
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $result;
+        } catch (ErrorException $e) {
+            $e = $e->getMessage();
+            throw new ErrorException($e);
+        } catch (Throwable $e) {
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
+        }
+
+        return $array = ['nie jest źle'];
     }
 
     public function getUserData(): array

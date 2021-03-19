@@ -99,10 +99,6 @@ class Controller extends AbstractController
     {
         $subpage = 'addAdv';
 
-        if ($this->readModel->getCountUserAdvertisment() > 0) {
-            $this->myAdv();
-        }
-
         if (!$this->readModel->getUserData()) {
             $this->view->render(self::DEFAULT_PAGE, 'myData');
         }
@@ -117,7 +113,7 @@ class Controller extends AbstractController
 
             if ($this->createModel->addAdvertisment($advData)) {
                 $param['messageWindow'] = 'Dodałeś ogłoszenie';
-                $this->view->render(self::DEFAULT_PAGE, 'myAdv', $param);
+                $this->view->render(self::DEFAULT_PAGE, 'addAdv', $param);
             }
         }
 
@@ -126,11 +122,27 @@ class Controller extends AbstractController
 
     public function myAdv(): void
     {
-        // $subpage = 'myAdv';
+        $subpage = 'myAdv';
 
-        $param['userAdverts'] = $this->readModel->getUserAdvertisment();
+        $advOption = $this->request->getParam('option');
+        if ($advOption) {
+            switch ($advOption) {
+                case 'details':
+                    $idAdv = (int) $this->request->getParam('id');
+                    dump($idAdv);
+                    $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+                    dump($param);
+                    $this->view->render(self::DEFAULT_PAGE, $subpage, $param);
+                    break;
+
+                case 'delete':
+
+                    break;
+            }
+        }
+        $param['userAdverts'] = $this->readModel->getUserAdvertisments();
         dump($param);
-        $this->view->render(self::DEFAULT_PAGE, 'myAdv', $param);
+        $this->view->render(self::DEFAULT_PAGE, $subpage, $param);
     }
 
     public function myData(): void

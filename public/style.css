@@ -266,11 +266,44 @@ main .logo {
 
 .user-advert {
     align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     min-height: 100px;
     margin: 10px 50px;
     border-radius: 1px;
     background-color: #fFefd9;
     box-shadow: 0 0 3px #2E3D59;
+}
+
+.user-advert .advert-data {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 10px 0 10px 10px;
+}
+
+.user-advert .advert-data .title {
+    padding-bottom: 5px;
+    border-bottom: 1px solid #000;
+    font-size: 2rem;
+    text-transform: uppercase;
+}
+
+.user-advert .advert-data span {
+    padding: 0 10px 0 5px;
+    border-left: 1px solid #000;
+}
+
+.user-advert .options {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-advert .options a {
+    margin: 10px 10px 10px;
+    text-align: center;
+    font-size: 1.5rem;
 }
 
 footer {
