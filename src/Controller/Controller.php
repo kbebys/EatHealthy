@@ -147,7 +147,10 @@ class Controller extends AbstractController
                         break;
 
                     case 'edit':
-                        # code...
+                        $param['edit'] = true;
+                        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+                        $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
+                        exit;
                         break;
                 }
             }
