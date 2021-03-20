@@ -42,8 +42,6 @@ a {
     color: #f00;
 }
 
-
-
 .wrapper {
     display: flex;
     flex-direction: column;
@@ -303,6 +301,20 @@ main .logo {
 
 .user-advert .options a {
     margin: 10px 10px 10px;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.user-adverts .question {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.user-adverts .question a {
+    align-self: center;
+    min-width: 50px;
+    margin: 5px 0;
     text-align: center;
     font-size: 1.5rem;
 }

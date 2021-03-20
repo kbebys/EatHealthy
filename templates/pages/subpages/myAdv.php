@@ -6,6 +6,7 @@ if (empty($params['access'])) {
 
 $userAdverts = $params['userAdverts'] ?? [];
 $userAdvert = $params['userAdvert'] ?? [];
+$delete = $params['delete'] ?? [];
 
 $action = '/?action=userPanel&subpage=myAdv';
 ?>
@@ -41,11 +42,18 @@ $action = '/?action=userPanel&subpage=myAdv';
                 </div>
                 <div class="options">
                     <a href="<?php echo $action ?>&option=edit&id=<?php echo $userAdvert['id'] ?>">Edytuj</a>
-                    <a href="<?php echo $action ?>&option=delete&id=<?php echo $userAdvert['id'] ?>">Usuń</a>
+                    <a href="<?php echo $action ?>&option=ifDelete&id=<?php echo $userAdvert['id'] ?>">Usuń</a>
                     <a href="<?php echo $action ?>">Powrót do listy</a>
                 </div>
             </div>
-        <?php break;
+            <?php if ($delete === true) : ?>
+                <div class="question">
+                    <p class="message">Czy na pewno chcesz usunąć to ogłoszenie?</p>
+                    <a href="<?php echo $action ?>&option=delete&id=<?php echo $userAdvert['id'] ?>">Tak</a>
+                    <a href="<?php echo $action ?>&option=details&id=<?php echo $userAdvert['id'] ?>">Nie</a>
+                </div>
+            <?php endif;
+            break;
         default: ?>
             <p class="message">Nie masz jeszcze ogłoszeń</p>
     <?php endswitch ?>

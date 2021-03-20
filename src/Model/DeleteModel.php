@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Market\Model;
 
+use Error;
 use Exception;
 use Market\Exception\DatabaseException;
 use Market\Exception\ErrorException;
@@ -37,8 +38,13 @@ class DeleteModel extends AbstractModel
             $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
-
-            return true;
+            if ($stmt->rowCount() === 1) {
+                return true;
+            } else {
+                throw new ErrorException('Nie znaleziono ogłoszenia o takim id');
+            }
+        } catch (ErrorException $e) {
+            throw new ErrorException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }

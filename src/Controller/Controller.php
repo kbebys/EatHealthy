@@ -123,24 +123,29 @@ class Controller extends AbstractController
     {
         $subpage = 'myAdv';
         try {
-
-
             $advOption = $this->request->getParam('option');
             if ($advOption) {
+                $idAdv = (int) $this->request->getParam('id');
                 switch ($advOption) {
                     case 'details':
-                        $idAdv = (int) $this->request->getParam('id');
                         $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
                         $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
                         exit;
                         break;
 
                     case 'delete':
-                        $idAdv = (int) $this->request->getParam('id');
                         if ($this->deleteModel->deleteUserAdvertisment($idAdv) === true) {
                             $param['messageWindow'] = 'Ogłoszenie zostało usunięte';
                         }
                         break;
+
+                    case 'ifDelete':
+                        $param['delete'] = true;
+                        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+                        $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
+                        exit;
+                        break;
+
                     case 'edit':
                         # code...
                         break;
