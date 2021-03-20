@@ -31,9 +31,9 @@ class Controller extends AbstractController
 
             if ($this->readModel->login($loginData) === true) {
                 $this->userPanel();
+                exit;
             }
         }
-
         $this->view->render('login', '', $param ?? []);
     }
 
@@ -103,7 +103,8 @@ class Controller extends AbstractController
             $this->view->render(self::DEFAULT_PAGE, 'myData');
         }
 
-        if ($this->request->postParam('save')) {
+        $savePost = $this->request->postParam('save');
+        if ($savePost && $savePost !== 'Zaloguj') {
             $advData = [
                 'title' => $this->request->postParam('title'),
                 'kind' => $this->request->postParam('kind'),
@@ -113,11 +114,9 @@ class Controller extends AbstractController
 
             if ($this->createModel->addAdvertisment($advData)) {
                 $param['messageWindow'] = 'Dodałeś ogłoszenie';
-                $this->view->render(self::DEFAULT_PAGE, 'addAdv', $param);
             }
         }
-
-        $this->view->render(self::DEFAULT_PAGE, $subpage);
+        $this->view->render(self::DEFAULT_PAGE, $subpage, $param = []);
     }
 
     public function myAdv(): void
@@ -129,19 +128,20 @@ class Controller extends AbstractController
             switch ($advOption) {
                 case 'details':
                     $idAdv = (int) $this->request->getParam('id');
-                    dump($idAdv);
                     $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
-                    dump($param);
                     $this->view->render(self::DEFAULT_PAGE, $subpage, $param);
+                    exit;
                     break;
 
                 case 'delete':
-
+                    # code...
+                    break;
+                case 'edit':
+                    # code...
                     break;
             }
         }
         $param['userAdverts'] = $this->readModel->getUserAdvertisments();
-        dump($param);
         $this->view->render(self::DEFAULT_PAGE, $subpage, $param);
     }
 
@@ -167,6 +167,7 @@ class Controller extends AbstractController
             } catch (ErrorException $e) {
                 $param['errorWindow'] = $e->getMessage();
                 $this->view->render(self::DEFAULT_PAGE, 'myData', $param ?? []);
+                exit;
             }
         } else {
 

@@ -116,8 +116,6 @@ class ReadModel extends AbstractModel
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
-
-        return $array = ['nie jest źle'];
     }
 
     public function getUserData(): array
