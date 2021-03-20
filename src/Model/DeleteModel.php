@@ -6,7 +6,9 @@ namespace Market\Model;
 
 use Exception;
 use Market\Exception\DatabaseException;
+use Market\Exception\ErrorException;
 use PDO;
+use Throwable;
 
 class DeleteModel extends AbstractModel
 {
@@ -20,6 +22,24 @@ class DeleteModel extends AbstractModel
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
         } catch (Exception $e) {
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
+        }
+    }
+
+    public function deleteUserAdvertisment(int $idAdv): bool
+    {
+        $id = (int) $_SESSION['id'];
+        $idAdv = $idAdv;
+
+        try {
+            $query = "DELETE FROM advertisment WHERE id = ? AND id_user = ? LIMIT 1";
+            $stmt = self::$conn->prepare($query);
+            $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);
+            $stmt->bindParam(2, $id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return true;
+        } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }

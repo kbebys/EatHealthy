@@ -94,8 +94,6 @@ class ReadModel extends AbstractModel
         $id = (int) $_SESSION['id'];
         $idAdv = $idAdv;
 
-
-
         try {
             $query = "SELECT id, title, content, place, date
             FROM advertisment

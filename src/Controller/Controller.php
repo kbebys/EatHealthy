@@ -112,37 +112,45 @@ class Controller extends AbstractController
                 'place' => $this->request->postParam('place')
             ];
 
-            if ($this->createModel->addAdvertisment($advData)) {
+            if ($this->createModel->addAdvertisment($advData) === true) {
                 $param['messageWindow'] = 'Dodałeś ogłoszenie';
             }
         }
-        $this->view->render(self::DEFAULT_PAGE, $subpage, $param = []);
+        $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
     }
 
     public function myAdv(): void
     {
         $subpage = 'myAdv';
+        try {
 
-        $advOption = $this->request->getParam('option');
-        if ($advOption) {
-            switch ($advOption) {
-                case 'details':
-                    $idAdv = (int) $this->request->getParam('id');
-                    $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
-                    $this->view->render(self::DEFAULT_PAGE, $subpage, $param);
-                    exit;
-                    break;
 
-                case 'delete':
-                    # code...
-                    break;
-                case 'edit':
-                    # code...
-                    break;
+            $advOption = $this->request->getParam('option');
+            if ($advOption) {
+                switch ($advOption) {
+                    case 'details':
+                        $idAdv = (int) $this->request->getParam('id');
+                        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+                        $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
+                        exit;
+                        break;
+
+                    case 'delete':
+                        $idAdv = (int) $this->request->getParam('id');
+                        if ($this->deleteModel->deleteUserAdvertisment($idAdv) === true) {
+                            $param['messageWindow'] = 'Ogłoszenie zostało usunięte';
+                        }
+                        break;
+                    case 'edit':
+                        # code...
+                        break;
+                }
             }
+        } catch (ErrorException $e) {
+            $param['errorWindow'] = $e->getMessage();
         }
         $param['userAdverts'] = $this->readModel->getUserAdvertisments();
-        $this->view->render(self::DEFAULT_PAGE, $subpage, $param);
+        $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
     }
 
     public function myData(): void
