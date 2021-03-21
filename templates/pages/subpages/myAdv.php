@@ -6,6 +6,8 @@ if (empty($params['access'])) {
 
 $userAdverts = $params['userAdverts'] ?? [];
 $userAdvert = $params['userAdvert'] ?? [];
+$kindOfAdv = $params['kind_of_transaction'] ?? 'sell';
+
 $delete = $params['delete'] ?? [];
 $editAdv = $params['edit'] ?? [];
 
@@ -13,16 +15,21 @@ $action = '/?action=userPanel&subpage=myAdv';
 ?>
 <div class="user-adverts">
     <?php switch (true):
+
         case ($editAdv): ?>
-            <form action="/?action=userPanel&subpage=addAdv" method="POST">
+            <form action="<?php echo $action ?>&option=edit&id=<?php echo $userAdvert['id'] ?>" method="POST" autocomplete="off">
                 <label for="title">Tytuł ogłoszenia:</label>
                 <input type="text" id="title" name="title" maxlength="150" value="<?php echo $userAdvert['title'] ?>" required>
-                <!-- <label for="kind">Rodzaj:</label> -->
-                <!-- <select name="kind" id="kind" required>
-                    <option disabled selected value> -- Wybierz rodzaj transakcji -- </option>
-                    <option value="sell">Sprzedam</option>
-                    <option value="buy">Kupię</option>
-                </select> -->
+                <label for="kind">Rodzaj:</label>
+                <select name="kind" id="kind" required>
+                    <?php if ($kindOfAdv === 'buy') : ?>
+                        <option value="sell">Sprzedam</option>
+                        <option value="buy" selected value>Kupię</option>
+                    <?php else : ?>
+                        <option value="sell" selected value>Sprzedam</option>
+                        <option value="buy">Kupię</option>
+                    <?php endif ?>
+                </select>
                 <label for="content">Treść ogłoszenia:</label>
                 <textarea name="content" id="content" cols="100" rows="5" required><?php echo $userAdvert['content'] ?></textarea>
                 <label for=" place">Miejscowość</label>
@@ -30,7 +37,9 @@ $action = '/?action=userPanel&subpage=myAdv';
                 <input type="hidden" name="id-adv" value="<?php echo $userAdvert['id'] ?>">
                 <input type="submit" name="save" value="Edytuj">
             </form>
+            <a href="<?php echo $action ?>&option=details&id=<?php echo $userAdvert['id'] ?>">Wróć</a>
         <?php break;
+
         case ($userAdverts): ?>
             <?php for ($i = 0; $i < count($userAdverts); $i++) :
                 $advert = $userAdverts[$i]; ?>
@@ -49,6 +58,7 @@ $action = '/?action=userPanel&subpage=myAdv';
                 </div>
             <?php endfor ?>
         <?php break;
+
         case ($userAdvert): ?>
             <div class="user-advert">
                 <div class="advert-data">
@@ -73,6 +83,7 @@ $action = '/?action=userPanel&subpage=myAdv';
                 </div>
             <?php endif;
             break;
+
         default: ?>
             <p class="message">Nie masz jeszcze ogłoszeń</p>
     <?php endswitch ?>

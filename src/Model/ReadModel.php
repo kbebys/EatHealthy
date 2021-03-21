@@ -95,7 +95,7 @@ class ReadModel extends AbstractModel
         $idAdv = $idAdv;
 
         try {
-            $query = "SELECT id, title, content, place, date
+            $query = "SELECT id, title, content, place, kind_of_transaction, date
             FROM advertisment
             WHERE id = ? and id_user = ?";
             $stmt = self::$conn->prepare($query);
@@ -103,7 +103,7 @@ class ReadModel extends AbstractModel
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
             if ($stmt->rowCount() === 0) {
-                throw new ErrorException('Nie można odnaleźć notatki o takim id');
+                throw new ErrorException('Nie można odnaleźć ogłoszenia o takim id');
             }
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 

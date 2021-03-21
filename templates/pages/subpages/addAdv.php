@@ -5,7 +5,8 @@ if (empty($params['access'])) {
 }
 ?>
 
-<form action="/?action=userPanel&subpage=addAdv" method="POST">
+<p class="message">Dodaj ogłoszenie</p>
+<form action="/?action=userPanel&subpage=addAdv" method="POST" autocomplete="off">
     <label for="title">Tytuł ogłoszenia:</label>
     <input type="text" id="title" name="title" maxlength="150" required>
     <label for="kind">Rodzaj:</label>

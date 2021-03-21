@@ -123,9 +123,13 @@ class Controller extends AbstractController
     {
         $subpage = 'myAdv';
         try {
+
             $advOption = $this->request->getParam('option');
+
             if ($advOption) {
+
                 $idAdv = (int) $this->request->getParam('id');
+
                 switch ($advOption) {
                     case 'details':
                         $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
@@ -147,18 +151,36 @@ class Controller extends AbstractController
                         break;
 
                     case 'edit':
-                        $param['edit'] = true;
                         $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+                        $param['edit'] = true;
+                        if ($this->request->postParam('save')) {
+                            $advData = [
+                                'title' => $this->request->postParam('title'),
+                                'kind' => $this->request->postParam('kind'),
+                                'content' => $this->request->postParam('content'),
+                                'place' => $this->request->postParam('place'),
+                            ];
+
+                            if ($this->updateModel->changeAdvertisment($advData, $idAdv) === true) {
+                                $param['edit'] = null;
+                                $param['messageWindow'] = 'Twoje ogłoszenie zostało zmienione';
+                                $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+                            }
+                        }
                         $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
                         exit;
                         break;
                 }
             }
+            $param['userAdverts'] = $this->readModel->getUserAdvertisments();
+            $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
         } catch (ErrorException $e) {
             $param['errorWindow'] = $e->getMessage();
+            if (empty($param['userAdvert'])) {
+                $param['userAdverts'] = $this->readModel->getUserAdvertisments();
+            }
+            $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
         }
-        $param['userAdverts'] = $this->readModel->getUserAdvertisments();
-        $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
     }
 
     public function myData(): void

@@ -38,6 +38,7 @@ class DeleteModel extends AbstractModel
             $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
+
             if ($stmt->rowCount() === 1) {
                 return true;
             } else {

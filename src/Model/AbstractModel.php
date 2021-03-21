@@ -141,4 +141,24 @@ abstract class AbstractModel
             return true;
         }
     }
+
+    protected function checkAdvertismentExist(int $idUser, int $idAdv): bool
+    {
+        try {
+            $query = "SELECT count(*) AS count FROM advertisment WHERE id = ? AND id_user = ?";
+            $stmt = self::$conn->prepare($query);
+            $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);
+            $stmt->bindParam(2, $idUser, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result['count'] === 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Throwable $e) {
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
+        }
+    }
 }
