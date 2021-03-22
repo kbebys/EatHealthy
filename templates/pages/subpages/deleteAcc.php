@@ -17,8 +17,8 @@ $confirm = $params['confirm'] ?? null;
 <?php else : ?>
     <form action="/?action=userPanel&subpage=deleteAcc" method="POST">
         <label for="password">Wpisz hasło:</label>
-        <input type="password" name="password" id="password">
+        <input type="password" name="password" id="password" required>
         <input type="submit" value="usuń" name="save">
     </form>
-    <p class="message">Uwaga!! Klikając Usuń utracisz wszystkie dane bez możliwości ich przywrócenia.</p>
+    <p class="message">Uwaga!! Usuwając konto utracisz wszystkie dane bez możliwości ich przywrócenia.</p>
 <?php endif ?>

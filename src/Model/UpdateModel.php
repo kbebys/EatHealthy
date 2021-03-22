@@ -23,7 +23,6 @@ class UpdateModel extends AbstractModel
 
         $id = (int) $_SESSION['id'];
 
-
         try {
             $query = "UPDATE user_data SET first_name = ? WHERE id_user = ?";
             $stmt = self::$conn->prepare($query);
@@ -31,7 +30,13 @@ class UpdateModel extends AbstractModel
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
 
+            if ($stmt->rowCount() === 0) {
+                throw new ErrorException('Problem ze zmianą wartości w bazie danych');
+            }
+
             return true;
+        } catch (ErrorException $e) {
+            throw new ErrorException($e->getMessage());
         } catch (Exception $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -55,7 +60,13 @@ class UpdateModel extends AbstractModel
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
 
+            if ($stmt->rowCount() === 0) {
+                throw new ErrorException('Problem ze zmianą wartości w bazie danych');
+            }
+
             return true;
+        } catch (ErrorException $e) {
+            throw new ErrorException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -80,22 +91,17 @@ class UpdateModel extends AbstractModel
         }
 
 
-        $stmt = $this->checkUser('id', $id);
-
-        // if (!$stmt) {
-        //     throw new Exception("Błąd");
-        // }
+        $stmt = $this->checkUserExist('id', $id);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!password_verify($old, $result['password'])) {
             throw new ErrorException('Niepoprawne aktualne hasło');
         }
 
-        $passValid = $this->validatePassword($new, $newRepeat);
+        $passValid = $this->validatePasswords($new, $newRepeat);
         if ($passValid !== true) {
             throw new ErrorException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
         }
-
         $passwordHashed = password_hash($new, PASSWORD_DEFAULT);
         try {
             $query = "UPDATE user SET password = ? WHERE id = ?";
@@ -104,7 +110,13 @@ class UpdateModel extends AbstractModel
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
 
+            if ($stmt->rowCount() === 0) {
+                throw new ErrorException('Problem ze zmianą wartości w bazie danych');
+            }
+
             return true;
+        } catch (ErrorException $e) {
+            throw new ErrorException($e->getMessage());
         } catch (Exception $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }

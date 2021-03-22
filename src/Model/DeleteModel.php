@@ -22,6 +22,12 @@ class DeleteModel extends AbstractModel
             $stmt = self::$conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
+
+            if ($stmt->rowCount() !== 1) {
+                throw new ErrorException('Błąd usuwania konta');
+            }
+        } catch (ErrorException $e) {
+            throw new ErrorException($e->getMessage());
         } catch (Exception $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }

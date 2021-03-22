@@ -32,7 +32,7 @@ class CreateModel extends AbstractModel
             throw new ErrorException('Niepoprawna nazwa użytkownika');
         }
 
-        $passValid = $this->validatePassword($password, $passRepeat);
+        $passValid = $this->validatePasswords($password, $passRepeat);
         if ($passValid !== true) {
             throw new ErrorException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
         }
@@ -42,13 +42,13 @@ class CreateModel extends AbstractModel
             throw new ErrorException('Niepoprawny adres email');
         }
 
-        $stmt = $this->checkUser('login', $login);
-        if ($stmt != false) {
+        $stmt = $this->checkUserExist('login', $login);
+        if ($stmt !== false) {
             throw new ErrorException('Użytkownik o tej nazwie istnieje');
         }
 
-        $stmt = $this->checkUser('email', $email);
-        if ($stmt != false) {
+        $stmt = $this->checkUserExist('email', $email);
+        if ($stmt !== false) {
             throw new ErrorException('Konto z tym adresem email już istnieje');
         }
 
@@ -63,6 +63,10 @@ class CreateModel extends AbstractModel
             $stmt->bindParam(2, $passwordHashed, PDO::PARAM_STR);
             $stmt->bindParam(3, $email, PDO::PARAM_STR);
             $stmt->execute();
+
+            if ($stmt->rowCount() !== 1) {
+                throw new DatabaseException('Błąd dodawania użytkownika');
+            }
 
             return true;
         } catch (Throwable $e) {
@@ -107,15 +111,21 @@ class CreateModel extends AbstractModel
             $stmt->bindParam(4, $kind, PDO::PARAM_STR);
             $stmt->bindParam(5, $place, PDO::PARAM_STR);
             $stmt->execute();
+
+            if ($stmt->rowCount() !== 1) {
+                throw new ErrorException('Błąd dodawania danych');
+            }
+
+            return true;
+        } catch (ErrorException $e) {
+            throw new ErrorException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
-
-        return true;
     }
 
     //Insert user data
-    public function sendUserData(array $uData): bool
+    public function addUserData(array $uData): bool
     {
         $uName = $this->validateName($uData['uName']);
         if (!$uName) {
@@ -137,7 +147,13 @@ class CreateModel extends AbstractModel
             $stmt->bindParam(3, $phone, PDO::PARAM_INT);
             $stmt->execute();
 
+            if ($stmt->rowCount() !== 1) {
+                throw new ErrorException('Błąd dodawania danych');
+            }
+
             return true;
+        } catch (ErrorException $e) {
+            throw new ErrorException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }

@@ -189,6 +189,11 @@ class Controller extends AbstractController
         $uData = $this->readModel->getUserData();
 
         if ($uData) {
+
+            if (isset($uData['error'])) {
+                $param['errorWindow'] = 'Problem z pobraniem danych';
+            }
+
             $param['uData'] = $uData;
             try {
                 switch ($this->request->getParam('change')) {
@@ -200,6 +205,9 @@ class Controller extends AbstractController
                     case 'phone':
                         $data = $this->changeUserData('phone');
                         $param = array_merge($param, $data);
+                        break;
+                    case ($uData[0] = 'error'):
+                        $param['errorWindow'] = 'Problem z pobraniem danych';
                         break;
                 }
             } catch (ErrorException $e) {
@@ -214,7 +222,7 @@ class Controller extends AbstractController
                     'uName' => $this->request->postParam('first-name'),
                     'phone' => $this->request->postParam('phone-number')
                 ];;
-                if ($this->createModel->sendUserData($uData) === true) {
+                if ($this->createModel->addUserData($uData) === true) {
                     $param = [
                         'messageWindow' => 'Dane zostały dodane pomyślnie',
                         'uData' => $this->readModel->getUserData()

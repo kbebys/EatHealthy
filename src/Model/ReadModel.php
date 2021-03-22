@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Market\Model;
 
+use Error;
 use Exception;
 use Market\Exception\DatabaseException;
 use Market\Exception\ErrorException;
@@ -25,8 +26,8 @@ class ReadModel extends AbstractModel
         $login = $data['login'];
         $password = $data['password'];
 
-        $stmt = $this->checkUser('login', $login);
-        if ($stmt == false) {
+        $stmt = $this->checkUserExist('login', $login);
+        if (!$stmt) {
             throw new ErrorException('Niepoprawna nazwa użytkownika lub hasło');
         }
 
@@ -59,15 +60,22 @@ class ReadModel extends AbstractModel
             $stmt = self::$conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
+
+            if ($stmt->rowCount() === 0) {
+                throw new ErrorException('Błąd pobierania ogłoszeń');
+            }
+
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            return $result ?? [];
+            return $result;
+        } catch (ErrorException $e) {
+            throw new ErrorException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }
 
-    public function getCountUserAdvertisment(): int
+    public function getCountUserAdvertisments(): int
     {
         $id = (int) $_SESSION['id'];
         try {
@@ -83,7 +91,7 @@ class ReadModel extends AbstractModel
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             $result = (int) $result['count'];
 
-            return $result ?? 0;
+            return $result;
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -92,7 +100,6 @@ class ReadModel extends AbstractModel
     public function getUserAdvertisment(int $idAdv): array
     {
         $id = (int) $_SESSION['id'];
-        $idAdv = $idAdv;
 
         try {
             $query = "SELECT id, title, content, place, kind_of_transaction, date
@@ -102,15 +109,16 @@ class ReadModel extends AbstractModel
             $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
+
             if ($stmt->rowCount() === 0) {
                 throw new ErrorException('Nie można odnaleźć ogłoszenia o takim id');
             }
+
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             return $result;
         } catch (ErrorException $e) {
-            $e = $e->getMessage();
-            throw new ErrorException($e);
+            throw new ErrorException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -119,7 +127,6 @@ class ReadModel extends AbstractModel
     public function getUserData(): array
     {
         $id = (int) $_SESSION['id'];
-
         try {
             $query = "SELECT user_data.first_name AS name, user_data.phone_number AS phone, user.email AS email
             FROM user_data
@@ -127,8 +134,9 @@ class ReadModel extends AbstractModel
             $stmt = self::$conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
+
             if ($stmt->rowCount() === 0) {
-                $result = [];
+                $result['error'] = true;
             } else {
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
             }
@@ -149,11 +157,10 @@ class ReadModel extends AbstractModel
         }
 
         $id = (int) $_SESSION['id'];
-        $stmt = $this->checkUser('id', $id);
-
-        // if (!$stmt) {
-        //     throw new Exception('Problem z połączeniem z bazą danych ');
-        // }
+        $stmt = $this->checkUserExist('id', $id);
+        if (!$stmt) {
+            throw new ErrorException('Problem z pobraniem hasła');
+        }
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 

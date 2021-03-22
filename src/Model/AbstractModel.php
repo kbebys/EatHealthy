@@ -54,7 +54,7 @@ abstract class AbstractModel
         }
     }
 
-    protected function checkUser(string $param, $user)
+    protected function checkUserExist(string $param, $user)
     {
         try {
             $query = "SELECT id, password FROM user WHERE $param = ?";
@@ -124,7 +124,7 @@ abstract class AbstractModel
         return (int) $phone;
     }
 
-    protected function validatePassword(string $pass, string $passR): bool
+    protected function validatePasswords(string $pass, string $passR): bool
     {
         //Password validation(5 - 20 characters, minimum of 1 uppercase char, minimum of 1 lowercase char, minimum 1 digit )
         $passValidPattern1 = '/^(?=.*[!@#$%^&*-])(?=.*[0-9])(?=.*[A-Z]).{5,20}$/';
