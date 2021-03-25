@@ -14,6 +14,7 @@ class Controller extends AbstractController
 {
     private const DEFAULT_PAGE = 'userPanel';
     private const DEFAULT_SUBPAGE = 'addAdv';
+    private const DEFAULT_USER_ADVERT = 'myAdv';
 
     public function main(): void
     {
@@ -119,67 +120,36 @@ class Controller extends AbstractController
         $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
     }
 
+    //Method to Controll User Advertisments supbage in User Panel
     public function myAdv(): void
     {
-        $subpage = 'myAdv';
         try {
 
-            $advOption = $this->request->getParam('option');
+            $advertOption = $this->userAdvertOption();
+            $advertOption = $advertOption . 'UserAdvert';
 
-            if ($advOption) {
+            $idAdv = (int) $this->request->getParam('id');
 
-                $idAdv = (int) $this->request->getParam('id');
+            dump($advertOption);
 
-                switch ($advOption) {
-                    case 'details':
-                        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
-                        $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
-                        exit;
-                        break;
-
-                    case 'delete':
-                        if ($this->deleteModel->deleteUserAdvertisment($idAdv) === true) {
-                            $param['messageWindow'] = 'Ogłoszenie zostało usunięte';
-                        }
-                        break;
-
-                    case 'ifDelete':
-                        $param['delete'] = true;
-                        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
-                        $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
-                        exit;
-                        break;
-
-                    case 'edit':
-                        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
-                        $param['edit'] = true;
-                        if ($this->request->postParam('save')) {
-                            $advData = [
-                                'title' => $this->request->postParam('title'),
-                                'kind' => $this->request->postParam('kind'),
-                                'content' => $this->request->postParam('content'),
-                                'place' => $this->request->postParam('place'),
-                            ];
-
-                            if ($this->updateModel->changeAdvertisment($advData, $idAdv) === true) {
-                                $param['edit'] = null;
-                                $param['messageWindow'] = 'Twoje ogłoszenie zostało zmienione';
-                                $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
-                            }
-                        }
-                        $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
-                        exit;
-                        break;
-                }
+            if (!method_exists($this, $advertOption)) {
+                //Get all of the User advertisments
+                $param['userAdverts'] = $this->readModel->getUserAdvertisments();
+                $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
+            } else {
+                $this->$advertOption($idAdv);
             }
-            $param['userAdverts'] = $this->readModel->getUserAdvertisments();
-            $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
         } catch (ErrorException $e) {
             $param['errorWindow'] = $e->getMessage();
-            if (empty($param['userAdvert'])) {
+
+            //Code === 2 when error about editing advertisement is throwing
+            if ($e->getCode() === 2) {
+                $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+            } else {
                 $param['userAdverts'] = $this->readModel->getUserAdvertisments();
             }
-            $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
+
+            $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
         }
     }
 
@@ -275,6 +245,60 @@ class Controller extends AbstractController
         $this->view->render(self::DEFAULT_PAGE, 'deleteAcc', $param ?? []);
     }
 
+    private function detailsUserAdvert(int $idAdv): void
+    {
+        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+        $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
+    }
+
+    private function deleteUserAdvert(int $idAdv): void
+    {
+        //Confirmation if User really wants to delete advertisement
+        $ifDelete = $this->request->getParam('question');
+
+        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+
+        if ($ifDelete === 'yes') {
+            if ($this->deleteModel->deleteUserAdvertisment($idAdv) === true) {
+                $param = [
+                    'messageWindow' => 'Ogłoszenie zostało usunięte',
+                    'userAdverts' => $this->readModel->getUserAdvertisments()
+                ];
+            }
+        } elseif ($ifDelete === 'no') {
+            //Situation when user resign from deleting 
+            $param['delete'] = false;
+        } else {
+            //situation before confirmation. When User clicked delete
+            $param['delete'] = true;
+        }
+        $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
+    }
+
+    private function editUserAdvert(int $idAdv): void
+    {
+        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+
+        //It is flag uses to display editing view
+        $param['edit'] = true;
+
+        if ($this->request->postParam('save')) {
+            $advData = [
+                'title' => $this->request->postParam('title'),
+                'kind' => $this->request->postParam('kind'),
+                'content' => $this->request->postParam('content'),
+                'place' => $this->request->postParam('place'),
+            ];
+
+            if ($this->updateModel->changeAdvertisment($advData, $idAdv) === true) {
+                $param['edit'] = null;
+                $param['messageWindow'] = 'Twoje ogłoszenie zostało zmienione';
+                $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+            }
+        }
+        $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
+    }
+
     private function changeUserData(string $data): array
     {
         $param['change'] = $data;
@@ -296,5 +320,11 @@ class Controller extends AbstractController
     private function subpage(): string
     {
         return $this->request->getParam('subpage', self::DEFAULT_SUBPAGE);
+    }
+
+    //Get what option choose User in my advertisments subpage
+    private function userAdvertOption(): string
+    {
+        return $this->request->getParam('advertOption', '');
     }
 }

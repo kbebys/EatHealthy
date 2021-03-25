@@ -128,7 +128,7 @@ class UpdateModel extends AbstractModel
         $advData = array_map('trim', $advData);
 
         if ($this->validateEmpty($advData)) {
-            throw new ErrorException('Uzupełnij wszytkie pola');
+            throw new ErrorException('Uzupełnij wszytkie pola', 2);
         }
 
         $title = $advData['title'];
@@ -138,19 +138,19 @@ class UpdateModel extends AbstractModel
         $id = (int) $_SESSION['id'];
 
         if (strlen($title) > 150) {
-            throw new ErrorException('Wpisałeś za długi tytuł');
+            throw new ErrorException('Wpisałeś za długi tytuł', 2);
         }
 
         if ($kind !== 'sell' && $kind !== 'buy') {
-            throw new ErrorException('Błąd wysyłania danych. Spróbuj jeszce raz');
+            throw new ErrorException('Błąd wysyłania danych. Spróbuj jeszce raz', 2);
         }
 
         if (strlen($place) > 150) {
-            throw new ErrorException('Wpisałeś za długi tytuł');
+            throw new ErrorException('Wpisałeś za długi tytuł', 2);
         }
 
         if ($this->checkAdvertismentExist($id, $idAdv) === false) {
-            throw new ErrorException('Nie znaleziono ogłoszenia o takim id');
+            throw new ErrorException('Nie znaleziono ogłoszenia o takim id', 2);
         }
 
         try {
@@ -172,7 +172,7 @@ class UpdateModel extends AbstractModel
                 throw new ErrorException('Nie edytowałeś danych w ogłoszeniu');
             }
         } catch (ErrorException $e) {
-            throw new ErrorException($e->getMessage());
+            throw new ErrorException($e->getMessage(), 2);
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }

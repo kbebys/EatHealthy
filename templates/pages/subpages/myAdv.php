@@ -14,10 +14,11 @@ $editAdv = $params['edit'] ?? [];
 $action = '/?action=userPanel&subpage=myAdv';
 ?>
 <div class="user-adverts">
+    <!-- Displaying content of my advertisment view. It depend what option user chose -->
     <?php switch (true):
-
+            // Editting chosen advertisment
         case ($editAdv): ?>
-            <form action="<?php echo $action ?>&option=edit&id=<?php echo $userAdvert['id'] ?>" method="POST" autocomplete="off">
+            <form action="<?php echo $action ?>&advertOption=edit&id=<?php echo $userAdvert['id'] ?>" method="POST" autocomplete="off">
                 <label for="title">Tytuł ogłoszenia:</label>
                 <input type="text" id="title" name="title" maxlength="150" value="<?php echo $userAdvert['title'] ?>" required>
                 <label for="kind">Rodzaj:</label>
@@ -37,9 +38,9 @@ $action = '/?action=userPanel&subpage=myAdv';
                 <input type="hidden" name="id-adv" value="<?php echo $userAdvert['id'] ?>">
                 <input type="submit" name="save" value="Edytuj">
             </form>
-            <a href="<?php echo $action ?>&option=details&id=<?php echo $userAdvert['id'] ?>">Wróć</a>
+            <a href="<?php echo $action ?>&advertOption=details&id=<?php echo $userAdvert['id'] ?>">Wróć</a>
         <?php break;
-
+            //Display all of user advertisements
         case ($userAdverts): ?>
             <?php for ($i = 0; $i < count($userAdverts); $i++) :
                 $advert = $userAdverts[$i]; ?>
@@ -53,12 +54,12 @@ $action = '/?action=userPanel&subpage=myAdv';
                         </div>
                     </div>
                     <div class="options">
-                        <a href="<?php echo $action ?>&option=details&id=<?php echo $advert['id'] ?>">Sczegóły</a>
+                        <a href="<?php echo $action ?>&advertOption=details&id=<?php echo $advert['id'] ?>">Sczegóły</a>
                     </div>
                 </div>
             <?php endfor ?>
         <?php break;
-
+            //Display one chosen advertisement with available options
         case ($userAdvert): ?>
             <div class="user-advert">
                 <div class="advert-data">
@@ -70,16 +71,16 @@ $action = '/?action=userPanel&subpage=myAdv';
                     </div>
                 </div>
                 <div class="options">
-                    <a href="<?php echo $action ?>&option=edit&id=<?php echo $userAdvert['id'] ?>">Edytuj</a>
-                    <a href="<?php echo $action ?>&option=ifDelete&id=<?php echo $userAdvert['id'] ?>">Usuń</a>
+                    <a href="<?php echo $action ?>&advertOption=edit&id=<?php echo $userAdvert['id'] ?>">Edytuj</a>
+                    <a href="<?php echo $action ?>&advertOption=delete&id=<?php echo $userAdvert['id'] ?>">Usuń</a>
                     <a href="<?php echo $action ?>">Powrót do listy</a>
                 </div>
             </div>
             <?php if ($delete === true) : ?>
                 <div class="question">
                     <p class="message">Czy na pewno chcesz usunąć to ogłoszenie?</p>
-                    <a href="<?php echo $action ?>&option=delete&id=<?php echo $userAdvert['id'] ?>">Tak</a>
-                    <a href="<?php echo $action ?>&option=details&id=<?php echo $userAdvert['id'] ?>">Nie</a>
+                    <a href="<?php echo $action ?>&advertOption=delete&id=<?php echo $userAdvert['id'] ?>&question=yes">Tak</a>
+                    <a href="<?php echo $action ?>&advertOption=details&id=<?php echo $userAdvert['id'] ?>&question=no">Nie</a>
                 </div>
             <?php endif;
             break;
