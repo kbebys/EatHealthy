@@ -4,102 +4,36 @@ declare(strict_types=1);
 
 namespace Market\Controller;
 
-use Market\Controller\AbstractController;
 use Market\Exception\ErrorException;
 
-session_start();
-
-//class uses to control what content will display
-class Controller extends AbstractController
+//The class handles user panel window
+class UserPanelController extends AbstractController
 {
-    private const DEFAULT_PAGE = 'userPanel';
     private const DEFAULT_SUBPAGE = 'addAdv';
+    private const DEFAULT_PAGE = 'userPanel';
     private const DEFAULT_USER_ADVERT = 'myAdv';
 
-    public function main(): void
-    {
-        $this->view->render('main');
-    }
-
-    public function login(): void
-    {
-        if ($this->request->postParam('save')) {
-
-            $loginData = [
-                'login' => $this->request->postParam('username'),
-                'password' => $this->request->postParam('password')
-            ];
-
-            if ($this->readModel->login($loginData) === true) {
-                $this->userPanel();
-                exit;
-            }
-        }
-        $this->view->render('login', '', $param ?? []);
-    }
-
-
-    public function register(): void
-    {
-        $page = 'register';
-
-        if ($this->request->postParam('save')) {
-
-            $registerData = [
-                'login' => $this->request->postParam('username'),
-                'password' => $this->request->postParam('password'),
-                'pass-repeat' => $this->request->postParam('psw-repeat'),
-                'email' => $this->request->postParam('email')
-            ];
-
-            if ($this->createModel->register($registerData) === true) {
-                $page = 'login';
-                $param['message'] = 'Rejestracja powiodła się';
-            }
-        }
-        $this->view->render($page, '', $param ?? []);
-    }
-
-    public function userPanel(): void
-    {
-        $loggedin = $_SESSION['loggedin'] ?? '';
-        if ($loggedin) {
-            $this->runWindow();
-        } else {
-            $this->view->render('main');
-        }
-    }
-
-
-
-    public function logout(): void
-    {
-        session_destroy();
-        header("Location: /?action=main");
-        exit;
-    }
-
-    //Functions use to Control userPanel window
-
-    public function runWindow(): void
+    //Which function will be called
+    public function userPanelRun(): void
     {
         try {
             $subpage = $this->subpage();
-            //if exist given window variable 
+
             if (!method_exists($this, $subpage)) {
                 $subpage = self::DEFAULT_SUBPAGE;
             }
             $this->$subpage();
         } catch (ErrorException $e) {
+            //Handle Errors throwing during exchange data between database and page
             $param['errorWindow'] = $e->getMessage();
             $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
         }
     }
 
+    //Add new advertisement
     public function addAdv(): void
     {
-        $subpage = 'addAdv';
-
+        //If user did not add its personal data
         if (!$this->readModel->getUserData()) {
             $this->view->render(self::DEFAULT_PAGE, 'myData');
         }
@@ -117,7 +51,7 @@ class Controller extends AbstractController
                 $param['messageWindow'] = 'Dodałeś ogłoszenie';
             }
         }
-        $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
+        $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_SUBPAGE, $param ?? []);
     }
 
     //Method to Controll User Advertisments supbage in User Panel
@@ -155,7 +89,6 @@ class Controller extends AbstractController
 
     public function myData(): void
     {
-
         $uData = $this->readModel->getUserData();
 
         if ($uData) {
@@ -229,7 +162,8 @@ class Controller extends AbstractController
             switch ($save) {
                 case 'tak':
                     $this->deleteModel->deleteAcc();
-                    $this->logout();
+                    // $this->logout();
+                    $this->view->render('logout');
                     break;
                 case 'nie':
                     $this->view->render(self::DEFAULT_PAGE, 'deleteAcc');
@@ -245,33 +179,10 @@ class Controller extends AbstractController
         $this->view->render(self::DEFAULT_PAGE, 'deleteAcc', $param ?? []);
     }
 
+    //display details of chosen advertisement
     private function detailsUserAdvert(int $idAdv): void
     {
         $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
-        $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
-    }
-
-    private function deleteUserAdvert(int $idAdv): void
-    {
-        //Confirmation if User really wants to delete advertisement
-        $ifDelete = $this->request->getParam('question');
-
-        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
-
-        if ($ifDelete === 'yes') {
-            if ($this->deleteModel->deleteUserAdvertisment($idAdv) === true) {
-                $param = [
-                    'messageWindow' => 'Ogłoszenie zostało usunięte',
-                    'userAdverts' => $this->readModel->getUserAdvertisments()
-                ];
-            }
-        } elseif ($ifDelete === 'no') {
-            //Situation when user resign from deleting 
-            $param['delete'] = false;
-        } else {
-            //situation before confirmation. When User clicked delete
-            $param['delete'] = true;
-        }
         $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
     }
 
@@ -299,6 +210,30 @@ class Controller extends AbstractController
         $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
     }
 
+    private function deleteUserAdvert(int $idAdv): void
+    {
+        //Confirmation if User really wants to delete advertisement
+        $ifDelete = $this->request->getParam('question');
+
+        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+
+        if ($ifDelete === 'yes') {
+            if ($this->deleteModel->deleteUserAdvertisment($idAdv) === true) {
+                $param = [
+                    'messageWindow' => 'Ogłoszenie zostało usunięte',
+                    'userAdverts' => $this->readModel->getUserAdvertisments()
+                ];
+            }
+        } elseif ($ifDelete === 'no') {
+            //Situation when user resign from deleting 
+            $param['delete'] = false;
+        } else {
+            //situation before confirmation. When User clicked delete
+            $param['delete'] = true;
+        }
+        $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
+    }
+
     private function changeUserData(string $data): array
     {
         $param['change'] = $data;
@@ -317,14 +252,15 @@ class Controller extends AbstractController
         return $param;
     }
 
-    private function subpage(): string
-    {
-        return $this->request->getParam('subpage', self::DEFAULT_SUBPAGE);
-    }
-
-    //Get what option choose User in my advertisments subpage
+    //Get what option chose User in my advertisments subpage
     private function userAdvertOption(): string
     {
         return $this->request->getParam('advertOption', '');
+    }
+
+    //Get information wich subpage chose user
+    private function subpage(): string
+    {
+        return $this->request->getParam('subpage', self::DEFAULT_SUBPAGE);
     }
 }

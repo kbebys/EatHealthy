@@ -6,7 +6,6 @@ namespace Market\Controller;
 
 use Exception;
 use Market\Exception\ErrorException;
-use Market\Model\AbstractModel;
 use Market\Model\CreateModel;
 use Market\Model\DeleteModel;
 use Market\Model\ReadModel;
@@ -38,6 +37,8 @@ abstract class AbstractController
         if (empty(self::$configuration['db'])) {
             throw new Exception("Błąd konfiguracji");
         }
+
+        // self::$nameOfController = 'PageController';
 
         $this->createModel = new CreateModel(self::$configuration['db']);
         $this->readModel = new ReadModel(self::$configuration['db']);
