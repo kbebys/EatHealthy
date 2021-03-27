@@ -58,7 +58,7 @@ class CreateModel extends AbstractModel
         try {
             //insert new account
             $query = "INSERT INTO user (login, password, email) VALUES (?, ?, ?)";
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $login, PDO::PARAM_STR);
             $stmt->bindParam(2, $passwordHashed, PDO::PARAM_STR);
             $stmt->bindParam(3, $email, PDO::PARAM_STR);
@@ -104,7 +104,7 @@ class CreateModel extends AbstractModel
         try {
             $query = "INSERT INTO advertisment (id_user, title, content, kind_of_transaction, place) 
             VALUES (?, ?, ?, ?, ?)";
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->bindParam(2, $title, PDO::PARAM_STR);
             $stmt->bindParam(3, $content, PDO::PARAM_STR);
@@ -141,7 +141,7 @@ class CreateModel extends AbstractModel
 
         try {
             $query = "INSERT INTO user_data (id_user, first_name, last_name, phone_number) VALUES (?, ?, 'x', ?)";
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->bindParam(2, $uName, PDO::PARAM_STR);
             $stmt->bindParam(3, $phone, PDO::PARAM_INT);

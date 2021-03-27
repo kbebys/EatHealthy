@@ -57,7 +57,7 @@ class ReadModel extends AbstractModel
             INNER JOIN advertisment AS a ON u.id = a.id_user
             WHERE u.id = ?";
 
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
 
@@ -85,7 +85,7 @@ class ReadModel extends AbstractModel
             INNER JOIN advertisment AS a ON u.id = a.id_user
             WHERE u.id = ?";
 
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -105,7 +105,7 @@ class ReadModel extends AbstractModel
             $query = "SELECT id, title, content, place, kind_of_transaction, date
             FROM advertisment
             WHERE id = ? and id_user = ?";
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
@@ -131,7 +131,7 @@ class ReadModel extends AbstractModel
             $query = "SELECT user_data.first_name AS name, user_data.phone_number AS phone, user.email AS email
             FROM user_data
             INNER JOIN user ON user_data.id_user = user.id AND user.id = ?";
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
 

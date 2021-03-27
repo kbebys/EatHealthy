@@ -25,7 +25,7 @@ class UpdateModel extends AbstractModel
 
         try {
             $query = "UPDATE user_data SET first_name = ? WHERE id_user = ?";
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $uName, PDO::PARAM_STR);
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
@@ -55,7 +55,7 @@ class UpdateModel extends AbstractModel
 
         try {
             $query = "UPDATE user_data SET phone_number = ? WHERE id_user = ?";
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $phone, PDO::PARAM_INT);
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
@@ -105,7 +105,7 @@ class UpdateModel extends AbstractModel
         $passwordHashed = password_hash($new, PASSWORD_DEFAULT);
         try {
             $query = "UPDATE user SET password = ? WHERE id = ?";
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $passwordHashed, PDO::PARAM_STR);
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
@@ -157,7 +157,7 @@ class UpdateModel extends AbstractModel
             $query = "UPDATE advertisment
                 SET title = ?, content = ?, kind_of_transaction = ?, place = ? 
                 WHERE id = ? AND id_user = ?";
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $title, PDO::PARAM_STR);
             $stmt->bindParam(2, $content, PDO::PARAM_STR);
             $stmt->bindParam(3, $kind, PDO::PARAM_STR);

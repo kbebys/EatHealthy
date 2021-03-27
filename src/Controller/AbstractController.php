@@ -39,11 +39,10 @@ abstract class AbstractController
             throw new Exception("Błąd konfiguracji");
         }
 
-        AbstractModel::initConnection(self::$configuration['db']);
-        $this->createModel = new CreateModel();
-        $this->readModel = new ReadModel();
-        $this->updateModel = new UpdateModel();
-        $this->deleteModel = new DeleteModel();
+        $this->createModel = new CreateModel(self::$configuration['db']);
+        $this->readModel = new ReadModel(self::$configuration['db']);
+        $this->updateModel = new UpdateModel(self::$configuration['db']);
+        $this->deleteModel = new DeleteModel(self::$configuration['db']);
 
         $this->request = $request;
         $this->view = new View();

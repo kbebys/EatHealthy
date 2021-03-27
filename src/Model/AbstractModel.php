@@ -13,23 +13,23 @@ use Throwable;
 
 abstract class AbstractModel
 {
-    protected static PDO $conn;
+    protected PDO $conn;
 
-    public static function initConnection(array $config): void
+    public function __construct(array $config)
     {
         try {
-            self::validateConfig($config);
-            self::createConneciton($config);
+            $this->validateConfig($config);
+            $this->createConneciton($config);
         } catch (PDOException $e) {
             throw new Exception('Błąd połączenia');
         }
     }
 
-    private static function createConneciton(array $config): void
+    private function createConneciton(array $config): void
     {
         $dsn = "mysql:host={$config['host']};dbname={$config['database']}";
 
-        self::$conn = new PDO(
+        $this->conn = new PDO(
             $dsn,
             $config['user'],
             $config['password'],
@@ -42,7 +42,7 @@ abstract class AbstractModel
         );
     }
 
-    private static function validateConfig(array $config): void
+    private function validateConfig(array $config): void
     {
         if (
             empty($config['host'])
@@ -58,7 +58,7 @@ abstract class AbstractModel
     {
         try {
             $query = "SELECT id, password FROM user WHERE $param = ?";
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             if (is_int($user)) {
                 $stmt->bindParam(1, $user, PDO::PARAM_INT);
             } else {
@@ -146,7 +146,7 @@ abstract class AbstractModel
     {
         try {
             $query = "SELECT count(*) AS count FROM advertisment WHERE id = ? AND id_user = ?";
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);
             $stmt->bindParam(2, $idUser, PDO::PARAM_INT);
             $stmt->execute();

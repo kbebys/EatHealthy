@@ -19,7 +19,7 @@ class DeleteModel extends AbstractModel
             $id = (int) $_SESSION['id'];
 
             $query = "DELETE FROM user WHERE id = ? LIMIT 1";
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
 
@@ -40,7 +40,7 @@ class DeleteModel extends AbstractModel
 
         try {
             $query = "DELETE FROM advertisment WHERE id = ? AND id_user = ? LIMIT 1";
-            $stmt = self::$conn->prepare($query);
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);
             $stmt->bindParam(2, $id, PDO::PARAM_INT);
             $stmt->execute();
