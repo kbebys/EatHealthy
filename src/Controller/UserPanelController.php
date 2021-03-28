@@ -7,10 +7,10 @@ namespace Market\Controller;
 use Market\Exception\ErrorException;
 
 //The class handles user panel window
-class UserPanelController extends AbstractController
+class UserPanelController extends PageController
 {
-    private const DEFAULT_SUBPAGE = 'addAdv';
     private const DEFAULT_PAGE = 'userPanel';
+    private const DEFAULT_SUBPAGE = 'myAdv';
     private const DEFAULT_USER_ADVERT = 'myAdv';
 
     //Which function will be called
@@ -33,13 +33,14 @@ class UserPanelController extends AbstractController
     //Add new advertisement
     public function addAdv(): void
     {
+        $subpage = 'addAdv';
         //If user did not add its personal data
         if (!$this->readModel->getUserData()) {
-            $this->view->render(self::DEFAULT_PAGE, 'myData');
+            $subpage = 'myData';
         }
 
         $savePost = $this->request->postParam('save');
-        if ($savePost && $savePost !== 'Zaloguj') {
+        if ($savePost) {
             $advData = [
                 'title' => $this->request->postParam('title'),
                 'kind' => $this->request->postParam('kind'),
@@ -51,7 +52,7 @@ class UserPanelController extends AbstractController
                 $param['messageWindow'] = 'Dodałeś ogłoszenie';
             }
         }
-        $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_SUBPAGE, $param ?? []);
+        $this->view->render(self::DEFAULT_PAGE, $subpage, $param ?? []);
     }
 
     //Method to Controll User Advertisments supbage in User Panel
@@ -64,15 +65,10 @@ class UserPanelController extends AbstractController
 
             $idAdv = (int) $this->request->getParam('id');
 
-            dump($advertOption);
-
             if (!method_exists($this, $advertOption)) {
-                //Get all of the User advertisments
-                $param['userAdverts'] = $this->readModel->getUserAdvertisments();
-                $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
-            } else {
-                $this->$advertOption($idAdv);
+                $advertOption = 'userAdvert';
             }
+            $this->$advertOption($idAdv);
         } catch (ErrorException $e) {
             $param['errorWindow'] = $e->getMessage();
 
@@ -92,11 +88,6 @@ class UserPanelController extends AbstractController
         $uData = $this->readModel->getUserData();
 
         if ($uData) {
-
-            if (isset($uData['error'])) {
-                $param['errorWindow'] = 'Problem z pobraniem danych';
-            }
-
             $param['uData'] = $uData;
             try {
                 switch ($this->request->getParam('change')) {
@@ -108,9 +99,6 @@ class UserPanelController extends AbstractController
                     case 'phone':
                         $data = $this->changeUserData('phone');
                         $param = array_merge($param, $data);
-                        break;
-                    case ($uData[0] = 'error'):
-                        $param['errorWindow'] = 'Problem z pobraniem danych';
                         break;
                 }
             } catch (ErrorException $e) {
@@ -177,6 +165,17 @@ class UserPanelController extends AbstractController
             }
         }
         $this->view->render(self::DEFAULT_PAGE, 'deleteAcc', $param ?? []);
+    }
+
+    private function userAdvert($idAdv): void
+    {
+        $countOfAdverts = $this->readModel->getCountUserAdvertisments();
+        //when user doesn't have adverts don't get them from database
+        if ($countOfAdverts !== 0) {
+            $param['userAdverts'] = $this->readModel->getUserAdvertisments();
+        }
+
+        $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
     }
 
     //display details of chosen advertisement

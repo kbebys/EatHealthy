@@ -136,7 +136,7 @@ class ReadModel extends AbstractModel
             $stmt->execute();
 
             if ($stmt->rowCount() === 0) {
-                $result['error'] = true;
+                $result = [];
             } else {
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
             }

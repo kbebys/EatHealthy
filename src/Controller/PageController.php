@@ -7,8 +7,6 @@ namespace Market\Controller;
 use Market\Controller\AbstractController;
 use Market\Exception\ErrorException;
 
-session_start();
-
 //class uses to control what content will display
 class PageController extends AbstractController
 {
@@ -19,6 +17,8 @@ class PageController extends AbstractController
 
     public function login(): void
     {
+        $page = 'login';
+
         if ($this->request->postParam('save')) {
 
             $loginData = [
@@ -27,11 +27,15 @@ class PageController extends AbstractController
             ];
 
             if ($this->readModel->login($loginData) === true) {
-                $this->userPanel();
-                exit;
+                $page = 'userPanel';
+                $subpage = 'myAdv';
+
+                if ($this->readModel->getCountUserAdvertisments() !== 0) {
+                    $param['userAdverts'] = $this->readModel->getUserAdvertisments();
+                }
             }
         }
-        $this->view->render('login', '', $param ?? []);
+        $this->view->render($page, $subpage ?? '', $param ?? []);
     }
 
 
@@ -61,8 +65,8 @@ class PageController extends AbstractController
         //Check if user is logged
         $loggedin = $_SESSION['loggedin'] ?? '';
         if ($loggedin) {
-            (new UserPanelController($this->request))->userPanelRun();
-            // $this->UserPanelRun();
+            $action = 'UserPanelRun';
+            $this->$action();
         } else {
             $this->view->render('main');
         }
