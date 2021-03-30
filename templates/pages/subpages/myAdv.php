@@ -64,7 +64,9 @@ $action = '/?action=userPanel&subpage=myAdv';
             <div class="user-advert">
                 <div class="advert-data">
                     <div class="title"><?php echo $userAdvert['title'] ?></div>
-                    <div class="adv-content"><?php echo $userAdvert['content'] ?></div>
+                    <div class="adv-content">
+                        <?php echo $userAdvert['content'] ?>
+                    </div>
                     <div class="data">
                         <span><?php echo $userAdvert['place'] ?></span>
                         <span><?php echo $userAdvert['date'] ?></span>

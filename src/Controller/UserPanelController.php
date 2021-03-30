@@ -83,6 +83,7 @@ class UserPanelController extends PageController
         }
     }
 
+    //Controll adding and changing user data
     public function myData(): void
     {
         $uData = $this->readModel->getUserData();

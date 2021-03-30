@@ -47,6 +47,32 @@ class ReadModel extends AbstractModel
         return true;
     }
 
+    public function getAdvertisments(): array
+    {
+        try {
+            $query =  "SELECT a.id, a.title, a.place, a.date
+            FROM user AS u
+            INNER JOIN user_data AS ud ON u.id = ud.id_user
+            INNER JOIN advertisment AS a ON u.id = a.id_user";
+
+            $stmt = $this->conn->prepare($query);
+            // $stmt->bindParam(1, $id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            if ($stmt->rowCount() === 0) {
+                throw new ErrorException('Błąd pobierania ogłoszeń');
+            }
+
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $result;
+        } catch (ErrorException $e) {
+            throw new ErrorException($e->getMessage());
+        } catch (Throwable $e) {
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
+        }
+    }
+
     public function getUserAdvertisments(): array
     {
         $id = (int) $_SESSION['id'];

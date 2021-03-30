@@ -12,7 +12,8 @@ class PageController extends AbstractController
 {
     public function main(): void
     {
-        $this->view->render('main');
+        $param['adverts'] = $this->readModel->getAdvertisments();
+        $this->view->render('main', '', $param);
     }
 
     public function login(): void
