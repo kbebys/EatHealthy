@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Market\Model;
 
-use Error;
-use Exception;
 use Market\Exception\DatabaseException;
 use Market\Exception\ErrorException;
 use PDO;
@@ -47,7 +45,7 @@ class ReadModel extends AbstractModel
         return true;
     }
 
-    public function getAdvertisments(): array
+    public function getAdvertisements(): array
     {
         try {
             $query =  "SELECT a.id, a.title, a.place, a.date
@@ -56,7 +54,6 @@ class ReadModel extends AbstractModel
             INNER JOIN advertisment AS a ON u.id = a.id_user";
 
             $stmt = $this->conn->prepare($query);
-            // $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
 
             if ($stmt->rowCount() === 0) {
@@ -73,7 +70,33 @@ class ReadModel extends AbstractModel
         }
     }
 
-    public function getUserAdvertisments(): array
+    public function getAdvertisement(int $idAdvert): array
+    {
+        try {
+            $query = "SELECT a.title, a.content, a.place, a.date, ud.first_name, ud.phone_number
+            FROM user AS u
+            INNER JOIN user_data AS ud ON u.id = ud.id_user
+            INNER JOIN advertisment AS a ON u.id = a.id_user
+            WHERE a.id = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(1, $idAdvert, PDO::PARAM_INT);
+            $stmt->execute();
+
+            if ($stmt->rowCount() === 0) {
+                throw new ErrorException('Nie można odnaleźć ogłoszenia o takim id');
+            }
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $result;
+        } catch (ErrorException $e) {
+            throw new ErrorException($e->getMessage());
+        } catch (Throwable $e) {
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
+        }
+    }
+
+    public function getUserAdvertisements(): array
     {
         $id = (int) $_SESSION['id'];
         try {
@@ -101,7 +124,7 @@ class ReadModel extends AbstractModel
         }
     }
 
-    public function getCountUserAdvertisments(): int
+    public function getCountUserAdvertisements(): int
     {
         $id = (int) $_SESSION['id'];
         try {
@@ -123,7 +146,7 @@ class ReadModel extends AbstractModel
         }
     }
 
-    public function getUserAdvertisment(int $idAdv): array
+    public function getUserAdvertisement(int $idAdv): array
     {
         $id = (int) $_SESSION['id'];
 

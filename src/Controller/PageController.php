@@ -12,7 +12,15 @@ class PageController extends AbstractController
 {
     public function main(): void
     {
-        $param['adverts'] = $this->readModel->getAdvertisments();
+        $idAdvert = (int) $this->request->getParam('id');
+
+        //If user open the advertisement
+        if ($idAdvert) {
+            $param['advert'] = $this->readModel->getAdvertisement($idAdvert);
+        } else {
+            $param['adverts'] = $this->readModel->getAdvertisements();
+        }
+
         $this->view->render('main', '', $param);
     }
 
@@ -31,8 +39,8 @@ class PageController extends AbstractController
                 $page = 'userPanel';
                 $subpage = 'myAdv';
 
-                if ($this->readModel->getCountUserAdvertisments() !== 0) {
-                    $param['userAdverts'] = $this->readModel->getUserAdvertisments();
+                if ($this->readModel->getCountUserAdvertisements() !== 0) {
+                    $param['userAdverts'] = $this->readModel->getUserAdvertisements();
                 }
             }
         }

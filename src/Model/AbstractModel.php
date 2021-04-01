@@ -57,7 +57,7 @@ abstract class AbstractModel
     protected function checkUserExist(string $param, $user)
     {
         try {
-            $query = "SELECT id, password FROM user WHERE $param = ?";
+            $query = "SELECT id, password FROM user WHERE BINARY $param = ?";
             $stmt = $this->conn->prepare($query);
             if (is_int($user)) {
                 $stmt->bindParam(1, $user, PDO::PARAM_INT);
@@ -75,6 +75,7 @@ abstract class AbstractModel
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }
+
 
     protected function validateEmpty(array $data): bool
     {

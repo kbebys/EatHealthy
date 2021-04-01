@@ -74,9 +74,9 @@ class UserPanelController extends PageController
 
             //Code === 2 when error about editing advertisement is throwing
             if ($e->getCode() === 2) {
-                $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+                $param['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
             } else {
-                $param['userAdverts'] = $this->readModel->getUserAdvertisments();
+                $param['userAdverts'] = $this->readModel->getUserAdvertisements();
             }
 
             $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
@@ -170,10 +170,10 @@ class UserPanelController extends PageController
 
     private function userAdvert($idAdv): void
     {
-        $countOfAdverts = $this->readModel->getCountUserAdvertisments();
+        $countOfAdverts = $this->readModel->getCountUserAdvertisements();
         //when user doesn't have adverts don't get them from database
         if ($countOfAdverts !== 0) {
-            $param['userAdverts'] = $this->readModel->getUserAdvertisments();
+            $param['userAdverts'] = $this->readModel->getUserAdvertisements();
         }
 
         $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
@@ -182,13 +182,13 @@ class UserPanelController extends PageController
     //display details of chosen advertisement
     private function detailsUserAdvert(int $idAdv): void
     {
-        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+        $param['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
         $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
     }
 
     private function editUserAdvert(int $idAdv): void
     {
-        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+        $param['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
 
         //It is flag uses to display editing view
         $param['edit'] = true;
@@ -204,7 +204,7 @@ class UserPanelController extends PageController
             if ($this->updateModel->changeAdvertisment($advData, $idAdv) === true) {
                 $param['edit'] = null;
                 $param['messageWindow'] = 'Twoje ogłoszenie zostało zmienione';
-                $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+                $param['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
             }
         }
         $this->view->render(self::DEFAULT_PAGE, self::DEFAULT_USER_ADVERT, $param ?? []);
@@ -215,13 +215,13 @@ class UserPanelController extends PageController
         //Confirmation if User really wants to delete advertisement
         $ifDelete = $this->request->getParam('question');
 
-        $param['userAdvert'] = $this->readModel->getUserAdvertisment($idAdv);
+        $param['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
 
         if ($ifDelete === 'yes') {
             if ($this->deleteModel->deleteUserAdvertisment($idAdv) === true) {
                 $param = [
                     'messageWindow' => 'Ogłoszenie zostało usunięte',
-                    'userAdverts' => $this->readModel->getUserAdvertisments()
+                    'userAdverts' => $this->readModel->getUserAdvertisements()
                 ];
             }
         } elseif ($ifDelete === 'no') {

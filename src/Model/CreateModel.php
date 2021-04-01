@@ -37,6 +37,11 @@ class CreateModel extends AbstractModel
             throw new ErrorException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
         }
 
+        //Check i email contains uppercase
+        if (preg_match('/[A-Z]/', $email)) {
+            throw new ErrorException('Niepoprawny adres email');
+        }
+
         //Email validation
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new ErrorException('Niepoprawny adres email');

@@ -241,7 +241,7 @@ main .logo {
     text-transform: uppercase;
 }
 
-.advert .advert-data .content {
+.advert .advert-data .adv-content {
     padding: 0 0 10px 10px;
     border-bottom: 1px solid #000;
     margin-bottom: 10px;
@@ -253,27 +253,15 @@ main .logo {
     border-left: 1px solid #000;
 }
 
+
 .advert .options {
     display: flex;
     flex-direction: column;
+    align-self: center;
 }
 
 .advert .options a {
     margin: 10px 10px 10px;
-    text-align: center;
-    font-size: 1.5rem;
-}
-
-.adverts .question {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.adverts .question a {
-    align-self: center;
-    min-width: 50px;
-    margin: 5px 0;
     text-align: center;
     font-size: 1.5rem;
 }
