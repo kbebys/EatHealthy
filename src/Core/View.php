@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Market;
+namespace Market\Core;
 
 class View
 {

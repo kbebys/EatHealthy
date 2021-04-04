@@ -10,12 +10,15 @@ use Market\Model\CreateModel;
 use Market\Model\DeleteModel;
 use Market\Model\ReadModel;
 use Market\Model\UpdateModel;
-use Market\Request;
-use Market\View;
+use Market\Core\Request;
+use Market\Core\View;
 
 abstract class AbstractController
 {
     protected const DEFAULT_ACTION = 'main';
+    protected string $page;
+    protected string $subpage = '';
+    protected array $params = [];
 
     private static array $configuration = [];
 
@@ -32,41 +35,20 @@ abstract class AbstractController
         self::$configuration = $configuration;
     }
 
-    public function __construct(Request $request)
+    public function __construct(string $page)
     {
         if (empty(self::$configuration['db'])) {
             throw new Exception("Błąd konfiguracji");
         }
 
-        // self::$nameOfController = 'PageController';
+        $this->page = $page;
 
         $this->createModel = new CreateModel(self::$configuration['db']);
         $this->readModel = new ReadModel(self::$configuration['db']);
         $this->updateModel = new UpdateModel(self::$configuration['db']);
         $this->deleteModel = new DeleteModel(self::$configuration['db']);
 
-        $this->request = $request;
+        $this->request = new Request();
         $this->view = new View();
-    }
-
-    //function to control content of pages
-    public function run(): void
-    {
-        try {
-            $action = $this->action();
-            //if exist given action variable 
-            if (!method_exists($this, $action)) {
-                $action = self::DEFAULT_ACTION;
-            }
-            $this->$action();
-        } catch (ErrorException $e) {
-            $param['error'] = $e->getMessage();
-            $this->view->render($action, '', $param ?? []);
-        }
-    }
-
-    private function action(): string
-    {
-        return $this->request->getParam('action', self::DEFAULT_ACTION);
     }
 }

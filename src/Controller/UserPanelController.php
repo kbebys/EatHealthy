@@ -7,21 +7,27 @@ namespace Market\Controller;
 use Market\Exception\ErrorException;
 
 //The class handles user panel window
-class UserPanelController extends PageController
+class UserPanelController extends AbstractController
 {
     private const DEFAULT_PAGE = 'userPanel';
     private const DEFAULT_SUBPAGE = 'myAdv';
     private const DEFAULT_USER_ADVERT = 'myAdv';
 
     //Which function will be called
-    public function userPanelRun(): void
+    public function run(): void
     {
-        try {
-            $subpage = $this->subpage();
+        //If someone try to enter user panel without login
+        if (!isset($_SESSION['loggedin'])) {
+            header("Location: /?action=main");
+            exit;
+        }
 
-            if (!method_exists($this, $subpage)) {
-                $subpage = self::DEFAULT_SUBPAGE;
-            }
+        $subpage = $this->subpage();
+
+        if (!method_exists($this, $subpage)) {
+            $subpage = self::DEFAULT_SUBPAGE;
+        }
+        try {
             $this->$subpage();
         } catch (ErrorException $e) {
             //Handle Errors throwing during exchange data between database and page

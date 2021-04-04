@@ -13,24 +13,21 @@ spl_autoload_register(function (string $classNamespace) {
 require_once("src/Utils/debug.php");
 $configuration = require_once("config/config.php");
 
-use Market\Controller\PageController;
 use Market\Controller\AbstractController;
-use Market\Controller\UserPanelController;
+use Market\Core\Controller;
 use Market\Exception\DatabaseException;
-use Market\Request;
 
 session_start();
-
-$request = new Request($_GET, $_POST);
 
 try {
     AbstractController::initConfiguration($configuration);
 
-    if (isset($_SESSION['loggedin'])) {
-        (new UserPanelController($request))->run();
-    } else {
-        (new PageController($request))->run();
-    }
+    // if (isset($_SESSION['loggedin'])) {
+    //     (new UserPanelController($request))->run();
+    // } else {
+    //     (new PageController($request))->run();
+    // }
+    (new Controller('main'))->chooseAction();
 } catch (DatabaseException $e) {
     echo '<h3>Wystąpił problem z Aplikacją. Spróbuj ponownie za chwilę.<h3>';
     echo $e->getMessage();
