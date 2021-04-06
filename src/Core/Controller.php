@@ -15,9 +15,9 @@ class Controller extends AbstractController
     {
         //set list of avaiable controller classes
         //Each class is called like page
-        $this->classList = $this->request->getPagesList();
+        $this->classList = $this->request->getPagesList('\..\..\templates\pages');
 
-        $page = $this->action();
+        $page = $this->page();
 
         if ($page === 'logout') {
             $this->logout();
@@ -27,21 +27,76 @@ class Controller extends AbstractController
             $page = $this->page;
         }
 
+        $this->page = $page;
+
+        if ($page === 'userPanel') {
+            $this->chooseActionForUserPanael();
+            exit;
+        }
+
         $class = 'Market\\Controller\\' . $page . 'Controller';
-        //set default page for each controller
-        dump($this->page);
+
         try {
-            (new $class($page))->run();
+            (new $class($this->page))->run();
         } catch (ErrorException $e) {
-            $param['error'] = $e->getMessage();
-            $this->view->render($page, '', $param ?? []);
+            $this->params['error'] = $e->getMessage();
+            $this->view->render($this->page, $this->subpage, $this->params);
         }
     }
 
-    private function action(): string
+    public function chooseActionForUserPanael(): void
     {
-        return $this->request->getParam('action', self::DEFAULT_ACTION);
+        //If someone try to enter user panel without login
+        if (!isset($_SESSION['loggedin'])) {
+            header("Location: /?action=main");
+            exit;
+        }
+
+        //default value for subpage
+        $this->subpage = 'myAdv';
+
+        $this->classList = $this->request->getPagesList('\..\..\templates\pages\subpages');
+
+        $subpage = $this->subpage();
+
+        if (!$this->ifClassExist($subpage)) {
+            $subpage = $this->subpage;
+        }
+
+        $this->subpage = $subpage;
+
+        $class = 'Market\\Controller\\UserPanelControllers\\' . $subpage . 'Controller';
+
+        try {
+            (new $class($this->page))->run();
+        } catch (ErrorException $e) {
+            //Handle Errors throwing during exchange data between database and page
+            $this->params['errorWindow'] = $e->getMessage();
+            $this->view->render($this->page, $this->subpage, $this->params);
+        }
     }
+
+    //Get information wich page chose user
+    private function page(): string
+    {
+        return $this->request->getParam('action', $this->page);
+    }
+
+    //Get information wich subpage chose user
+    private function subpage(): string
+    {
+        return $this->request->getParam('subpage', $this->subpage);
+    }
+
+    // //$kindOfPage -> subpage or page
+    // private function chooseNameOfclass(string $name, string $kindOfPage): string
+    // {
+    //     if (!$this->ifClassExist($name)) {
+    //         $name = $this->$kindOfPage;
+    //     }
+
+    //     return $name;
+    // }
 
     private function ifClassExist($className): bool
     {
@@ -52,12 +107,5 @@ class Controller extends AbstractController
             }
         }
         return $exist;
-    }
-
-    private function logout(): void
-    {
-        session_destroy();
-        header("Location: /?action=main");
-        exit;
     }
 }

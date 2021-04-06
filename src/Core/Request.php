@@ -26,13 +26,12 @@ class Request
         return $this->post[$name] ?? $default;
     }
 
-    public function getPagesList(): array
+    public function getPagesList(string $dir): array
     {
-        $dir = __DIR__ . '\..\..\templates\pages';
+        $dir = __DIR__ . $dir;
         $filesNames = scandir($dir);
 
-        foreach ($filesNames as $key => $value) {
-
+        foreach ($filesNames as $value) {
             if ($value !== '.' && $value !== '..' && $value !== 'subpages') {
                 $filesList[] = str_replace('.php', '', $value);
             }

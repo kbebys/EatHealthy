@@ -15,12 +15,13 @@ use Market\Core\View;
 
 abstract class AbstractController
 {
+    private static array $configuration = [];
+
     protected const DEFAULT_ACTION = 'main';
+
     protected string $page;
     protected string $subpage = '';
     protected array $params = [];
-
-    private static array $configuration = [];
 
     protected CreateModel $createModel;
     protected ReadModel $readModel;
@@ -50,5 +51,12 @@ abstract class AbstractController
 
         $this->request = new Request();
         $this->view = new View();
+    }
+
+    protected function logout(): void
+    {
+        session_destroy();
+        header("Location: /?action=main");
+        exit;
     }
 }
