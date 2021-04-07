@@ -12,23 +12,33 @@ class AddAdvController extends AbstractController
     {
         $this->subpage = 'addAdv';
         //If user did not add its personal data
-        if (!$this->readModel->getUserData()) {
-            $this->subpage = 'myData';
-        }
+        $this->IfUserDataNotExist();
 
         $savePost = $this->request->postParam('save');
         if ($savePost) {
-            $advData = [
-                'title' => $this->request->postParam('title'),
-                'kind' => $this->request->postParam('kind'),
-                'content' => $this->request->postParam('content'),
-                'place' => $this->request->postParam('place')
-            ];
-
-            if ($this->createModel->addAdvertisment($advData) === true) {
-                $this->params['messageWindow'] = 'Dodałeś ogłoszenie';
-            }
+            $this->addNewAdvertisement();
         }
         $this->view->render($this->page, $this->subpage, $this->params);
+    }
+
+    private function IfUserDataNotExist(): void
+    {
+        if (!$this->readModel->getUserData()) {
+            $this->subpage = 'myData';
+        }
+    }
+
+    private function addNewAdvertisement(): void
+    {
+        $advData = [
+            'title' => $this->request->postParam('title'),
+            'kind' => $this->request->postParam('kind'),
+            'content' => $this->request->postParam('content'),
+            'place' => $this->request->postParam('place')
+        ];
+
+        if ($this->createModel->addAdvertisment($advData) === true) {
+            $this->params['messageWindow'] = 'Dodałeś ogłoszenie';
+        }
     }
 }

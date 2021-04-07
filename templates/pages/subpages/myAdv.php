@@ -6,7 +6,7 @@ if (empty($params['access'])) {
 
 $userAdverts = $params['userAdverts'] ?? [];
 $userAdvert = $params['userAdvert'] ?? [];
-$kindOfAdv = $params['kind_of_transaction'] ?? 'sell';
+$kindOfAdv = $userAdvert['kind_of_transaction'] ?? 'sell';
 
 $delete = $params['delete'] ?? [];
 $editAdv = $params['edit'] ?? [];
@@ -88,6 +88,6 @@ $action = '/?action=userPanel&subpage=myAdv';
             break;
 
         default: ?>
-            <p class="message">Nie masz jeszcze ogłoszeń</p>
+            <p class="message">Nie masz ogłoszeń</p>
     <?php endswitch ?>
 </div>

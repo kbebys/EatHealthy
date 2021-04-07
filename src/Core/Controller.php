@@ -13,7 +13,7 @@ class Controller extends AbstractController
 
     public function chooseAction(): void
     {
-        //set list of avaiable controller classes
+        //Set list of avaiable controller classes
         //Each class is called like page
         $this->classList = $this->request->getPagesList('\..\..\templates\pages');
 
@@ -87,16 +87,6 @@ class Controller extends AbstractController
     {
         return $this->request->getParam('subpage', $this->subpage);
     }
-
-    // //$kindOfPage -> subpage or page
-    // private function chooseNameOfclass(string $name, string $kindOfPage): string
-    // {
-    //     if (!$this->ifClassExist($name)) {
-    //         $name = $this->$kindOfPage;
-    //     }
-
-    //     return $name;
-    // }
 
     private function ifClassExist($className): bool
     {

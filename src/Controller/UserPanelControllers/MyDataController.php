@@ -24,6 +24,7 @@ class MyDataController extends AbstractController
                 $this->view->render($this->page, $this->subpage, $this->params);
                 exit;
             }
+            //If user don't have personal data in db
         } else {
 
             if ($this->request->postParam('save')) {

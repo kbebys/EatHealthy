@@ -36,7 +36,6 @@ class DeleteModel extends AbstractModel
     public function deleteUserAdvertisment(int $idAdv): bool
     {
         $id = (int) $_SESSION['id'];
-        $idAdv = $idAdv;
 
         try {
             $query = "DELETE FROM advertisment WHERE id = ? AND id_user = ? LIMIT 1";

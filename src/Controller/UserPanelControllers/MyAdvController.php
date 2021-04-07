@@ -9,56 +9,53 @@ use Market\Exception\ErrorException;
 
 class MyAdvController extends AbstractController
 {
+    private int $idAdv;
+    private string $advertOption = 'getUserAdverts';
+
     public function run(): void
     {
         $this->subpage = 'myAdv';
+
+        $this->chosenOption();
+
+        $this->idAdv = (int) $this->request->getParam('id');
+
+
         try {
-
-            $advertOption = $this->userAdvertOption();
-            $advertOption = $advertOption . 'UserAdvert';
-
-            $idAdv = (int) $this->request->getParam('id');
-
-            if (!method_exists($this, $advertOption)) {
-                $advertOption = 'userAdvert';
-            }
-            $this->$advertOption($idAdv);
+            $this->{$this->advertOption}();
         } catch (ErrorException $e) {
             $this->params['errorWindow'] = $e->getMessage();
 
             //Code === 2 when error about editing advertisement is throwing
             if ($e->getCode() === 2) {
-                $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
+                $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($this->idAdv);
             } else {
                 $this->params['userAdverts'] = $this->readModel->getUserAdvertisements();
             }
-
-            $this->view->render($this->page, $this->subpage, $this->params);
         }
-    }
-
-    //display details of chosen advertisement
-    private function detailsUserAdvert(int $idAdv): void
-    {
-        $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
         $this->view->render($this->page, $this->subpage, $this->params);
     }
 
-
-    private function userAdvert($idAdv): void
+    //get all of the user advertisement
+    private function getUserAdverts(): void
     {
         $countOfAdverts = $this->readModel->getCountUserAdvertisements();
         //when user doesn't have adverts don't get them from database
         if ($countOfAdverts !== 0) {
             $this->params['userAdverts'] = $this->readModel->getUserAdvertisements();
         }
-
-        $this->view->render($this->page, $this->subpage, $this->params);
     }
 
-    private function editUserAdvert(int $idAdv): void
+    //display details of chosen advertisement
+    private function detailsUserAdvert(): void
     {
-        $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
+        $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($this->idAdv);
+    }
+
+
+    private function editUserAdvert(): void
+    {
+        $this->detailsUserAdvert();
 
         //It is flag uses to display editing view
         $this->params['edit'] = true;
@@ -71,28 +68,25 @@ class MyAdvController extends AbstractController
                 'place' => $this->request->postParam('place'),
             ];
 
-            if ($this->updateModel->changeAdvertisment($advData, $idAdv) === true) {
+            if ($this->updateModel->changeAdvertisment($advData, $this->idAdv) === true) {
                 $this->params['edit'] = null;
                 $this->params['messageWindow'] = 'Twoje ogłoszenie zostało zmienione';
-                $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
+                $this->detailsUserAdvert();
             }
         }
-        $this->view->render($this->page, $this->subpage, $this->params);
     }
 
-    private function deleteUserAdvert(int $idAdv): void
+    private function deleteUserAdvert(): void
     {
         //Confirmation if User really wants to delete advertisement
         $ifDelete = $this->request->getParam('question');
 
-        $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
+        $this->detailsUserAdvert();
 
         if ($ifDelete === 'yes') {
-            if ($this->deleteModel->deleteUserAdvertisment($idAdv) === true) {
-                $this->params = [
-                    'messageWindow' => 'Ogłoszenie zostało usunięte',
-                    'userAdverts' => $this->readModel->getUserAdvertisements()
-                ];
+            if ($this->deleteModel->deleteUserAdvertisment($this->idAdv) === true) {
+                $this->params = ['messageWindow' => 'Ogłoszenie zostało usunięte'];
+                $this->getUserAdverts();
             }
         } elseif ($ifDelete === 'no') {
             //Situation when user resign from deleting 
@@ -101,9 +95,18 @@ class MyAdvController extends AbstractController
             //situation before confirmation. When User clicked delete
             $this->params['delete'] = true;
         }
-        $this->view->render($this->page, $this->subpage, $this->params);
     }
 
+    //Which option user choose
+    private function chosenOption(): void
+    {
+        $advertOption = $this->userAdvertOption();
+        $advertOption = $advertOption . 'UserAdvert';
+
+        if (method_exists($this, $advertOption)) {
+            $this->advertOption = $advertOption;
+        }
+    }
     //Get what option chose User in my advertisments subpage
     private function userAdvertOption(): string
     {
