@@ -6,12 +6,15 @@ namespace Market\Core;
 
 use Market\Controller\AbstractController;
 use Market\Exception\ErrorException;
+use Market\Exception\PageValidateException;
+use Market\Exception\SubpageValidateException;
+use Market\Exception\ValidateException;
 
 class Controller extends AbstractController
 {
     protected array $classList = [];
 
-    public function chooseAction(): void
+    public function run(): void
     {
         //Set list of avaiable controller classes
         //Each class is called like page
@@ -30,21 +33,23 @@ class Controller extends AbstractController
         $this->page = $page;
 
         if ($page === 'userPanel') {
-            $this->chooseActionForUserPanael();
+            $this->runUserPanael();
             exit;
         }
 
         $class = 'Market\\Controller\\' . $page . 'Controller';
 
-        try {
-            (new $class($this->page))->run();
-        } catch (ErrorException $e) {
-            $this->params['error'] = $e->getMessage();
-            $this->view->render($this->page, $this->subpage, $this->params);
-        }
+        $this->catchValidateException(new $class($this->page));
+
+        // try {
+        //     (new $class($this->page))->run();
+        // } catch (ValidateException $e) {
+        //     $this->params['error'] = $e->getMessage();
+        //     $this->view->render($this->page, $this->subpage, $this->params);
+        // }
     }
 
-    public function chooseActionForUserPanael(): void
+    public function runUserPanael(): void
     {
         //If someone try to enter user panel without login
         if (!isset($_SESSION['loggedin'])) {
@@ -67,11 +72,57 @@ class Controller extends AbstractController
 
         $class = 'Market\\Controller\\UserPanelControllers\\' . $subpage . 'Controller';
 
+        $this->catchValidateException(new $class($this->page));
+
+        // try {
+        //     (new $class($this->page))->run();
+        // } catch (PageValidateException $e) {
+        //     //Handle Errors throwing during exchange data between database and page
+        //     $this->params['errorWindow'] = $e->getMessage();
+        //     $this->view->render($this->page, $this->subpage, $this->params);
+        // } catch (SubpageValidateException $e) {
+        //     $this->params['errorWindow'] = $e->getMessage();
+
+        //     //errors about myAdv subpage
+        //     if ($this->subpage === 'myAdv') {
+        //         //Code === 2 when error about editing advertisement is throwing
+        //         if ($e->getCode() === 2) {
+        //             $idAdv = (int) $this->request->getParam('id');
+        //             $this->params['edit'] = true;
+        //             $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
+        //         } else {
+        //             $this->params['userAdverts'] = $this->readModel->getUserAdvertisements();
+        //         }
+        //     }
+        //     $this->view->render($this->page, $this->subpage, $this->params);
+        // }
+    }
+
+    public function catchValidateException(AbstractController $className)
+    {
         try {
-            (new $class($this->page))->run();
-        } catch (ErrorException $e) {
+            $className->run();
+        } catch (PageValidateException $e) {
             //Handle Errors throwing during exchange data between database and page
             $this->params['errorWindow'] = $e->getMessage();
+            $this->view->render($this->page, $this->subpage, $this->params);
+        } catch (SubpageValidateException $e) {
+            $this->params['errorWindow'] = $e->getMessage();
+
+            //errors about myAdv subpage
+            if ($this->subpage === 'myAdv') {
+                //Code === 2 when error about editing advertisement is throwing
+                if ($e->getCode() === 2) {
+                    $idAdv = (int) $this->request->getParam('id');
+                    $this->params['edit'] = true;
+                    $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
+                } else {
+                    $this->params['userAdverts'] = $this->readModel->getUserAdvertisements();
+                }
+            }
+            $this->view->render($this->page, $this->subpage, $this->params);
+        } catch (ValidateException $e) {
+            $this->params['error'] = $e->getMessage();
             $this->view->render($this->page, $this->subpage, $this->params);
         }
     }

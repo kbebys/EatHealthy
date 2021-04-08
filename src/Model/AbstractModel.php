@@ -6,7 +6,8 @@ namespace Market\Model;
 
 use Exception;
 use Market\Exception\DatabaseException;
-use Market\Exception\ErrorException;
+use Market\Exception\PageValidateException;
+use Market\Exception\SubpageValidateException;
 use PDO;
 use PDOException;
 use Throwable;
@@ -92,11 +93,11 @@ abstract class AbstractModel
         $uName = trim($uName);
 
         if (empty($uName)) {
-            throw new ErrorException('Wprowadź dane do formularza');
+            throw new SubpageValidateException('Wprowadź dane do formularza');
         }
 
         if (preg_match('/^[a-zA-ZżźćńółęąśŻŹĆĄŚĘŁÓŃ]+$/', $uName) == 0) {
-            throw new ErrorException('Niedozwolone znaki w imieniu');
+            throw new SubpageValidateException('Niedozwolone znaki w imieniu');
         }
 
         //string to lowercase
@@ -115,11 +116,11 @@ abstract class AbstractModel
         $phone = str_replace(['-', ' '], '', $phone);
 
         if (empty($phone)) {
-            throw new ErrorException('Wprowadź dane do formularza');
+            throw new SubpageValidateException('Wprowadź dane do formularza');
         }
 
         if (preg_match('/^[0-9]{9}$/', $phone) == 0) {
-            throw new ErrorException('Nieprawidłowy numer telefonu');
+            throw new SubpageValidateException('Nieprawidłowy numer telefonu');
         }
 
         return (int) $phone;
@@ -132,12 +133,12 @@ abstract class AbstractModel
         //Passwor only can contain this char
         $passValidPattern2 = '/^[a-zA-Z0-9!@#$%^&*-]+$/';
         if (preg_match($passValidPattern1, $pass) == 0) {
-            throw new ErrorException('Podane hasło nie spełnia wymogów!!');
+            throw new PageValidateException('Podane hasło nie spełnia wymogów!!');
         } elseif (preg_match($passValidPattern2, $pass) == 0) {
-            throw new ErrorException('Podane hasło zawiera niedozwolone znaki!!');
+            throw new PageValidateException('Podane hasło zawiera niedozwolone znaki!!');
         } //checking if both passwords are the same
         elseif ($pass !== $passR) {
-            throw new ErrorException('podane hasła nie są takie same!!');
+            throw new PageValidateException('podane hasła nie są takie same!!');
         } else {
             return true;
         }

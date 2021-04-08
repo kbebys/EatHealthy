@@ -27,7 +27,7 @@ try {
     // } else {
     //     (new PageController($request))->run();
     // }
-    (new Controller('main'))->chooseAction();
+    (new Controller('main'))->run();
 } catch (DatabaseException $e) {
     echo '<h3>Wystąpił problem z Aplikacją. Spróbuj ponownie za chwilę.<h3>';
     echo $e->getMessage();

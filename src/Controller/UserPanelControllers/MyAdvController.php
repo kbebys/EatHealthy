@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Market\Controller\UserPanelControllers;
 
 use Market\Controller\AbstractController;
-use Market\Exception\ErrorException;
+use Market\Exception\SubpageValidateException;
 
 class MyAdvController extends AbstractController
 {
     private int $idAdv;
+
     private string $advertOption = 'getUserAdverts';
 
     public function run(): void
@@ -20,19 +21,8 @@ class MyAdvController extends AbstractController
 
         $this->idAdv = (int) $this->request->getParam('id');
 
+        $this->{$this->advertOption}();
 
-        try {
-            $this->{$this->advertOption}();
-        } catch (ErrorException $e) {
-            $this->params['errorWindow'] = $e->getMessage();
-
-            //Code === 2 when error about editing advertisement is throwing
-            if ($e->getCode() === 2) {
-                $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($this->idAdv);
-            } else {
-                $this->params['userAdverts'] = $this->readModel->getUserAdvertisements();
-            }
-        }
         $this->view->render($this->page, $this->subpage, $this->params);
     }
 

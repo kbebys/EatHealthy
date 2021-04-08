@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Market\Model;
 
 use Market\Exception\DatabaseException;
-use Market\Exception\ErrorException;
+use Market\Exception\PageValidateException;
+use Market\Exception\SubpageValidateException;
+use Market\Exception\ValidateException;
 use PDO;
 use Throwable;
 
@@ -18,7 +20,7 @@ class ReadModel extends AbstractModel
         $data = array_map('trim', $data);
         //check if given data are empty
         if ($this->validateEmpty($data)) {
-            throw new ErrorException('Wprowadź dane logowania');
+            throw new ValidateException('Wprowadź dane logowania');
         }
 
         $login = $data['login'];
@@ -26,13 +28,13 @@ class ReadModel extends AbstractModel
 
         $stmt = $this->checkUserExist('login', $login);
         if (!$stmt) {
-            throw new ErrorException('Niepoprawna nazwa użytkownika lub hasło');
+            throw new ValidateException('Niepoprawna nazwa użytkownika lub hasło');
         }
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         //veryfing passwords, both given from user and hashed from db
         if (!password_verify($password, $result['password'])) {
-            throw new ErrorException('Niepoprawna nazwa użytkownika lub hasło');
+            throw new ValidateException('Niepoprawna nazwa użytkownika lub hasło');
         }
 
         //Creating session to know the user is logged in
@@ -57,14 +59,14 @@ class ReadModel extends AbstractModel
             $stmt->execute();
 
             if ($stmt->rowCount() === 0) {
-                throw new ErrorException('Błąd pobierania ogłoszeń');
+                throw new ValidateException('Błąd pobierania ogłoszeń');
             }
 
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             return $result;
-        } catch (ErrorException $e) {
-            throw new ErrorException($e->getMessage());
+        } catch (ValidateException $e) {
+            throw new ValidateException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -83,14 +85,14 @@ class ReadModel extends AbstractModel
             $stmt->execute();
 
             if ($stmt->rowCount() === 0) {
-                throw new ErrorException('Nie można odnaleźć ogłoszenia o takim id');
+                throw new ValidateException('Nie można odnaleźć ogłoszenia o takim id');
             }
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             return $result;
-        } catch (ErrorException $e) {
-            throw new ErrorException($e->getMessage());
+        } catch (ValidateException $e) {
+            throw new ValidateException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -111,14 +113,14 @@ class ReadModel extends AbstractModel
             $stmt->execute();
 
             if ($stmt->rowCount() === 0) {
-                throw new ErrorException('Błąd pobierania ogłoszeń');
+                throw new SubpageValidateException('Błąd pobierania ogłoszeń');
             }
 
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             return $result;
-        } catch (ErrorException $e) {
-            throw new ErrorException($e->getMessage());
+        } catch (SubpageValidateException $e) {
+            throw new SubpageValidateException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -160,14 +162,14 @@ class ReadModel extends AbstractModel
             $stmt->execute();
 
             if ($stmt->rowCount() === 0) {
-                throw new ErrorException('Nie można odnaleźć ogłoszenia o takim id');
+                throw new SubpageValidateException('Nie można odnaleźć ogłoszenia o takim id');
             }
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             return $result;
-        } catch (ErrorException $e) {
-            throw new ErrorException($e->getMessage());
+        } catch (SubpageValidateException $e) {
+            throw new SubpageValidateException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -202,19 +204,19 @@ class ReadModel extends AbstractModel
         $password = trim($password);
 
         if (empty($password)) {
-            throw new ErrorException('Wprowadź hasło');
+            throw new PageValidateException('Wprowadź hasło');
         }
 
         $id = (int) $_SESSION['id'];
         $stmt = $this->checkUserExist('id', $id);
         if (!$stmt) {
-            throw new ErrorException('Problem z pobraniem hasła');
+            throw new PageValidateException('Problem z pobraniem hasła');
         }
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!password_verify($password, $result['password'])) {
-            throw new ErrorException('Podałeś nieprawidłowe hasło');
+            throw new PageValidateException('Podałeś nieprawidłowe hasło');
         }
 
         return true;

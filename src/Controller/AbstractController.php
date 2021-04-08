@@ -17,8 +17,6 @@ abstract class AbstractController
 {
     private static array $configuration = [];
 
-    protected const DEFAULT_ACTION = 'main';
-
     protected string $page;
     protected string $subpage = '';
     protected array $params = [];
@@ -52,6 +50,8 @@ abstract class AbstractController
         $this->request = new Request();
         $this->view = new View();
     }
+
+    abstract public function run(): void;
 
     protected function logout(): void
     {

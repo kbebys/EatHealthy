@@ -6,6 +6,7 @@ namespace Market\Controller\UserPanelControllers;
 
 use Market\Controller\AbstractController;
 use Market\Exception\ErrorException;
+use Market\Exception\SubpageValidateException;
 
 class MyDataController extends AbstractController
 {
@@ -17,13 +18,13 @@ class MyDataController extends AbstractController
         //If user already added personal data
         if ($uData) {
             $this->params['uData'] = $uData;
-            try {
-                $this->changeUserPersonalData();
-            } catch (ErrorException $e) {
-                $this->params['errorWindow'] = $e->getMessage();
-                $this->view->render($this->page, $this->subpage, $this->params);
-                exit;
-            }
+            // try {
+            $this->changeUserPersonalData();
+            // } catch (SubpageValidateException $e) {
+            //     $this->params['errorWindow'] = $e->getMessage();
+            //     $this->view->render($this->page, $this->subpage, $this->params);
+            //     exit;
+            // }
             //If user don't have personal data in db
         } else {
 

@@ -18,6 +18,6 @@ if (empty($params['access'])) {
     <label for="content">Treść ogłoszenia:</label>
     <textarea name="content" id="content" cols="100" rows="5" required></textarea>
     <label for="place">Miejscowość</label>
-    <input type="text" name="place" id="place" maxlength="100">
+    <input type="text" name="place" id="place" maxlength="40">
     <input type="submit" name="save" value="Wystaw">
 </form>

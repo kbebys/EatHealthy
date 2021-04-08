@@ -6,7 +6,9 @@ namespace Market\Model;
 
 use Exception;
 use Market\Exception\DatabaseException;
-use Market\Exception\ErrorException;
+use Market\Exception\PageValidateException;
+use Market\Exception\SubpageValidateException;
+use Market\Exception\ValidateException;
 use PDO;
 use Throwable;
 
@@ -19,7 +21,7 @@ class CreateModel extends AbstractModel
         $data = array_map('trim', $data);
         //check if given data are empty
         if ($this->validateEmpty($data)) {
-            throw new ErrorException('Wprowadź wszystkie dane do formularza');
+            throw new ValidateException('Wprowadź wszystkie dane do formularza');
         }
 
         $login = $data['login'];
@@ -29,32 +31,32 @@ class CreateModel extends AbstractModel
 
         //Username characters validation
         if (preg_match('/^[a-zA-Z0-9]+$/', $login) == 0) {
-            throw new ErrorException('Niepoprawna nazwa użytkownika');
+            throw new ValidateException('Niepoprawna nazwa użytkownika');
         }
 
         $passValid = $this->validatePasswords($password, $passRepeat);
         if ($passValid !== true) {
-            throw new ErrorException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
+            throw new ValidateException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
         }
 
         //Check i email contains uppercase
         if (preg_match('/[A-Z]/', $email)) {
-            throw new ErrorException('Niepoprawny adres email');
+            throw new ValidateException('Niepoprawny adres email');
         }
 
         //Email validation
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new ErrorException('Niepoprawny adres email');
+            throw new ValidateException('Niepoprawny adres email');
         }
 
         $stmt = $this->checkUserExist('login', $login);
         if ($stmt !== false) {
-            throw new ErrorException('Użytkownik o tej nazwie istnieje');
+            throw new ValidateException('Użytkownik o tej nazwie istnieje');
         }
 
         $stmt = $this->checkUserExist('email', $email);
         if ($stmt !== false) {
-            throw new ErrorException('Konto z tym adresem email już istnieje');
+            throw new ValidateException('Konto z tym adresem email już istnieje');
         }
 
         //hash password
@@ -85,7 +87,7 @@ class CreateModel extends AbstractModel
         $advData = array_map('trim', $advData);
 
         if ($this->validateEmpty($advData)) {
-            throw new ErrorException('Uzupełnij wszytkie pola');
+            throw new PageValidateException('Uzupełnij wszytkie pola');
         }
 
         $title = $advData['title'];
@@ -95,15 +97,15 @@ class CreateModel extends AbstractModel
         $id = (int) $_SESSION['id'];
 
         if (strlen($title) > 150) {
-            throw new ErrorException('Wpisałeś za długi tytuł');
+            throw new PageValidateException('Wpisałeś za długi tytuł');
         }
 
         if ($kind !== 'sell' && $kind !== 'buy') {
-            throw new ErrorException('Błąd wysyłania danych. Spróbuj jeszce raz');
+            throw new PageValidateException('Błąd wysyłania danych. Spróbuj jeszce raz');
         }
 
-        if (strlen($place) > 150) {
-            throw new ErrorException('Wpisałeś za długi tytuł');
+        if (strlen($place) > 40) {
+            throw new PageValidateException('Wpisałeś za długi tytuł');
         }
 
         try {
@@ -118,12 +120,12 @@ class CreateModel extends AbstractModel
             $stmt->execute();
 
             if ($stmt->rowCount() !== 1) {
-                throw new ErrorException('Błąd dodawania danych');
+                throw new PageValidateException('Błąd dodawania danych');
             }
 
             return true;
-        } catch (ErrorException $e) {
-            throw new ErrorException($e->getMessage());
+        } catch (PageValidateException $e) {
+            throw new PageValidateException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -134,12 +136,12 @@ class CreateModel extends AbstractModel
     {
         $uName = $this->validateName($uData['uName']);
         if (!$uName) {
-            throw new Exception('Problem z odczytaniem wartości. Spróbuj jeszce raz');
+            throw new SubpageValidateException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
         }
 
         $phone = $this->validatePhone($uData['phone']);
         if (!$phone) {
-            throw new Exception('Problem z odczytaniem wartości. Spróbuj jeszce raz');
+            throw new SubpageValidateException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
         }
 
         $id = (int) $_SESSION['id'];
@@ -153,12 +155,12 @@ class CreateModel extends AbstractModel
             $stmt->execute();
 
             if ($stmt->rowCount() !== 1) {
-                throw new ErrorException('Błąd dodawania danych');
+                throw new SubpageValidateException('Błąd dodawania danych');
             }
 
             return true;
-        } catch (ErrorException $e) {
-            throw new ErrorException($e->getMessage());
+        } catch (SubpageValidateException $e) {
+            throw new SubpageValidateException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
