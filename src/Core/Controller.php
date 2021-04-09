@@ -16,8 +16,6 @@ class Controller extends AbstractController
 
     public function run(): void
     {
-        //Set list of avaiable controller classes
-        //Each class is called like page
         $this->classList = $this->request->getPagesList('\..\..\templates\pages');
 
         $page = $this->page();
@@ -26,45 +24,33 @@ class Controller extends AbstractController
             $this->logout();
         }
 
-        if (!$this->ifClassExist($page)) {
+        if (!$this->ifPageExist($page)) {
             $page = $this->page;
         }
 
         $this->page = $page;
 
         if ($page === 'userPanel') {
-            $this->runUserPanael();
-            exit;
+            $this->isLoggedin();
+            //default value for subpage
+            $this->subpage = 'myAdv';
+            //What class will handle
+            $class = $this->setClassForUserPanel();
+        } else {
+
+            $class = 'Market\\Controller\\' . $page . 'Controller';
         }
-
-        $class = 'Market\\Controller\\' . $page . 'Controller';
-
+        //Create new instance of Controller and run it through the function catching exceptions
         $this->catchValidateException(new $class($this->page));
-
-        // try {
-        //     (new $class($this->page))->run();
-        // } catch (ValidateException $e) {
-        //     $this->params['error'] = $e->getMessage();
-        //     $this->view->render($this->page, $this->subpage, $this->params);
-        // }
     }
 
-    public function runUserPanael(): void
+    private function setClassForUserPanel(): string
     {
-        //If someone try to enter user panel without login
-        if (!isset($_SESSION['loggedin'])) {
-            header("Location: /?action=main");
-            exit;
-        }
-
-        //default value for subpage
-        $this->subpage = 'myAdv';
-
         $this->classList = $this->request->getPagesList('\..\..\templates\pages\subpages');
 
         $subpage = $this->subpage();
 
-        if (!$this->ifClassExist($subpage)) {
+        if (!$this->ifPageExist($subpage)) {
             $subpage = $this->subpage;
         }
 
@@ -72,58 +58,67 @@ class Controller extends AbstractController
 
         $class = 'Market\\Controller\\UserPanelControllers\\' . $subpage . 'Controller';
 
-        $this->catchValidateException(new $class($this->page));
-
-        // try {
-        //     (new $class($this->page))->run();
-        // } catch (PageValidateException $e) {
-        //     //Handle Errors throwing during exchange data between database and page
-        //     $this->params['errorWindow'] = $e->getMessage();
-        //     $this->view->render($this->page, $this->subpage, $this->params);
-        // } catch (SubpageValidateException $e) {
-        //     $this->params['errorWindow'] = $e->getMessage();
-
-        //     //errors about myAdv subpage
-        //     if ($this->subpage === 'myAdv') {
-        //         //Code === 2 when error about editing advertisement is throwing
-        //         if ($e->getCode() === 2) {
-        //             $idAdv = (int) $this->request->getParam('id');
-        //             $this->params['edit'] = true;
-        //             $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
-        //         } else {
-        //             $this->params['userAdverts'] = $this->readModel->getUserAdvertisements();
-        //         }
-        //     }
-        //     $this->view->render($this->page, $this->subpage, $this->params);
-        // }
+        return $class;
     }
 
-    public function catchValidateException(AbstractController $className)
+    private function catchValidateException(AbstractController $className)
     {
         try {
             $className->run();
-        } catch (PageValidateException $e) {
             //Handle Errors throwing during exchange data between database and page
-            $this->params['errorWindow'] = $e->getMessage();
+        } catch (PageValidateException $e) {
+            //It is here because register and changePass use the same fun() 
+            if ($this->page === 'register') {
+                $this->params['error'] = $e->getMessage();
+            } else {
+                $this->params['errorWindow'] = $e->getMessage();
+            }
             $this->view->render($this->page, $this->subpage, $this->params);
         } catch (SubpageValidateException $e) {
             $this->params['errorWindow'] = $e->getMessage();
 
             //errors about myAdv subpage
             if ($this->subpage === 'myAdv') {
-                //Code === 2 when error about editing advertisement is throwing
-                if ($e->getCode() === 2) {
-                    $idAdv = (int) $this->request->getParam('id');
-                    $this->params['edit'] = true;
-                    $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
-                } else {
-                    $this->params['userAdverts'] = $this->readModel->getUserAdvertisements();
-                }
+                $this->myAdvhandleException($e);
             }
             $this->view->render($this->page, $this->subpage, $this->params);
         } catch (ValidateException $e) {
             $this->params['error'] = $e->getMessage();
             $this->view->render($this->page, $this->subpage, $this->params);
+        }
+    }
+
+    private function myAdvhandleException(SubpageValidateException $e): void
+    {
+        //Code === 2 when error about editing advertisement is throwing
+        if ($e->getCode() === 2) {
+            $idAdv = (int) $this->request->getParam('id');
+            $this->params['edit'] = true;
+            $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
+        } else {
+            $this->params['userAdverts'] = $this->readModel->getUserAdvertisements();
+        }
+    }
+
+    private function ifPageExist($className): bool
+    {
+        $exist = false;
+        foreach ($this->classList as $value) {
+            if ($className === $value) {
+                $exist = true;
+            }
+        }
+        return $exist;
+    }
+
+
+
+    private function isLoggedin(): void
+    {
+        //If someone try to enter user panel without login
+        if (!isset($_SESSION['loggedin'])) {
+            header("Location: /?action=main");
+            exit;
         }
     }
 
@@ -137,16 +132,5 @@ class Controller extends AbstractController
     private function subpage(): string
     {
         return $this->request->getParam('subpage', $this->subpage);
-    }
-
-    private function ifClassExist($className): bool
-    {
-        $exist = false;
-        foreach ($this->classList as $value) {
-            if ($className === $value) {
-                $exist = true;
-            }
-        }
-        return $exist;
     }
 }

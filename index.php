@@ -22,11 +22,6 @@ session_start();
 try {
     AbstractController::initConfiguration($configuration);
 
-    // if (isset($_SESSION['loggedin'])) {
-    //     (new UserPanelController($request))->run();
-    // } else {
-    //     (new PageController($request))->run();
-    // }
     (new Controller('main'))->run();
 } catch (DatabaseException $e) {
     echo '<h3>Wystąpił problem z Aplikacją. Spróbuj ponownie za chwilę.<h3>';
