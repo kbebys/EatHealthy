@@ -124,8 +124,8 @@ class UpdateModel extends AbstractModel
         }
     }
 
-    //Changing data of advertisment
-    public function changeAdvertisment(array $advData, int $idAdv): bool
+    //Changing data of advertisement
+    public function changeAdvertisement(array $advData, int $idAdv): bool
     {
         $advData = array_map('trim', $advData);
 
@@ -151,12 +151,12 @@ class UpdateModel extends AbstractModel
             throw new SubpageValidateException('Wpisałeś za długi tytuł', 2);
         }
 
-        if ($this->checkAdvertismentExist($id, $idAdv) === false) {
+        if ($this->checkAdvertisementExist($id, $idAdv) === false) {
             throw new SubpageValidateException('Nie znaleziono ogłoszenia o takim id', 2);
         }
 
         try {
-            $query = "UPDATE advertisment
+            $query = "UPDATE advertisements
                 SET title = ?, content = ?, kind_of_transaction = ?, place = ? 
                 WHERE id = ? AND id_user = ?";
             $stmt = $this->conn->prepare($query);

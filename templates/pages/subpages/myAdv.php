@@ -12,12 +12,19 @@ $delete = $params['delete'] ?? [];
 $editAdv = $params['edit'] ?? [];
 
 $action = '/?action=userPanel&subpage=myAdv';
+
+$countOfPages = $params['countOfPages'] ?? 1;
+$pageNumber = $params['pageNumber'] ?? 1;
+
+$next = ($pageNumber < $countOfPages) ? ($pageNumber + 1) : $countOfPages;
+$previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
 ?>
 <div class="user-adverts">
     <!-- Displaying content of my advertisment view. It depend what option user chose -->
     <?php switch (true):
             // Editting chosen advertisment
         case ($editAdv): ?>
+
             <form action="<?php echo $action ?>&advertOption=edit&id=<?php echo $userAdvert['id'] ?>" method="POST" autocomplete="off">
                 <label for="title">Tytuł ogłoszenia:</label>
                 <input type="text" id="title" name="title" maxlength="150" value="<?php echo $userAdvert['title'] ?>" required>
@@ -42,6 +49,23 @@ $action = '/?action=userPanel&subpage=myAdv';
         <?php break;
             //Display all of user advertisements
         case ($userAdverts): ?>
+
+            <div class="pagination">
+                <a href="<?php echo $action . '&pageNumber=' . $previous ?>">
+                    <span> poprzednia </span>
+                </a>
+
+                <?php for ($i = 1; $i <= $countOfPages; $i++) : ?>
+                    <a href="<?php echo $action . '&pageNumber=' . $i ?>">
+                        <span><?php echo $i ?></span>
+                    </a>
+                <?php endfor ?>
+
+                <a href="<?php echo $action . '&pageNumber=' . $next ?>">
+                    <span> następna </span>
+                </a>
+            </div>
+
             <?php for ($i = 0; $i < count($userAdverts); $i++) :
                 $advert = $userAdverts[$i]; ?>
                 <div class="user-advert">
@@ -58,9 +82,27 @@ $action = '/?action=userPanel&subpage=myAdv';
                     </div>
                 </div>
             <?php endfor ?>
+
+            <div class="pagination">
+                <a href="<?php echo $action . '&pageNumber=' . $previous ?>">
+                    <span> poprzednia </span>
+                </a>
+
+                <?php for ($i = 1; $i <= $countOfPages; $i++) : ?>
+                    <a href="<?php echo $action . '&pageNumber=' . $i ?>">
+                        <span><?php echo $i ?></span>
+                    </a>
+                <?php endfor ?>
+
+                <a href="<?php echo $action . '&pageNumber=' . $next ?>">
+                    <span> następna </span>
+                </a>
+            </div>
+
         <?php break;
             //Display one chosen advertisement with available options
         case ($userAdvert): ?>
+
             <div class="user-advert">
                 <div class="advert-data">
                     <div class="title"><?php echo $userAdvert['title'] ?></div>

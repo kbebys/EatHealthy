@@ -30,7 +30,8 @@ class LoginController extends AbstractController
 
     private function getUserAdvertisementsIfExist(): void
     {
-        if ($this->readModel->getCountUserAdvertisements() !== 0) {
+        $countUserAdverts = $this->readModel->getCountUserAdvertisements();
+        if ($countUserAdverts !== 0) {
             $this->params['userAdverts'] = $this->readModel->getUserAdvertisements();
         }
     }

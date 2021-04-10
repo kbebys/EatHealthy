@@ -33,12 +33,12 @@ class DeleteModel extends AbstractModel
         }
     }
 
-    public function deleteUserAdvertisment(int $idAdv): bool
+    public function deleteUserAdvertisement(int $idAdv): bool
     {
         $id = (int) $_SESSION['id'];
 
         try {
-            $query = "DELETE FROM advertisment WHERE id = ? AND id_user = ? LIMIT 1";
+            $query = "DELETE FROM advertisements WHERE id = ? AND id_user = ? LIMIT 1";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);
             $stmt->bindParam(2, $id, PDO::PARAM_INT);

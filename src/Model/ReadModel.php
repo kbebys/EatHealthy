@@ -47,13 +47,32 @@ class ReadModel extends AbstractModel
         return true;
     }
 
-    public function getAdvertisements(): array
+    public function getCountAdvertisements(): int
     {
+        try {
+            $query = "SELECT COUNT(*) AS count FROM advertisements";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            $count = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return (int) $count['count'];
+        } catch (\Throwable $e) {
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
+        }
+    }
+
+    public function getAdvertisements(int $pageNumber, int $pageSize): array
+    {
+        $offset = ($pageNumber * $pageSize) - $pageSize;
+        dump($offset);
+        dump($pageSize);
         try {
             $query =  "SELECT a.id, a.title, a.place, a.date
             FROM user AS u
             INNER JOIN user_data AS ud ON u.id = ud.id_user
-            INNER JOIN advertisment AS a ON u.id = a.id_user";
+            INNER JOIN advertisements AS a ON u.id = a.id_user
+            ORDER BY a.date DESC
+            LIMIT $offset, $pageSize";
 
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
@@ -78,7 +97,7 @@ class ReadModel extends AbstractModel
             $query = "SELECT a.title, a.content, a.place, a.date, ud.first_name, ud.phone_number
             FROM user AS u
             INNER JOIN user_data AS ud ON u.id = ud.id_user
-            INNER JOIN advertisment AS a ON u.id = a.id_user
+            INNER JOIN advertisements AS a ON u.id = a.id_user
             WHERE a.id = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $idAdvert, PDO::PARAM_INT);
@@ -98,15 +117,20 @@ class ReadModel extends AbstractModel
         }
     }
 
-    public function getUserAdvertisements(): array
+    public function getUserAdvertisements(int $pageNumber = 1, int $pageSize = 20): array
     {
+        $offset = ($pageNumber * $pageSize) - $pageSize;
+        dump($offset);
+        dump($pageSize);
         $id = (int) $_SESSION['id'];
         try {
             $query =  "SELECT ud.first_name, a.id, a.title, a.place, a.date
             FROM user AS u 
             INNER JOIN user_data AS ud ON u.id = ud.id_user
-            INNER JOIN advertisment AS a ON u.id = a.id_user
-            WHERE u.id = ?";
+            INNER JOIN advertisements AS a ON u.id = a.id_user
+            WHERE u.id = ?
+            ORDER BY a.date DESC
+            LIMIT $offset, $pageSize";
 
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
@@ -133,16 +157,15 @@ class ReadModel extends AbstractModel
             $query =  "SELECT count(*) AS count
             FROM user AS u 
             INNER JOIN user_data AS ud ON u.id = ud.id_user
-            INNER JOIN advertisment AS a ON u.id = a.id_user
+            INNER JOIN advertisements AS a ON u.id = a.id_user
             WHERE u.id = ?";
 
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            $result = (int) $result['count'];
+            $count = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            return $result;
+            return (int) $count['count'];
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -154,7 +177,7 @@ class ReadModel extends AbstractModel
 
         try {
             $query = "SELECT id, title, content, place, kind_of_transaction, date
-            FROM advertisment
+            FROM advertisements
             WHERE id = ? and id_user = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);

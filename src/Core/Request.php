@@ -16,7 +16,7 @@ class Request
         $this->post = $_POST;
     }
 
-    public function getParam(string $name, $default = null): ?string
+    public function getParam(string $name, $default = null)
     {
         return $this->get[$name] ?? $default;
     }
@@ -26,13 +26,13 @@ class Request
         return $this->post[$name] ?? $default;
     }
 
-    public function getPagesList(string $dir): array
+    public function getClassesList(string $dir): array
     {
         $dir = __DIR__ . $dir;
         $filesNames = scandir($dir);
 
         foreach ($filesNames as $value) {
-            if ($value !== '.' && $value !== '..' && $value !== 'subpages') {
+            if ($value !== '.' && $value !== '..') {
                 $filesList[] = str_replace('.php', '', $value);
             }
         }

@@ -8,11 +8,11 @@ class View
 {
     public function render(string $page, string $subpage = '', array $params = []): void
     {
+        // dump(count($params['adverts']));
         $params = $this->escape($params);
 
         $params['access'] = true;
         $params['wiadomosc'] = 'jestem w view';
-        dump($params);
         require_once('templates/layout.php');
     }
 

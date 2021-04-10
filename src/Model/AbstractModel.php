@@ -144,10 +144,10 @@ abstract class AbstractModel
         }
     }
 
-    protected function checkAdvertismentExist(int $idUser, int $idAdv): bool
+    protected function checkAdvertisementExist(int $idUser, int $idAdv): bool
     {
         try {
-            $query = "SELECT count(*) AS count FROM advertisment WHERE id = ? AND id_user = ?";
+            $query = "SELECT count(*) AS count FROM advertisements WHERE id = ? AND id_user = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);
             $stmt->bindParam(2, $idUser, PDO::PARAM_INT);

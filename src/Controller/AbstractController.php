@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Market\Controller;
 
 use Exception;
-use Market\Exception\ErrorException;
 use Market\Model\CreateModel;
 use Market\Model\DeleteModel;
 use Market\Model\ReadModel;

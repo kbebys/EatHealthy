@@ -16,7 +16,7 @@ class Controller extends AbstractController
 
     public function run(): void
     {
-        $this->classList = $this->request->getPagesList('\..\..\templates\pages');
+        $this->classList = $this->request->getClassesList('\..\Controller');
 
         $page = $this->page();
 
@@ -25,6 +25,7 @@ class Controller extends AbstractController
         }
 
         if (!$this->ifPageExist($page)) {
+            echo 'jestem';
             $page = $this->page;
         }
 
@@ -46,7 +47,7 @@ class Controller extends AbstractController
 
     private function setClassForUserPanel(): string
     {
-        $this->classList = $this->request->getPagesList('\..\..\templates\pages\subpages');
+        $this->classList = $this->request->getClassesList('\..\Controller\UserPanelController');
 
         $subpage = $this->subpage();
 
@@ -56,7 +57,7 @@ class Controller extends AbstractController
 
         $this->subpage = $subpage;
 
-        $class = 'Market\\Controller\\UserPanelControllers\\' . $subpage . 'Controller';
+        $class = 'Market\\Controller\\UserPanelController\\' . $subpage . 'Controller';
 
         return $class;
     }
@@ -100,10 +101,12 @@ class Controller extends AbstractController
         }
     }
 
-    private function ifPageExist($className): bool
+    private function ifPageExist(string $className): bool
     {
         $exist = false;
         foreach ($this->classList as $value) {
+            $value = str_replace('Controller', '', $value);
+            $value = lcfirst($value);
             if ($className === $value) {
                 $exist = true;
             }

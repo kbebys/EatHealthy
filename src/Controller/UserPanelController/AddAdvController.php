@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Market\Controller\UserPanelControllers;
+namespace Market\Controller\UserPanelController;
 
 use Market\Controller\AbstractController;
 
@@ -37,7 +37,7 @@ class AddAdvController extends AbstractController
             'place' => $this->request->postParam('place')
         ];
 
-        if ($this->createModel->addAdvertisment($advData) === true) {
+        if ($this->createModel->addAdvertisement($advData) === true) {
             $this->params['messageWindow'] = 'Dodałeś ogłoszenie';
         }
     }

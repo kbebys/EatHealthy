@@ -266,6 +266,17 @@ main .logo {
     font-size: 1.5rem;
 }
 
+.pagination {
+    margin: 20px 0;
+}
+
+.pagination a {
+    display: inline-block;
+    margin: 0 5px;
+    min-width: 30px;
+    text-align: center;
+}
+
 /* Style for User window -------------------------- */
 
 .user-window {
@@ -309,7 +320,8 @@ main .logo {
 
 .user-window tr:nth-of-type(3) a,
 .user-window a,
-.advertisements a {
+.advertisements a,
+.pagination a {
     padding: 5px 10px;
     background-color: #2E3D59;
     color: #fff;

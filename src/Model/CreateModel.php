@@ -81,8 +81,8 @@ class CreateModel extends AbstractModel
         }
     }
 
-    //Creating new advertisment
-    public function addAdvertisment(array $advData): bool
+    //Creating new advertisement
+    public function addAdvertisement(array $advData): bool
     {
         $advData = array_map('trim', $advData);
 
@@ -109,7 +109,7 @@ class CreateModel extends AbstractModel
         }
 
         try {
-            $query = "INSERT INTO advertisment (id_user, title, content, kind_of_transaction, place) 
+            $query = "INSERT INTO advertisements (id_user, title, content, kind_of_transaction, place) 
             VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);

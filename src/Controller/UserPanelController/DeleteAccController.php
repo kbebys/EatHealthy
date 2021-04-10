@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Market\Controller\UserPanelControllers;
+namespace Market\Controller\UserPanelController;
 
 use Market\Controller\AbstractController;
 
