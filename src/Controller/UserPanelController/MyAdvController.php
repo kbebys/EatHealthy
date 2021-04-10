@@ -10,6 +10,7 @@ use Market\Exception\SubpageValidateException;
 class MyAdvController extends AbstractController
 {
     private int $idAdv;
+
     private string $advertOption = 'getUserAdverts';
 
     private const PAGE_SIZE = 20;
