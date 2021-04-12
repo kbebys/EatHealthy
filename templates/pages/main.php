@@ -31,6 +31,9 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
 </div>
 
 <div class="pagination">
+    <a href="<?php echo $url . 1 ?>">
+        <span> pierwsza </span>
+    </a>
     <a href="<?php echo $url . $previous ?>">
         <span> poprzednia </span>
     </a>
@@ -43,6 +46,9 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
 
     <a href="<?php echo $url . $next ?>">
         <span> następna </span>
+    </a>
+    <a href="<?php echo $url . $countOfPages ?>">
+        <span> ostatnia </span>
     </a>
 </div>
 
@@ -65,6 +71,9 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
     <?php endfor; ?>
 </div>
 <div class="pagination">
+    <a href="<?php echo $url . 1 ?>">
+        <span> pierwsza </span>
+    </a>
     <a href="<?php echo $url . $previous ?>">
         <span> poprzednia </span>
     </a>
@@ -77,5 +86,8 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
 
     <a href="<?php echo $url . $next ?>">
         <span> następna </span>
+    </a>
+    <a href="<?php echo $url . $countOfPages ?>">
+        <span> ostatnia </span>
     </a>
 </div>

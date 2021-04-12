@@ -51,6 +51,9 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
         case ($userAdverts): ?>
 
             <div class="pagination">
+                <a href="<?php echo $action . '&pageNumber=' . 1 ?>">
+                    <span> pierwsza </span>
+                </a>
                 <a href="<?php echo $action . '&pageNumber=' . $previous ?>">
                     <span> poprzednia </span>
                 </a>
@@ -63,6 +66,9 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
 
                 <a href="<?php echo $action . '&pageNumber=' . $next ?>">
                     <span> następna </span>
+                </a>
+                <a href="<?php echo $action . '&pageNumber=' . $countOfPages ?>">
+                    <span> ostatnia </span>
                 </a>
             </div>
 
@@ -84,6 +90,9 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
             <?php endfor ?>
 
             <div class="pagination">
+                <a href="<?php echo $action . '&pageNumber=' . 1 ?>">
+                    <span> pierwsza </span>
+                </a>
                 <a href="<?php echo $action . '&pageNumber=' . $previous ?>">
                     <span> poprzednia </span>
                 </a>
@@ -96,6 +105,9 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
 
                 <a href="<?php echo $action . '&pageNumber=' . $next ?>">
                     <span> następna </span>
+                </a>
+                <a href="<?php echo $action . '&pageNumber=' . $countOfPages ?>">
+                    <span> ostatnia </span>
                 </a>
             </div>
 

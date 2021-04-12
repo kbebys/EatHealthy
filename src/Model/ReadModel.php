@@ -64,8 +64,7 @@ class ReadModel extends AbstractModel
     public function getAdvertisements(int $pageNumber, int $pageSize): array
     {
         $offset = ($pageNumber * $pageSize) - $pageSize;
-        dump($offset);
-        dump($pageSize);
+
         try {
             $query =  "SELECT a.id, a.title, a.place, a.date
             FROM user AS u
@@ -120,8 +119,6 @@ class ReadModel extends AbstractModel
     public function getUserAdvertisements(int $pageNumber = 1, int $pageSize = 20): array
     {
         $offset = ($pageNumber * $pageSize) - $pageSize;
-        dump($offset);
-        dump($pageSize);
         $id = (int) $_SESSION['id'];
         try {
             $query =  "SELECT ud.first_name, a.id, a.title, a.place, a.date
