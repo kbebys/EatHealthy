@@ -59,7 +59,7 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
                 </a>
 
                 <?php for ($i = 1; $i <= $countOfPages; $i++) : ?>
-                    <a href="<?php echo $action . '&pageNumber=' . $i ?>">
+                    <a class="<?php echo ($i === $pageNumber) ? 'active' : '' ?>" href="<?php echo $action . '&pageNumber=' . $i ?>">
                         <span><?php echo $i ?></span>
                     </a>
                 <?php endfor ?>
@@ -98,7 +98,7 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
                 </a>
 
                 <?php for ($i = 1; $i <= $countOfPages; $i++) : ?>
-                    <a href="<?php echo $action . '&pageNumber=' . $i ?>">
+                    <a class="<?php echo ($i === $pageNumber) ? 'active' : '' ?>" href="<?php echo $action . '&pageNumber=' . $i ?>">
                         <span><?php echo $i ?></span>
                     </a>
                 <?php endfor ?>

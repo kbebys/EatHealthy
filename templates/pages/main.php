@@ -15,6 +15,13 @@ $next = ($pageNumber < $countOfPages) ? ($pageNumber + 1) : $countOfPages;
 $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
 ?>
 
+<div class="search">
+    <form action="/?action=main" method="GET">
+        <label for="searchContent">Szukaj: </label>
+        <input type="search" id="searchContent" name="searchContent">
+        <input type="submit" value="Szukaj" name="search">
+    </form>
+</div>
 <div class="filter_menu">
     <form action="/?action=main" method="GET">
         <div class="pageSize">
@@ -39,7 +46,7 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
     </a>
 
     <?php for ($i = 1; $i <= $countOfPages; $i++) : ?>
-        <a href="<?php echo $url . $i ?>">
+        <a class="<?php echo ($i === $pageNumber) ? 'active' : '' ?>" href="<?php echo $url . $i ?>">
             <span><?php echo $i ?></span>
         </a>
     <?php endfor ?>
@@ -79,7 +86,7 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
     </a>
 
     <?php for ($i = 1; $i <= $countOfPages; $i++) : ?>
-        <a href="<?php echo $url . $i ?>">
+        <a class="<?php echo ($i === $pageNumber) ? 'active' : '' ?>" href="<?php echo $url . $i ?>">
             <span><?php echo $i ?></span>
         </a>
     <?php endfor ?>

@@ -204,6 +204,17 @@ main .logo {
 
 /* ----------------------------------------------ADVERTS ------------------------- */
 
+main .search form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 10px 0;
+}
+
+main .search form input {
+    margin: 0 10px;
+}
+
 .advertisements {
     align-self: stretch;
     flex-grow: 1;
@@ -275,6 +286,10 @@ main .logo {
     margin: 0 5px;
     min-width: 30px;
     text-align: center;
+}
+
+.pagination a.active {
+    background-color: #6c82ae;
 }
 
 /* Style for User window -------------------------- */
