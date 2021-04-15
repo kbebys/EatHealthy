@@ -9,21 +9,31 @@ $pageSize = $params['pageSize'] ?? 40;
 $countOfPages = $params['countOfPages'] ?? 1;
 $pageNumber = $params['pageNumber'] ?? 1;
 
-$url = '/?action=main&pageSize=' . $pageSize . '&pageNumber=';
-
 $next = ($pageNumber < $countOfPages) ? ($pageNumber + 1) : $countOfPages;
 $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
+
+$searchContent = $params['searchContent'] ?? '';
+
+$url = '/?action=main&searchContent=' . $searchContent . '&pageSize=' . $pageSize . '&pageNumber=';
 ?>
 
-<div class="search">
-    <form action="/?action=main" method="GET">
-        <label for="searchContent">Szukaj: </label>
-        <input type="search" id="searchContent" name="searchContent">
-        <input type="submit" value="Szukaj" name="search">
-    </form>
-</div>
 <div class="filter_menu">
     <form action="/?action=main" method="GET">
+        <div class="search">
+            <label for="searchContent">Szukaj w tytule: </label>
+            <input type="search" id="searchContent" name="searchContent" value="<?php echo $searchContent ?>">
+        </div>
+        <div class="place">
+            <label for="place">Nazwa miejscowości</label>
+            <select name="place" id="place" required>
+                <option disabled selected value> -- Wybierz rodzaj transakcji -- </option>
+                <?php
+                foreach ($params['places'] as $value) {
+                    echo '<option value="' . $value . '">' . $value . '</option>';
+                } ?>
+            </select>
+        </div>
+
         <div class="pageSize">
             <p>Ilość wyświetlanych ogłoszeń: </p>
             <input type="radio" id="ten" name="pageSize" value="10" <?php echo $pageSize === 10 ? 'checked' : '';  ?>>
@@ -33,68 +43,72 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
             <input type="radio" id="fourty" name="pageSize" value="40" <?php echo $pageSize === 40 ? 'checked' : '';  ?>>
             <label for="fourty"> 40</label>
         </div>
-        <input type="submit" value="Wyślij" name="send">
+        <input type="submit" value="Szukaj" name="search">
     </form>
 </div>
 
-<div class="pagination">
-    <a href="<?php echo $url . 1 ?>">
-        <span> pierwsza </span>
-    </a>
-    <a href="<?php echo $url . $previous ?>">
-        <span> poprzednia </span>
-    </a>
-
-    <?php for ($i = 1; $i <= $countOfPages; $i++) : ?>
-        <a class="<?php echo ($i === $pageNumber) ? 'active' : '' ?>" href="<?php echo $url . $i ?>">
-            <span><?php echo $i ?></span>
+<?php if ($countOfPages !== 0) : ?>
+    <div class="pagination">
+        <a href="<?php echo $url . 1 ?>">
+            <span> pierwsza </span>
         </a>
-    <?php endfor ?>
+        <a href="<?php echo $url . $previous ?>">
+            <span> poprzednia </span>
+        </a>
 
-    <a href="<?php echo $url . $next ?>">
-        <span> następna </span>
-    </a>
-    <a href="<?php echo $url . $countOfPages ?>">
-        <span> ostatnia </span>
-    </a>
-</div>
+        <?php for ($i = 1; $i <= $countOfPages; $i++) : ?>
+            <a class="<?php echo ($i === $pageNumber) ? 'active' : '' ?>" href="<?php echo $url . $i ?>">
+                <span><?php echo $i ?></span>
+            </a>
+        <?php endfor ?>
 
-<div class="advertisements">
-    <!-- All of the advertisements -->
-    <?php for ($i = 0; $i < count($adverts); $i++) :
-        $advert = $adverts[$i]; ?>
-        <div class="advert">
-            <div class="advert-data">
-                <div class="title"><?php echo $advert['title'] ?></div>
-                <div class="data">
-                    <span><?php echo $advert['place'] ?></span>
-                    <span><?php echo $advert['date'] ?></span>
+        <a href="<?php echo $url . $next ?>">
+            <span> następna </span>
+        </a>
+        <a href="<?php echo $url . $countOfPages ?>">
+            <span> ostatnia </span>
+        </a>
+    </div>
+
+    <div class="advertisements">
+        <!-- All of the advertisements -->
+        <?php for ($i = 0; $i < count($adverts); $i++) :
+            $advert = $adverts[$i]; ?>
+            <div class="advert">
+                <div class="advert-data">
+                    <div class="title"><?php echo $advert['title'] ?></div>
+                    <div class="data">
+                        <span><?php echo $advert['place'] ?></span>
+                        <span><?php echo $advert['date'] ?></span>
+                    </div>
+                </div>
+                <div class="options">
+                    <a href="/?action=main&id=<?php echo $advert['id'] ?>">Sczegóły</a>
                 </div>
             </div>
-            <div class="options">
-                <a href="/?action=main&id=<?php echo $advert['id'] ?>">Sczegóły</a>
-            </div>
-        </div>
-    <?php endfor; ?>
-</div>
-<div class="pagination">
-    <a href="<?php echo $url . 1 ?>">
-        <span> pierwsza </span>
-    </a>
-    <a href="<?php echo $url . $previous ?>">
-        <span> poprzednia </span>
-    </a>
-
-    <?php for ($i = 1; $i <= $countOfPages; $i++) : ?>
-        <a class="<?php echo ($i === $pageNumber) ? 'active' : '' ?>" href="<?php echo $url . $i ?>">
-            <span><?php echo $i ?></span>
+        <?php endfor; ?>
+    </div>
+    <div class="pagination">
+        <a href="<?php echo $url . 1 ?>">
+            <span> pierwsza </span>
         </a>
-    <?php endfor ?>
+        <a href="<?php echo $url . $previous ?>">
+            <span> poprzednia </span>
+        </a>
 
-    <a href="<?php echo $url . $next ?>">
-        <span> następna </span>
-    </a>
-    <a href="<?php echo $url . $countOfPages ?>">
-        <span> ostatnia </span>
-    </a>
-</div>
+        <?php for ($i = 1; $i <= $countOfPages; $i++) : ?>
+            <a class="<?php echo ($i === $pageNumber) ? 'active' : '' ?>" href="<?php echo $url . $i ?>">
+                <span><?php echo $i ?></span>
+            </a>
+        <?php endfor ?>
+
+        <a href="<?php echo $url . $next ?>">
+            <span> następna </span>
+        </a>
+        <a href="<?php echo $url . $countOfPages ?>">
+            <span> ostatnia </span>
+        </a>
+    </div>
+<?php else : ?>
+    <p class="message">Nie znaleziono ogłoszeń</p>
+<?php endif ?>

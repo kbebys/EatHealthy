@@ -47,44 +47,53 @@ class ReadModel extends AbstractModel
         return true;
     }
 
-    public function getCountAdvertisements(): int
+    public function getCountAdvertisements(string $searchContent = ''): int
     {
+        if ($searchContent) {
+            $searchContent = "WHERE title LIKE '%" . $searchContent . "%'";
+        }
+
         try {
-            $query = "SELECT COUNT(*) AS count FROM advertisements";
+            $query = "SELECT COUNT(*) AS count 
+            FROM advertisements
+            " . $searchContent . "";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             $count = $stmt->fetch(PDO::FETCH_ASSOC);
 
             return (int) $count['count'];
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }
 
-    public function getAdvertisements(int $pageNumber, int $pageSize): array
-    {
+    public function getAdvertisements(
+        int $pageNumber,
+        int $pageSize,
+        string $searchContent
+    ): array {
         $offset = ($pageNumber * $pageSize) - $pageSize;
+
+        if ($searchContent) {
+            $searchContent = "WHERE a.title LIKE '%" . $searchContent . "%'";
+        }
+        dump($searchContent);
 
         try {
             $query =  "SELECT a.id, a.title, a.place, a.date
             FROM user AS u
             INNER JOIN user_data AS ud ON u.id = ud.id_user
             INNER JOIN advertisements AS a ON u.id = a.id_user
+            " . $searchContent . "
             ORDER BY a.date DESC
             LIMIT $offset, $pageSize";
 
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
 
-            if ($stmt->rowCount() === 0) {
-                throw new ValidateException('Błąd pobierania ogłoszeń');
-            }
-
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             return $result;
-        } catch (ValidateException $e) {
-            throw new ValidateException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -240,5 +249,20 @@ class ReadModel extends AbstractModel
         }
 
         return true;
+    }
+
+    public function getPlaces(): array
+    {
+        try {
+            $query = "SELECT DISTINCT place FROM advertisements";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+
+            $result = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            return $result;
+        } catch (Throwable $e) {
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
+        }
     }
 }

@@ -33,15 +33,24 @@ class MainController extends AbstractController
 
     private function displayingAdvertisements(): void
     {
-        $countOfAdvs = $this->readModel->getCountAdvertisements();
+        $this->params['places'] = $this->getPlace();
+        $searchContent = $this->request->getParam('searchContent', '');
+
+        if ($searchContent) {
+            $countOfAdvs = $this->readModel->getCountAdvertisements($searchContent);
+        } else {
+            $countOfAdvs = $this->readModel->getCountAdvertisements();
+        }
+
         $pageSize = $this->getPageSize();
         $countOfPages = (int) ceil($countOfAdvs / $pageSize);
         $pageNumber = $this->getPageNumber() > $countOfPages ? 1 : $this->getPageNumber();
 
+        $this->params['searchContent'] = $searchContent;
         $this->params['pageSize'] = $pageSize;
         $this->params['pageNumber'] = $pageNumber;
         $this->params['countOfPages'] = $countOfPages;
-        $this->params['adverts'] = $this->readModel->getAdvertisements($pageNumber, $pageSize);
+        $this->params['adverts'] = $this->readModel->getAdvertisements($pageNumber, $pageSize, $searchContent);
     }
 
 
@@ -55,6 +64,14 @@ class MainController extends AbstractController
         }
 
         return $number;
+    }
+
+    //Get the places from Advs
+    private function getPlace(): array
+    {
+        $places = $this->readModel->getPlaces();
+        dump($places);
+        return $places;
     }
 
     //Get wich page with advertisements is display
