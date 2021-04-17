@@ -62,10 +62,9 @@ class MyAdvController extends AbstractController
                 'title' => $this->request->postParam('title'),
                 'kind' => $this->request->postParam('kind'),
                 'content' => $this->request->postParam('content'),
-                'place' => $this->request->postParam('place'),
             ];
 
-            if ($this->updateModel->changeAdvertisement($advData, $this->idAdv) === true) {
+            if ($this->updateModel->changeUserAdvertisement($advData, $this->idAdv) === true) {
                 $this->params['edit'] = null;
                 $this->params['messageWindow'] = 'Twoje ogłoszenie zostało zmienione';
                 $this->detailsUserAdvert();

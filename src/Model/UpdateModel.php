@@ -74,6 +74,34 @@ class UpdateModel extends AbstractModel
         }
     }
 
+    public function changePlace(string $idPlace): bool
+    {
+        $idPlace = (int) $idPlace;
+        $idUser = (int) $_SESSION['id'];
+
+        if ($idPlace === 0) {
+            throw new SubpageValidateException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
+        }
+
+        try {
+            $query = "UPDATE user_data SET id_places = ? WHERE id_user = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(1, $idPlace, PDO::PARAM_INT);
+            $stmt->bindParam(2, $idUser, PDO::PARAM_INT);
+            $stmt->execute();
+
+            if ($stmt->rowCount() === 0) {
+                throw new SubpageValidateException('Problem ze zmianą wartości w bazie danych');
+            }
+
+            return true;
+        } catch (SubpageValidateException $e) {
+            throw new SubpageValidateException($e->getMessage());
+        } catch (Throwable $e) {
+            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
+        }
+    }
+
     //Changing password
     public function changePassword(array $data): bool
     {
@@ -125,7 +153,7 @@ class UpdateModel extends AbstractModel
     }
 
     //Changing data of advertisement
-    public function changeAdvertisement(array $advData, int $idAdv): bool
+    public function changeUserAdvertisement(array $advData, int $idAdv): bool
     {
         $advData = array_map('trim', $advData);
 
@@ -136,7 +164,6 @@ class UpdateModel extends AbstractModel
         $title = $advData['title'];
         $kind = $advData['kind'];
         $content = $advData['content'];
-        $place = $advData['place'];
         $id = (int) $_SESSION['id'];
 
         if (strlen($title) > 150) {
@@ -147,25 +174,20 @@ class UpdateModel extends AbstractModel
             throw new SubpageValidateException('Błąd wysyłania danych. Spróbuj jeszce raz', 2);
         }
 
-        if (strlen($place) > 150) {
-            throw new SubpageValidateException('Wpisałeś za długi tytuł', 2);
-        }
-
         if ($this->checkAdvertisementExist($id, $idAdv) === false) {
             throw new SubpageValidateException('Nie znaleziono ogłoszenia o takim id', 2);
         }
 
         try {
             $query = "UPDATE advertisements
-                SET title = ?, content = ?, kind_of_transaction = ?, place = ? 
+                SET title = ?, content = ?, kind_of_transaction = ?
                 WHERE id = ? AND id_user = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $title, PDO::PARAM_STR);
             $stmt->bindParam(2, $content, PDO::PARAM_STR);
             $stmt->bindParam(3, $kind, PDO::PARAM_STR);
-            $stmt->bindParam(4, $place, PDO::PARAM_STR);
-            $stmt->bindParam(5, $idAdv, PDO::PARAM_INT);
-            $stmt->bindParam(6, $id, PDO::PARAM_INT);
+            $stmt->bindParam(4, $idAdv, PDO::PARAM_INT);
+            $stmt->bindParam(5, $id, PDO::PARAM_INT);
             $stmt->execute();
 
             if ($stmt->rowCount() === 1) {

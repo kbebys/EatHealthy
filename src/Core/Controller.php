@@ -82,6 +82,12 @@ class Controller extends AbstractController
             if ($this->subpage === 'myAdv') {
                 $this->myAdvhandleException($e);
             }
+
+            //errors about myData
+            if ($this->subpage === 'myData') {
+                $this->params['uData'] = $this->readModel->getUserData();
+                $this->params['listOfPlaces'] = $this->readModel->getListOfPlaces();
+            }
             $this->view->render($this->page, $this->subpage, $this->params);
         } catch (ValidateException $e) {
             $this->params['error'] = $e->getMessage();

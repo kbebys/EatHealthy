@@ -40,8 +40,6 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
                 </select>
                 <label for="content">Treść ogłoszenia:</label>
                 <textarea name="content" id="content" cols="100" rows="5" required><?php echo $userAdvert['content'] ?></textarea>
-                <label for=" place">Miejscowość</label>
-                <input type="text" name="place" id="place" maxlength="100" value="<?php echo $userAdvert['place'] ?>" required>
                 <input type="hidden" name="id-adv" value="<?php echo $userAdvert['id'] ?>">
                 <input type="submit" name="save" value="Edytuj">
             </form>
@@ -79,7 +77,6 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
                         <div class="title"><?php echo $advert['title'] ?></div>
                         <div class="data">
                             <span><?php echo $advert['first_name'] ?></span>
-                            <span><?php echo $advert['place'] ?></span>
                             <span><?php echo $advert['date'] ?></span>
                         </div>
                     </div>
@@ -122,7 +119,6 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
                         <?php echo $userAdvert['content'] ?>
                     </div>
                     <div class="data">
-                        <span><?php echo $userAdvert['place'] ?></span>
                         <span><?php echo $userAdvert['date'] ?></span>
                     </div>
                 </div>

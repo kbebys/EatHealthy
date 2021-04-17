@@ -93,7 +93,6 @@ class CreateModel extends AbstractModel
         $title = $advData['title'];
         $kind = $advData['kind'];
         $content = $advData['content'];
-        $place = $advData['place'];
         $id = (int) $_SESSION['id'];
 
         if (strlen($title) > 150) {
@@ -104,19 +103,14 @@ class CreateModel extends AbstractModel
             throw new PageValidateException('Błąd wysyłania danych. Spróbuj jeszce raz');
         }
 
-        if (strlen($place) > 40) {
-            throw new PageValidateException('Wpisałeś za długi tytuł');
-        }
-
         try {
-            $query = "INSERT INTO advertisements (id_user, title, content, kind_of_transaction, place) 
-            VALUES (?, ?, ?, ?, ?)";
+            $query = "INSERT INTO advertisements (id_user, title, content, kind_of_transaction) 
+            VALUES (?, ?, ?, ?)";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->bindParam(2, $title, PDO::PARAM_STR);
             $stmt->bindParam(3, $content, PDO::PARAM_STR);
             $stmt->bindParam(4, $kind, PDO::PARAM_STR);
-            $stmt->bindParam(5, $place, PDO::PARAM_STR);
             $stmt->execute();
 
             if ($stmt->rowCount() !== 1) {
@@ -134,6 +128,11 @@ class CreateModel extends AbstractModel
     //Insert user data
     public function addUserData(array $uData): bool
     {
+        $idPlace = $uData['idPlace'];
+        if ($idPlace === 0) {
+            throw new SubpageValidateException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
+        }
+
         $uName = $this->validateName($uData['uName']);
         if (!$uName) {
             throw new SubpageValidateException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
@@ -147,11 +146,12 @@ class CreateModel extends AbstractModel
         $id = (int) $_SESSION['id'];
 
         try {
-            $query = "INSERT INTO user_data (id_user, first_name, last_name, phone_number) VALUES (?, ?, 'x', ?)";
+            $query = "INSERT INTO user_data (id_user, first_name, id_places, phone_number) VALUES (?, ?, ?, ?)";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->bindParam(2, $uName, PDO::PARAM_STR);
-            $stmt->bindParam(3, $phone, PDO::PARAM_INT);
+            $stmt->bindParam(3, $idPlace, PDO::PARAM_INT);
+            $stmt->bindParam(4, $phone, PDO::PARAM_INT);
             $stmt->execute();
 
             if ($stmt->rowCount() !== 1) {

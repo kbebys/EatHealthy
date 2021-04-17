@@ -13,8 +13,10 @@ $next = ($pageNumber < $countOfPages) ? ($pageNumber + 1) : $countOfPages;
 $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
 
 $searchContent = $params['searchContent'] ?? '';
+$listOfPlaces = $params['listOfPlaces'] ?? [];
+$idPlace = $params['idPlace'] ?? 0;
 
-$url = '/?action=main&searchContent=' . $searchContent . '&pageSize=' . $pageSize . '&pageNumber=';
+$url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . '&pageSize=' . $pageSize . '&pageNumber=';
 ?>
 
 <div class="filter_menu">
@@ -25,11 +27,12 @@ $url = '/?action=main&searchContent=' . $searchContent . '&pageSize=' . $pageSiz
         </div>
         <div class="place">
             <label for="place">Nazwa miejscowości</label>
-            <select name="place" id="place" required>
-                <option disabled selected value> -- Wybierz rodzaj transakcji -- </option>
-                <?php
-                foreach ($params['places'] as $value) {
-                    echo '<option value="' . $value . '">' . $value . '</option>';
+            <select name="place" id="place">
+                <option <?php echo ($idPlace === 0) ? 'selected' : '' ?> value=""> -- Wszystkie miejscowości -- </option>
+
+                <?php foreach ($listOfPlaces as $key) {
+                    $selectedPlace = ($key['id'] === $idPlace) ? 'selected' : '';
+                    echo '<option ' . $selectedPlace . ' value="' . $key['id'] . '">' . $key['place'] . ' (gmina: ' . $key['community'] . ')</option>';
                 } ?>
             </select>
         </div>

@@ -33,28 +33,36 @@ class MainController extends AbstractController
 
     private function displayingAdvertisements(): void
     {
-        $this->params['places'] = $this->getPlace();
-        $searchContent = $this->request->getParam('searchContent', '');
+        $this->params['listOfPlaces'] = $this->readModel->getListOfPlaces();
+        $this->params['searchContent'] = $this->request->getParam('searchContent', '');
+        $this->params['idPlace'] = (int) $this->request->getParam('place', 0);
 
-        if ($searchContent) {
-            $countOfAdvs = $this->readModel->getCountAdvertisements($searchContent);
-        } else {
-            $countOfAdvs = $this->readModel->getCountAdvertisements();
-        }
+        $countOfAdvs = $this->getCountofAdvs();
+
 
         $pageSize = $this->getPageSize();
         $countOfPages = (int) ceil($countOfAdvs / $pageSize);
         $pageNumber = $this->getPageNumber() > $countOfPages ? 1 : $this->getPageNumber();
 
-        $this->params['searchContent'] = $searchContent;
         $this->params['pageSize'] = $pageSize;
         $this->params['pageNumber'] = $pageNumber;
         $this->params['countOfPages'] = $countOfPages;
-        $this->params['adverts'] = $this->readModel->getAdvertisements($pageNumber, $pageSize, $searchContent);
+        $this->params['adverts'] = $this->readModel->getAdvertisements($pageNumber, $pageSize, $this->params['searchContent'], $this->params['idPlace']);
+    }
+
+    private function getCountofAdvs(): int
+    {
+        // if ($this->params['searchContent'] || $this->params['idPlace'] !== 0) {
+        $countOfAdvs = $this->readModel->getCountAdvertisements($this->params['searchContent'], $this->params['idPlace']);
+        dump($countOfAdvs);
+        return $countOfAdvs;
+        // } else {
+        //     $countOfAdvs = $this->readModel->getCountAdvertisements();
+        // }
     }
 
 
-    //Get how many advertisemets is display
+    //Get how many advertisemets is display on one page
     private function getPageSize(): int
     {
         $number = (int) $this->request->getParam('pageSize', self::PAGE_SIZE);
@@ -64,14 +72,6 @@ class MainController extends AbstractController
         }
 
         return $number;
-    }
-
-    //Get the places from Advs
-    private function getPlace(): array
-    {
-        $places = $this->readModel->getPlaces();
-        dump($places);
-        return $places;
     }
 
     //Get wich page with advertisements is display

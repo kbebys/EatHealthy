@@ -34,7 +34,6 @@ class AddAdvController extends AbstractController
             'title' => $this->request->postParam('title'),
             'kind' => $this->request->postParam('kind'),
             'content' => $this->request->postParam('content'),
-            'place' => $this->request->postParam('place')
         ];
 
         if ($this->createModel->addAdvertisement($advData) === true) {

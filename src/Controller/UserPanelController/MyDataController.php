@@ -11,28 +11,35 @@ class MyDataController extends AbstractController
     public function run(): void
     {
         $this->subpage = 'myData';
-        $uData = $this->readModel->getUserData();
 
+        $this->IfUserDataExist();
+
+        $this->view->render($this->page, $this->subpage, $this->params);
+    }
+
+    private function IfUserDataExist(): void
+    {
+        $uData = $this->readModel->getUserData();
         //If user already added personal data
         if ($uData) {
             $this->params['uData'] = $uData;
 
             $this->changeUserPersonalData();
         } else {
-
+            $this->params['listOfPlaces'] = $this->readModel->getListOfPlaces();
             if ($this->request->postParam('save')) {
                 $this->addUserPersonalData();
             }
         }
-        $this->view->render($this->page, $this->subpage, $this->params);
     }
 
     private function addUserPersonalData(): void
     {
         $uData = [
             'uName' => $this->request->postParam('first-name'),
-            'phone' => $this->request->postParam('phone-number')
-        ];;
+            'phone' => $this->request->postParam('phone-number'),
+            'idPlace' => (int) $this->request->postParam('place')
+        ];
         if ($this->createModel->addUserData($uData) === true) {
             $this->params = [
                 'messageWindow' => 'Dane zostały dodane pomyślnie',
@@ -54,15 +61,20 @@ class MyDataController extends AbstractController
                 $data = $this->changeUserData('phone');
                 $this->params = array_merge($this->params, $data);
                 break;
+            case 'place':
+                $this->params['listOfPlaces'] = $this->readModel->getListOfPlaces();
+                $data = $this->changeUserData('place');
+                $this->params = array_merge($this->params, $data);
+                break;
         }
     }
 
-    private function changeUserData(string $data): array
+    private function changeUserData(string $userData): array
     {
-        $param['change'] = $data;
+        $param['change'] = $userData;
         if ($this->request->postParam('save')) {
-            $uData = $this->request->postParam($data);
-            $fun = 'change' . ucfirst($data);
+            $uData = $this->request->postParam($userData);
+            $fun = 'change' . ucfirst($userData);
 
             if ($this->updateModel->$fun($uData) === true) {
                 $param = [

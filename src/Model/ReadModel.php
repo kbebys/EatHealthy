@@ -47,16 +47,20 @@ class ReadModel extends AbstractModel
         return true;
     }
 
-    public function getCountAdvertisements(string $searchContent = ''): int
+    public function getCountAdvertisements(string $searchContent, int $idPlace): int
     {
-        if ($searchContent) {
-            $searchContent = "WHERE title LIKE '%" . $searchContent . "%'";
+        if ($idPlace === 0) {
+            $idPlace = '';
+        } else {
+            $idPlace = "AND ud.id_places = $idPlace";
         }
 
         try {
             $query = "SELECT COUNT(*) AS count 
-            FROM advertisements
-            " . $searchContent . "";
+            FROM advertisements AS a
+            INNER JOIN user AS u ON a.id_user = u.id
+            INNER JOIN user_data AS ud ON u.id = ud.id_user
+            WHERE a.title LIKE '%" . $searchContent . "%' $idPlace";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             $count = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -70,21 +74,29 @@ class ReadModel extends AbstractModel
     public function getAdvertisements(
         int $pageNumber,
         int $pageSize,
-        string $searchContent
+        string $searchContent,
+        int $idPlace
     ): array {
         $offset = ($pageNumber * $pageSize) - $pageSize;
 
-        if ($searchContent) {
-            $searchContent = "WHERE a.title LIKE '%" . $searchContent . "%'";
-        }
+        $searchContent = "WHERE a.title LIKE '%" . $searchContent . "%'";
+
         dump($searchContent);
 
+        if ($idPlace === 0) {
+            $idPlace = '';
+        } else {
+            $idPlace = "AND ud.id_places = $idPlace";
+        }
+
         try {
-            $query =  "SELECT a.id, a.title, a.place, a.date
+            $query =  "SELECT a.id, a.title, p.place, a.date
             FROM user AS u
             INNER JOIN user_data AS ud ON u.id = ud.id_user
+            INNER JOIN places AS p ON ud.id_places = p.id
             INNER JOIN advertisements AS a ON u.id = a.id_user
-            " . $searchContent . "
+            $searchContent
+            $idPlace
             ORDER BY a.date DESC
             LIMIT $offset, $pageSize";
 
@@ -102,9 +114,10 @@ class ReadModel extends AbstractModel
     public function getAdvertisement(int $idAdvert): array
     {
         try {
-            $query = "SELECT a.title, a.content, a.place, a.date, ud.first_name, ud.phone_number
+            $query = "SELECT a.title, a.content, p.place, a.date, ud.first_name, ud.phone_number
             FROM user AS u
             INNER JOIN user_data AS ud ON u.id = ud.id_user
+            INNER JOIN places AS p ON ud.id_places = p.id
             INNER JOIN advertisements AS a ON u.id = a.id_user
             WHERE a.id = ?";
             $stmt = $this->conn->prepare($query);
@@ -130,9 +143,10 @@ class ReadModel extends AbstractModel
         $offset = ($pageNumber * $pageSize) - $pageSize;
         $id = (int) $_SESSION['id'];
         try {
-            $query =  "SELECT ud.first_name, a.id, a.title, a.place, a.date
+            $query =  "SELECT ud.first_name, a.id, a.title, p.place, a.date
             FROM user AS u 
             INNER JOIN user_data AS ud ON u.id = ud.id_user
+            INNER JOIN places AS p ON ud.id_places = p.id
             INNER JOIN advertisements AS a ON u.id = a.id_user
             WHERE u.id = ?
             ORDER BY a.date DESC
@@ -182,8 +196,8 @@ class ReadModel extends AbstractModel
         $id = (int) $_SESSION['id'];
 
         try {
-            $query = "SELECT id, title, content, place, kind_of_transaction, date
-            FROM advertisements
+            $query = "SELECT id, title, content, kind_of_transaction, date
+            FROM advertisements 
             WHERE id = ? and id_user = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);
@@ -208,9 +222,10 @@ class ReadModel extends AbstractModel
     {
         $id = (int) $_SESSION['id'];
         try {
-            $query = "SELECT user_data.first_name AS name, user_data.phone_number AS phone, user.email AS email
-            FROM user_data
-            INNER JOIN user ON user_data.id_user = user.id AND user.id = ?";
+            $query = "SELECT ud.first_name AS name, ud.phone_number AS phone, u.email, p.place
+            FROM user_data AS ud
+            INNER JOIN places AS p ON ud.id_places = p.id
+            INNER JOIN user AS u ON ud.id_user = u.id AND u.id = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
@@ -251,16 +266,21 @@ class ReadModel extends AbstractModel
         return true;
     }
 
-    public function getPlaces(): array
+    public function getListOfPlaces(): array
     {
         try {
-            $query = "SELECT DISTINCT place FROM advertisements";
+            $query = "SELECT id, community, place FROM places";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
 
-            $result = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            if ($stmt->rowCount() === 0) {
+                throw new SubpageValidateException('Błąd pobierania wartości z bazy danych');
+            }
 
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $result;
+        } catch (SubpageValidateException $e) {
+            throw new SubpageValidateException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
