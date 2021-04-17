@@ -49,19 +49,19 @@ class ReadModel extends AbstractModel
 
     public function getCountAdvertisements(string $searchContent, int $idPlace): int
     {
-        if ($idPlace === 0) {
-            $idPlace = '';
-        } else {
-            $idPlace = "AND ud.id_places = $idPlace";
-        }
+
+        $idPlace = $this->setIdPlaceToQuery($idPlace);
 
         try {
             $query = "SELECT COUNT(*) AS count 
             FROM advertisements AS a
             INNER JOIN user AS u ON a.id_user = u.id
             INNER JOIN user_data AS ud ON u.id = ud.id_user
-            WHERE a.title LIKE '%" . $searchContent . "%' $idPlace";
+            WHERE a.title LIKE ?
+            $idPlace";
             $stmt = $this->conn->prepare($query);
+            $searchContent = "%" . $searchContent . "%";
+            $stmt->bindParam(1, $searchContent, PDO::PARAM_STR);
             $stmt->execute();
             $count = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -79,15 +79,7 @@ class ReadModel extends AbstractModel
     ): array {
         $offset = ($pageNumber * $pageSize) - $pageSize;
 
-        $searchContent = "WHERE a.title LIKE '%" . $searchContent . "%'";
-
-        dump($searchContent);
-
-        if ($idPlace === 0) {
-            $idPlace = '';
-        } else {
-            $idPlace = "AND ud.id_places = $idPlace";
-        }
+        $idPlace = $this->setIdPlaceToQuery($idPlace);
 
         try {
             $query =  "SELECT a.id, a.title, p.place, a.date
@@ -95,14 +87,15 @@ class ReadModel extends AbstractModel
             INNER JOIN user_data AS ud ON u.id = ud.id_user
             INNER JOIN places AS p ON ud.id_places = p.id
             INNER JOIN advertisements AS a ON u.id = a.id_user
-            $searchContent
+            WHERE a.title LIKE ?
             $idPlace
             ORDER BY a.date DESC
             LIMIT $offset, $pageSize";
 
             $stmt = $this->conn->prepare($query);
+            $searchContent =  "%" . $searchContent . "%";
+            $stmt->bindParam(1, $searchContent, PDO::PARAM_STR);
             $stmt->execute();
-
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             return $result;
@@ -284,5 +277,16 @@ class ReadModel extends AbstractModel
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
+    }
+
+    private function setIdPlaceToQuery(int $idPlace): string
+    {
+        if ($idPlace === 0) {
+            $idPlace = '';
+        } else {
+            $idPlace = "AND ud.id_places = $idPlace";
+        }
+
+        return $idPlace;
     }
 }
