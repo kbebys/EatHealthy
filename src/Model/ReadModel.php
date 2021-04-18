@@ -47,10 +47,16 @@ class ReadModel extends AbstractModel
         return true;
     }
 
-    public function getCountAdvertisements(string $searchContent, int $idPlace): int
-    {
+    public function getCountAdvertisements(
+        string $searchContent,
+        int $idPlace,
+        string $transaction,
+        int $daysBack
+    ): int {
 
         $idPlace = $this->setIdPlaceToQuery($idPlace);
+        $transaction = $this->setTypeOfTransactionToQuery($transaction);
+        $daysBack = $this->setDaysBackToQuery($daysBack);
 
         try {
             $query = "SELECT COUNT(*) AS count 
@@ -58,7 +64,10 @@ class ReadModel extends AbstractModel
             INNER JOIN user AS u ON a.id_user = u.id
             INNER JOIN user_data AS ud ON u.id = ud.id_user
             WHERE a.title LIKE ?
-            $idPlace";
+            $idPlace
+            $transaction
+            $daysBack";
+
             $stmt = $this->conn->prepare($query);
             $searchContent = "%" . $searchContent . "%";
             $stmt->bindParam(1, $searchContent, PDO::PARAM_STR);
@@ -75,11 +84,15 @@ class ReadModel extends AbstractModel
         int $pageNumber,
         int $pageSize,
         string $searchContent,
-        int $idPlace
+        int $idPlace,
+        string $transaction,
+        int $daysBack
     ): array {
         $offset = ($pageNumber * $pageSize) - $pageSize;
 
         $idPlace = $this->setIdPlaceToQuery($idPlace);
+        $transaction = $this->setTypeOfTransactionToQuery($transaction);
+        $daysBack = $this->setDaysBackToQuery($daysBack);
 
         try {
             $query =  "SELECT a.id, a.title, p.place, a.date
@@ -89,6 +102,8 @@ class ReadModel extends AbstractModel
             INNER JOIN advertisements AS a ON u.id = a.id_user
             WHERE a.title LIKE ?
             $idPlace
+            $transaction
+            $daysBack
             ORDER BY a.date DESC
             LIMIT $offset, $pageSize";
 
@@ -288,5 +303,29 @@ class ReadModel extends AbstractModel
         }
 
         return $idPlace;
+    }
+
+    private function setTypeOfTransactionToQuery(string $transaction): string
+    {
+        $query = "AND a.kind_of_transaction = ";
+
+        if ($transaction === 'all') {
+            $transaction = '';
+        } else {
+            $transaction = $query . "'$transaction'";
+        }
+
+        return $transaction;
+    }
+
+    private function setDaysBackToQuery(int $daysBack): string
+    {
+        if ($daysBack === 0) {
+            $daysBack = '';
+        } else {
+            $daysBack = "AND DATEDIFF(NOW(), a.date) <= $daysBack";
+        }
+
+        return $daysBack;
     }
 }

@@ -8,8 +8,9 @@ class MainController extends AbstractController
 {
     public int $idAdvert;
 
-    private const PAGE_SIZE = 40;
     private const PAGE_SIZES = [10, 20, 40];
+    private const TYPES_OF_TRANSACTIIONS = ['all', 'buy', 'sell'];
+    private const DAYS_BACK = [1, 2, 5, 10, 20, 30];
 
     public function run(): void
     {
@@ -27,57 +28,97 @@ class MainController extends AbstractController
             $this->page = 'advDetails';
             $this->params['advert'] = $this->readModel->getAdvertisement($this->idAdvert);
         } else {
-            $this->displayingAdvertisements();
+            $this->setDisplayingAdvertisements();
         }
     }
 
-    private function displayingAdvertisements(): void
+    private function setDisplayingAdvertisements(): void
+    {
+        $this->setFilterParams();
+
+        $this->params['adverts'] = $this->readModel->getAdvertisements(
+            $this->params['pageNumber'],
+            $this->params['pageSize'],
+            $this->params['searchContent'],
+            $this->params['idPlace'],
+            $this->params['transaction'],
+            $this->params['daysBack']
+        );
+    }
+
+    //Try to keep order setting of params because change it may ruin the logic
+    private function setFilterParams(): void
     {
         $this->params['listOfPlaces'] = $this->readModel->getListOfPlaces();
         $this->params['searchContent'] = $this->request->getParam('searchContent', '');
         $this->params['idPlace'] = (int) $this->request->getParam('place', 0);
+        $this->setTypeOftransaction();
+        $this->setCountOfDaysBack();
 
         $countOfAdvs = $this->getCountofAdvs();
 
-
-        $pageSize = $this->getPageSize();
-        $countOfPages = (int) ceil($countOfAdvs / $pageSize);
-        $pageNumber = $this->getPageNumber() > $countOfPages ? 1 : $this->getPageNumber();
-
-        $this->params['pageSize'] = $pageSize;
-        $this->params['pageNumber'] = $pageNumber;
-        $this->params['countOfPages'] = $countOfPages;
-        $this->params['adverts'] = $this->readModel->getAdvertisements($pageNumber, $pageSize, $this->params['searchContent'], $this->params['idPlace']);
+        $this->setPageSize();
+        $this->params['countOfPages'] = (int) ceil($countOfAdvs / $this->params['pageSize']);
+        $this->setPageNumber();
     }
 
     private function getCountofAdvs(): int
     {
-        // if ($this->params['searchContent'] || $this->params['idPlace'] !== 0) {
-        $countOfAdvs = $this->readModel->getCountAdvertisements($this->params['searchContent'], $this->params['idPlace']);
+        $countOfAdvs = $this->readModel->getCountAdvertisements(
+            $this->params['searchContent'],
+            $this->params['idPlace'],
+            $this->params['transaction'],
+            $this->params['daysBack']
+        );
         dump($countOfAdvs);
         return $countOfAdvs;
-        // } else {
-        //     $countOfAdvs = $this->readModel->getCountAdvertisements();
-        // }
+    }
+
+    private function setCountOfDaysBack(): void
+    {
+        $daysBack = (int) $this->request->getParam('daysBack', 0);
+
+        //check if count of daysBack is available
+        if (!in_array($daysBack, self::DAYS_BACK, true)) {
+            $daysBack = 0;
+        }
+
+        $this->params['daysBack'] =  $daysBack;
+    }
+
+    private function setTypeOftransaction(): void
+    {
+        $transaction = $this->request->getParam('transaction', 'all');
+        //check if got transaction is equal to available options
+        if (!in_array($transaction, self::TYPES_OF_TRANSACTIIONS, true)) {
+            $transaction = self::TYPES_OF_TRANSACTIIONS[0];
+        }
+
+        $this->params['transaction'] = $transaction;
     }
 
 
     //Get how many advertisemets is display on one page
-    private function getPageSize(): int
+    private function setPageSize(): void
     {
-        $number = (int) $this->request->getParam('pageSize', self::PAGE_SIZE);
+        $number = (int) $this->request->getParam('pageSize', self::PAGE_SIZES[2]);
 
+        //Check if page size has one of default values
         if (!in_array($number, self::PAGE_SIZES, true)) {
-            $number = self::PAGE_SIZE;
+            $number = self::PAGE_SIZES[2];
         }
 
-        return $number;
+        $this->params['pageSize'] = $number;
     }
 
     //Get wich page with advertisements is display
-    private function getPageNumber(): int
+    private function setPageNumber(): void
     {
-        return (int) $this->request->getParam('pageNumber', 1);
+        $pageNumber = (int) $this->request->getParam('pageNumber', 1);
+
+        $pageNumber = ($pageNumber > $this->params['countOfPages']) ? 1 : $pageNumber;
+
+        $this->params['pageNumber'] = $pageNumber;
     }
 
     private function setAdvertisementId(): void

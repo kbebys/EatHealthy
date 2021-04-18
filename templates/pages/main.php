@@ -15,18 +15,22 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
 $searchContent = $params['searchContent'] ?? '';
 $listOfPlaces = $params['listOfPlaces'] ?? [];
 $idPlace = $params['idPlace'] ?? 0;
+$transaction = $params['transaction'] ?? 'all';
+$daysBack = $params['daysBack'] ?? 0;
 
-$url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . '&pageSize=' . $pageSize . '&pageNumber=';
+$url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . '&transaction=' . $transaction . '&daysBack=' . $daysBack . '&pageSize=' . $pageSize . '&pageNumber=';
 ?>
 
-<div class="filter_menu">
+<div class="filter-menu">
     <form action="/?action=main" method="GET">
+
         <div class="search">
             <label for="searchContent">Szukaj w tytule: </label>
             <input type="search" id="searchContent" name="searchContent" value="<?php echo $searchContent ?>">
         </div>
+
         <div class="place">
-            <label for="place">Nazwa miejscowości</label>
+            <label for="place">Nazwa miejscowości:</label>
             <select name="place" id="place">
                 <option <?php echo ($idPlace === 0) ? 'selected' : '' ?> value=""> -- Wszystkie miejscowości -- </option>
 
@@ -37,8 +41,30 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
             </select>
         </div>
 
-        <div class="pageSize">
-            <p>Ilość wyświetlanych ogłoszeń: </p>
+        <div class="type-of-transaction">
+            <label for="transaction">Rodzaj transakcji:</label>
+            <select name="transaction" id="transaction">
+                <option <?php echo ($transaction === 'all') ? 'selected' : '' ?> value="all"> -- Wszystkie --</option>
+                <option <?php echo ($transaction === 'buy') ? 'selected' : '' ?> value="buy">Kupię</option>
+                <option <?php echo ($transaction === 'sell') ? 'selected' : '' ?> value="sell">Sprzedam</option>
+            </select>
+        </div>
+
+        <div class="last-days">
+            <label for="last-days">Z ostatnich dni:</label>
+            <select name="daysBack" id="last-days">
+                <option <?php echo ($daysBack === 0) ? 'selected' : '' ?> value="">--</option>
+                <option <?php echo ($daysBack === 1) ? 'selected' : '' ?> value="1">1</option>
+                <option <?php echo ($daysBack === 2) ? 'selected' : '' ?> value="2">2</option>
+                <option <?php echo ($daysBack === 5) ? 'selected' : '' ?> value="5">5</option>
+                <option <?php echo ($daysBack === 10) ? 'selected' : '' ?> value="10">10</option>
+                <option <?php echo ($daysBack === 20) ? 'selected' : '' ?> value="20">20</option>
+                <option <?php echo ($daysBack === 30) ? 'selected' : '' ?> value="30">30</option>
+            </select>
+        </div>
+
+        <div class="page-size">
+            <p>Ilość wyświetlanych ogłoszeń na stronie: </p>
             <input type="radio" id="ten" name="pageSize" value="10" <?php echo $pageSize === 10 ? 'checked' : '';  ?>>
             <label for="ten"> 10</label>
             <input type="radio" id="twenty" name="pageSize" value="20" <?php echo $pageSize === 20 ? 'checked' : '';  ?>>
@@ -74,7 +100,6 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
     </div>
 
     <div class="advertisements">
-        <!-- All of the advertisements -->
         <?php for ($i = 0; $i < count($adverts); $i++) :
             $advert = $adverts[$i]; ?>
             <div class="advert">
