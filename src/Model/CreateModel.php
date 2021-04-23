@@ -28,6 +28,7 @@ class CreateModel extends AbstractModel
         $password = $data['password'];
         $passRepeat = $data['pass-repeat'];
         $email = $data['email'];
+        $recaptcha = $data['recaptcha'];
 
         //Username characters validation
         if (preg_match('/^[a-zA-Z0-9]+$/', $login) == 0) {
@@ -58,6 +59,8 @@ class CreateModel extends AbstractModel
         if ($stmt !== false) {
             throw new ValidateException('Konto z tym adresem email już istnieje');
         }
+
+        $this->recaptchaVerify($recaptcha);
 
         //hash password
         $passwordHashed = password_hash($password, PASSWORD_DEFAULT);
@@ -163,6 +166,18 @@ class CreateModel extends AbstractModel
             throw new SubpageValidateException($e->getMessage());
         } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
+        }
+    }
+
+    private function recaptchaVerify(string $recaptcha): void
+    {
+        $secretKey = '6Ldn7rUaAAAAAL9MHl4PeKXsNt7X-0opBhNoZwqv';
+        $url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($secretKey) . '&response=' . urlencode($recaptcha);
+        $responseData = file_get_contents($url);
+        $responseData = json_decode($responseData, true);
+
+        if (!$responseData['success']) {
+            throw new ValidateException('Walidacja recaptcha nie powiodła się. Spróbuj ponownie!');
         }
     }
 }

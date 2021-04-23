@@ -13,6 +13,7 @@ if (empty($params['access'])) {
     <input type="password" name="psw-repeat" id="psw-repeat">
     <label for="email">Email:</label>
     <input type="email" name="email" id="email" required>
+    <div class="g-recaptcha" data-sitekey="6Ldn7rUaAAAAAErm09DnXWSAUA4iFSyTE2tJPjHY"></div>
     <!-- <input class="checkbox" type="checkbox"> -->
     <!-- <p class="checkbox">Akceptuję regulamin.</p> -->
     <input type="submit" name="save" value="Utwórz nowe konto">

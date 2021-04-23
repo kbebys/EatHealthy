@@ -22,7 +22,8 @@ class RegisterController extends AbstractController
             'login' => $this->request->postParam('username'),
             'password' => $this->request->postParam('password'),
             'pass-repeat' => $this->request->postParam('psw-repeat'),
-            'email' => $this->request->postParam('email')
+            'email' => $this->request->postParam('email'),
+            'recaptcha' => $this->request->postParam('g-recaptcha-response')
         ];
 
         if ($this->createModel->register($registerData) === true) {

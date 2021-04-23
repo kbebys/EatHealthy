@@ -17,6 +17,7 @@ $error = $params['error'] ?? null;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ryneczek</title>
     <link rel="stylesheet" href="public/style.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body>
@@ -44,7 +45,7 @@ $error = $params['error'] ?? null;
                 <?php endif ?>
                 <?php require_once("templates/pages/$page.php") ?>
                 <?php if ($page === 'register') : ?>
-                    <p class="info">*Login może składać się wyłącznie z małych i dużych liter oraz liczb!!</p>
+                    <p class="info">*Login może składać się wyłącznie z małych i dużych liter oraz liczb!!(Bez polskich znaków!!)</p>
                     <p class="info">**Hasło musi mieć od 5 do 20 znaków, składać tylko z liter, cyfr i znaków specjalnych przy czym musi
                         zawierć przynajmniej
                         jedną
