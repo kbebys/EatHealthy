@@ -70,7 +70,7 @@ class MainController extends AbstractController
             $this->params['transaction'],
             $this->params['daysBack']
         );
-        dump($countOfAdvs);
+
         return $countOfAdvs;
     }
 

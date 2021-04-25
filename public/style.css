@@ -419,14 +419,3 @@ main .search form input {
     text-align: center;
     font-size: 1.5rem;
 }
-
-footer {
-    background-color: #2E3D59;
-    font-size: 1.5rem;
-    color: #BFAC95;
-    text-align: center;
-}
-
-footer p {
-    padding: 10px 0;
-}
