@@ -1,0 +1,157 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap&subset-latin-ext');
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    font-size: 1.6rem;
+}
+
+.hero-shadow {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .7);
+    z-index: -1;
+}
+
+.top-hero {
+    position: relative;
+    height: 10rem;
+    background-size: cover;
+    z-index: 0;
+}
+
+.alert {
+    font-size: 1.5rem;
+}
+
+/* ------------------------ */
+/* ---- NAV ---- */
+/* ------------------------ */
+
+.navbar-brand {
+    font-size: 3rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.navbar-brand i {
+    margin-left: 0.2rem;
+    font-size: 4rem;
+}
+
+.navbar-nav {
+    font-size: 2.2rem;
+}
+
+/* ------------------------ */
+/* ---- MAIN ---- */
+/* ------------------------ */
+
+
+main>section {
+    min-height: calc(100vh - 82.25px - 60px);
+}
+
+/* ------------------------ section login*/
+#login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(242, 159, 5, .3);
+}
+
+.login-box {
+    width: 300px;
+    font-size: 2rem;
+}
+
+.login-box .login-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('../img/login-hero.jpg');
+    background-position: center;
+    font-size: 3rem;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+
+.login-box .form-control,
+.login-box .btn {
+    font-size: 2rem;
+}
+
+
+/* ------------------------ */
+/* ---- FOOTER ---- */
+/* ------------------------ */
+
+footer {
+    font-size: 2rem;
+}
+
+/* ------------------------ */
+/* ---- MEDIA ---- */
+/* ------------------------ */
+
+@media (min-width: 992px) {
+    .login-box {
+        width: 500px;
+        font-size: 2rem;
+    }
+}
+
+/* ------------------------ */
+/* ---- COLORS ---- */
+/* ------------------------ */
+.c-yellow {
+    color: #D9B504;
+}
+
+.b-yellow {
+    background-color: #D9B504;
+}
+
+.c-br-orange {
+    color: #F29F05;
+}
+
+.b-br-orange {
+    background-color: #F29F05;
+}
+
+.c-orange {
+    color: #D97904;
+}
+
+.b-orange {
+    background-color: #D97904;
+}
+
+.c-red {
+    color: #BF0404;
+}
+
+.b-red {
+    background-color: #BF0404;
+}
+
+.c-d-red {
+    color: #730202;
+}
+
+.b-d-red {
+    background-color: #730202;
+}

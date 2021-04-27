@@ -78,25 +78,32 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
 
 <?php if ($countOfPages !== 0) : ?>
     <div class="pagination">
-        <a href="<?php echo $url . 1 ?>">
-            <span> pierwsza </span>
-        </a>
-        <a href="<?php echo $url . $previous ?>">
-            <span> poprzednia </span>
-        </a>
+        <?php if ($pageNumber !== 1) : ?>
+            <a href="<?php echo $url . 1 ?>">
+                <span> pierwsza </span>
+            </a>
+            <a href="<?php echo $url . $previous ?>">
+                <span> poprzednia </span>
+            </a>
+        <?php endif ?>
 
         <?php for ($i = 1; $i <= $countOfPages; $i++) : ?>
-            <a class="<?php echo ($i === $pageNumber) ? 'active' : '' ?>" href="<?php echo $url . $i ?>">
-                <span><?php echo $i ?></span>
-            </a>
+            <?php if ($i < ($pageNumber - 2) || $i > ($pageNumber + 2)) : ?>
+            <?php else : ?>
+                <a class="<?php echo ($i === $pageNumber) ? 'active' : '' ?>" href="<?php echo $url . $i ?>">
+                    <span><?php echo $i ?></span>
+                </a>
+            <?php endif ?>
         <?php endfor ?>
 
-        <a href="<?php echo $url . $next ?>">
-            <span> następna </span>
-        </a>
-        <a href="<?php echo $url . $countOfPages ?>">
-            <span> ostatnia </span>
-        </a>
+        <?php if ($pageNumber !== $countOfPages) : ?>
+            <a href="<?php echo $url . $next ?>">
+                <span> następna </span>
+            </a>
+            <a href="<?php echo $url . $countOfPages ?>">
+                <span> ostatnia </span>
+            </a>
+        <?php endif ?>
     </div>
 
     <div class="advertisements">
@@ -116,26 +123,34 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
             </div>
         <?php endfor; ?>
     </div>
+
     <div class="pagination">
-        <a href="<?php echo $url . 1 ?>">
-            <span> pierwsza </span>
-        </a>
-        <a href="<?php echo $url . $previous ?>">
-            <span> poprzednia </span>
-        </a>
+        <?php if ($pageNumber !== 1) : ?>
+            <a href="<?php echo $url . 1 ?>">
+                <span> pierwsza </span>
+            </a>
+            <a href="<?php echo $url . $previous ?>">
+                <span> poprzednia </span>
+            </a>
+        <?php endif ?>
 
         <?php for ($i = 1; $i <= $countOfPages; $i++) : ?>
-            <a class="<?php echo ($i === $pageNumber) ? 'active' : '' ?>" href="<?php echo $url . $i ?>">
-                <span><?php echo $i ?></span>
-            </a>
+            <?php if ($i < ($pageNumber - 2) || $i > ($pageNumber + 2)) : ?>
+            <?php else : ?>
+                <a class="<?php echo ($i === $pageNumber) ? 'active' : '' ?>" href="<?php echo $url . $i ?>">
+                    <span><?php echo $i ?></span>
+                </a>
+            <?php endif ?>
         <?php endfor ?>
 
-        <a href="<?php echo $url . $next ?>">
-            <span> następna </span>
-        </a>
-        <a href="<?php echo $url . $countOfPages ?>">
-            <span> ostatnia </span>
-        </a>
+        <?php if ($pageNumber !== $countOfPages) : ?>
+            <a href="<?php echo $url . $next ?>">
+                <span> następna </span>
+            </a>
+            <a href="<?php echo $url . $countOfPages ?>">
+                <span> ostatnia </span>
+            </a>
+        <?php endif ?>
     </div>
 <?php else : ?>
     <p class="message">Nie znaleziono ogłoszeń</p>
