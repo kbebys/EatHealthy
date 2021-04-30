@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap&subset-latin-ext');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap&subset-latin-ext');
 
 * {
     box-sizing: border-box;
@@ -11,7 +12,8 @@ html {
 }
 
 body {
-    font-family: 'Lato', sans-serif;
+    /* font-family: 'Lato', sans-serif; */
+    font-family: 'Montserrat', sans-serif;
     font-size: 1.6rem;
 }
 
@@ -26,9 +28,15 @@ body {
 
 .top-hero {
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 10rem;
     background-size: cover;
     z-index: 0;
+    font-size: 3rem;
+    text-transform: uppercase;
+    font-weight: bold;
 }
 
 .alert {
@@ -59,40 +67,145 @@ body {
 /* ------------------------ */
 
 
-main>section {
+main>section.login,
+main>section.register {
     min-height: calc(100vh - 82.25px - 60px);
 }
 
-/* ------------------------ section login*/
-#login {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(242, 159, 5, .3);
-}
 
-.login-box {
-    width: 300px;
-    font-size: 2rem;
-}
+/* ------------------------ section board hero & filter*/
 
-.login-box .login-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-image: url('../img/login-hero.jpg');
+section.board-hero {
+    height: 15rem;
+    background-image: url('../img/board-hero.jpg');
     background-position: center;
-    font-size: 3rem;
-    text-transform: uppercase;
+}
+
+.board-filter input {
+    font-size: 1.4rem;
     font-weight: bold;
 }
 
+.board-filter select,
+.board-filter label {
+    font-size: 1.4rem;
+}
 
-.login-box .form-control,
-.login-box .btn {
+.board-filter .btn {
+    padding: 0.5rem -1rem;
+    text-transform: uppercase;
+    font-size: 2.5rem;
+}
+
+.board-filter .input-group-text {
+    border: 1px solid #343a40;
+    background-color: #343a40;
+    color: #fff;
+}
+
+/* ------------------------ nav pagination*/
+
+.pagination .page-item {
+    padding: .5rem;
+    font-weight: bold;
+}
+
+.pagination>li>a {
+    background-color: white;
+    color: #343a40;
+}
+
+.pagination>li>a:focus,
+.pagination>li>a:hover,
+.pagination>li>span:focus,
+.pagination>li>span:hover {
+    color: #5a5a5a;
+    background-color: #eee;
+    border-color: #ddd;
+}
+
+.pagination>.active>a {
+    color: white;
+    background-color: #343a40 !Important;
+    border: solid 1px #343a40 !Important;
+}
+
+.pagination>.active>a:hover {
+    background-color: #23272b !Important;
+    border: solid 1px #23272b;
+}
+
+/* ------------------------ section advertisements*/
+.board-adverts a {
+    color: #000;
+    text-decoration: none;
+}
+
+/* ------------------------ section details of advert*/
+
+.detail-advert h2 {
+    font-weight: bold;
+}
+
+.detail-advert h3 {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.detail-advert .content {
+    white-space: pre-line;
+}
+
+.detail-advert .btn {
+    padding: .5rem 0;
     font-size: 2rem;
 }
 
+/* ------------------------ section login*/
+
+.login .login-hero {
+    background-image: url('../img/login-hero.jpg');
+    background-position: center;
+}
+
+.login .form-group {
+    font-size: 2.2rem;
+}
+
+.login .form-control {
+    font-size: 2rem;
+}
+
+.login .btn {
+    padding: .2em .8em;
+    font-size: 2.4rem;
+    text-transform: uppercase;
+}
+
+/* ------------------------ section register*/
+
+.register .register-hero {
+    background-image: url('../img/register-hero.jpg');
+    background-position: center 40%;
+}
+
+.register .form-group {
+    font-size: 2.2rem;
+}
+
+.register .form-control {
+    font-size: 2rem;
+}
+
+.register .btn {
+    padding: .2em .8em;
+    font-size: 2.4rem;
+    text-transform: uppercase;
+}
+
+.register .form-text {
+    font-size: 1rem;
+}
 
 /* ------------------------ */
 /* ---- FOOTER ---- */
@@ -105,13 +218,6 @@ footer {
 /* ------------------------ */
 /* ---- MEDIA ---- */
 /* ------------------------ */
-
-@media (min-width: 992px) {
-    .login-box {
-        width: 500px;
-        font-size: 2rem;
-    }
-}
 
 /* ------------------------ */
 /* ---- COLORS ---- */

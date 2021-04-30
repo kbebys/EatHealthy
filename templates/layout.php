@@ -33,7 +33,7 @@ $error = $params['error'] ?? null;
 
             <?php else : ?>
                 <a class="navbar-brand" href="/?action=main">
-                    <span class="c-d-red">Eat</span><i class="fas fa-carrot c-br-orange"></i>Healthy
+                    <span class="text-dark">Eat</span><i class="fas fa-carrot c-br-orange"></i>Healthy
                 </a>
                 <div class="navbar-nav ml-lg-auto">
                     <hr class="text-light d-lg-none">
@@ -57,14 +57,6 @@ $error = $params['error'] ?? null;
         <?php endif ?>
 
         <?php require_once("templates/pages/$page.php") ?>
-
-        <?php if ($page === 'register') : ?>
-            <p class="info">*Login może składać się wyłącznie z małych i dużych liter oraz liczb!!(Bez polskich znaków!!)</p>
-            <p class="info">**Hasło musi mieć od 5 do 20 znaków, składać tylko z liter, cyfr i znaków specjalnych przy czym musi
-                zawierć przynajmniej
-                jedną
-                małą oraz dużą litere i jden znak specjalny!!</p>
-        <?php endif ?>
     </main>
     <footer class="py-4 b-red text-white text-center">
         <p class="m-0">EatHealthy &copy; 2021. Wszelkie prawa zastrzeżone</p>
