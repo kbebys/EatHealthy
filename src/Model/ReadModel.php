@@ -37,11 +37,10 @@ class ReadModel extends AbstractModel
             throw new ValidateException('Niepoprawna nazwa użytkownika lub hasło');
         }
 
-        //Creating session to know the user is logged in
-        session_regenerate_id();
+        session_regenerate_id(true);
 
         $_SESSION['loggedin'] = true;
-        $_SESSION['name'] = $login;
+        $_SESSION['login'] = $login;
         $_SESSION['id'] = $result['id'];
 
         return true;

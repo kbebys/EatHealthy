@@ -25,19 +25,19 @@ $error = $params['error'] ?? null;
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark b-red py-4 sticky-top">
         <div class="container d-flex flex-column flex-lg-row">
-
+            <a class="navbar-brand" href="/?action=main">
+                <span class="text-dark">Eat</span><i class="fas fa-carrot c-br-orange"></i>Healthy
+            </a>
             <?php if ($loggedin) : ?>
-                <div style="display: none;"><a href="/?action=login">Logowanie</a></div>
-                <div><a href="/?action=logout">Wyloguj</a></div>
-                <div><a href="/?action=userPanel"><?php echo $_SESSION['name']; ?></a></div>
-
-            <?php else : ?>
-                <a class="navbar-brand" href="/?action=main">
-                    <span class="text-dark">Eat</span><i class="fas fa-carrot c-br-orange"></i>Healthy
-                </a>
                 <div class="navbar-nav ml-lg-auto">
                     <hr class="text-light d-lg-none">
-                    <a class="nav-link active" href="/?action=login"><i class="fas fa-store"></i> Moje stanowisko</a>
+                    <a class="nav-link text-light mr-lg-4" href="/?action=userPanel"><i class="fas fa-store text-dark"></i> Moje stanowisko</a>
+                    <a class="nav-link text-light" href="/?action=logout"><i class="fas fa-sign-out-alt text-dark"></i> Wyloguj</a>
+                </div>
+            <?php else : ?>
+                <div class="navbar-nav ml-lg-auto">
+                    <hr class="text-light d-lg-none">
+                    <a class="nav-link text-light" href="/?action=login"><i class="fas fa-store text-dark"></i> Moje stanowisko</a>
                 </div>
             <?php endif ?>
         </div>
@@ -46,12 +46,12 @@ $error = $params['error'] ?? null;
 
     <main>
         <?php if ($success) : ?>
-            <div class="alert alert-success message m-2" role="alert">
+            <div class="alert alert-success message m-4" role="alert">
                 <p><?php echo $success; ?></p>
             </div>
         <?php endif ?>
         <?php if ($error) : ?>
-            <div class="alert alert-danger message m-2" role="alert">
+            <div class="alert alert-danger message m-4" role="alert">
                 <p><?php echo $error; ?></p>
             </div>
         <?php endif ?>

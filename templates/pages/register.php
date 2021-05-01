@@ -11,7 +11,7 @@ if (empty($params['access'])) {
             <p class="text-light">Zarejestruj się</p>
         </div>
         <div class="row text-center justify-content-center mb-5">
-            <div class="col-md-7 col-lg-5 border rounded m-4 py-5">
+            <div class="col-md-7 col-lg-5 border border-dark m-4 py-5">
                 <div class="destination p-5">
                     <form action="/?action=register" method="post" autocomplete="off">
                         <div class="form-group mb-4">

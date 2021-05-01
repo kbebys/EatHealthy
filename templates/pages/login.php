@@ -12,7 +12,7 @@ if (empty($params['access'])) {
             <p class="text-light">Zaloguj się</p>
         </div>
         <div class="row text-center justify-content-center mb-5">
-            <div class="col-md-7 col-lg-5 border rounded m-4 py-5">
+            <div class="col-md-7 col-lg-5 border border-dark m-4 py-5">
                 <div class="destination p-5">
                     <form action="/?action=login" method="post">
                         <div class="form-group mb-5">
