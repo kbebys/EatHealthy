@@ -69,14 +69,18 @@ class Controller extends AbstractController
             //Handle Errors throwing during exchange data between database and page
         } catch (PageValidateException $e) {
             //It is here because register and changePass use the same fun() 
-            if ($this->page === 'register') {
-                $this->params['error'] = $e->getMessage();
-            } else {
-                $this->params['errorWindow'] = $e->getMessage();
-            }
+            $this->params['error'] = $e->getMessage();
+
+            // if ($this->page === 'register') {
+            //     $this->params['error'] = $e->getMessage();
+            // } else {
+            //     $this->params['errorWindow'] = $e->getMessage();
+            // }
+
             $this->view->render($this->page, $this->subpage, $this->params);
         } catch (SubpageValidateException $e) {
-            $this->params['errorWindow'] = $e->getMessage();
+            $this->params['error'] = $e->getMessage();
+            // $this->params['errorWindow'] = $e->getMessage();
 
             //errors about myAdv subpage
             if ($this->subpage === 'myAdv') {

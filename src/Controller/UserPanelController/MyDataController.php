@@ -42,7 +42,7 @@ class MyDataController extends AbstractController
         ];
         if ($this->createModel->addUserData($uData) === true) {
             $this->params = [
-                'messageWindow' => 'Dane zostały dodane pomyślnie',
+                'success' => 'Dane zostały dodane pomyślnie',
                 'uData' => $this->readModel->getUserData()
             ];
         }
@@ -78,7 +78,7 @@ class MyDataController extends AbstractController
 
             if ($this->updateModel->$fun($uData) === true) {
                 $param = [
-                    'messageWindow' => 'Dane zostały zmienione pomyślnie',
+                    'success' => 'Dane zostały zmienione pomyślnie',
                     'uData' => $this->readModel->getUserData(),
                     'change' => null
                 ];

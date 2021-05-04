@@ -66,7 +66,7 @@ class MyAdvController extends AbstractController
 
             if ($this->updateModel->changeUserAdvertisement($advData, $this->idAdv) === true) {
                 $this->params['edit'] = null;
-                $this->params['messageWindow'] = 'Twoje ogłoszenie zostało zmienione';
+                $this->params['success'] = 'Twoje ogłoszenie zostało zmienione';
                 $this->detailsUserAdvert();
             }
         }
@@ -81,7 +81,7 @@ class MyAdvController extends AbstractController
 
         if ($ifDelete === 'yes') {
             if ($this->deleteModel->deleteUserAdvertisement($this->idAdv) === true) {
-                $this->params = ['messageWindow' => 'Ogłoszenie zostało usunięte'];
+                $this->params = ['success' => 'Ogłoszenie zostało usunięte'];
                 $this->getUserAdverts();
             }
         } elseif ($ifDelete === 'no') {

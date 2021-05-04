@@ -28,7 +28,7 @@ class RegisterController extends AbstractController
 
         if ($this->createModel->register($registerData) === true) {
             $this->page = 'login';
-            $this->params['message'] = 'Rejestracja powiodła się';
+            $this->params['success'] = 'Rejestracja powiodła się';
         }
     }
 }

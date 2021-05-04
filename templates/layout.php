@@ -5,7 +5,7 @@ if (empty($params['access'])) {
 }
 
 $loggedin = $_SESSION['loggedin'] ?? null;
-$success = $params['message'] ?? null;
+$success = $params['success'] ?? null;
 $error = $params['error'] ?? null;
 ?>
 <!DOCTYPE html>
@@ -71,6 +71,15 @@ $error = $params['error'] ?? null;
         function init() {
             $('.destination').prepend($('.message'));
         }
+
+
+        $(document).click(function(event) {
+            var clickover = $(event.target);
+            var _opened = $(".collapse").hasClass("show");
+            if (_opened === true && !clickover.hasClass("navbar-toggler")) {
+                $(".navbar-toggler").click();
+            }
+        })
     </script>
 </body>
 

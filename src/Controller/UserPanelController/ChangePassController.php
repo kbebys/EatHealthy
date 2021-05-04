@@ -21,7 +21,7 @@ class ChangePassController extends AbstractController
 
 
             if ($this->updateModel->changePassword($passwords) === true) {
-                $this->params['messageWindow'] = 'Hasło zostało zmienione';
+                $this->params['success'] = 'Hasło zostało zmienione';
             }
         }
 

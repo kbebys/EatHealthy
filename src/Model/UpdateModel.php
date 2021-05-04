@@ -116,9 +116,6 @@ class UpdateModel extends AbstractModel
         $newRepeat = $data['newRepeat'];
         $id = (int) $_SESSION['id'];
 
-        if ($old === $new) {
-            throw new PageValidateException('Nowe hasło musi być inne od aktualnego');
-        }
 
 
         $stmt = $this->checkUserExist('id', $id);
@@ -126,6 +123,10 @@ class UpdateModel extends AbstractModel
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!password_verify($old, $result['password'])) {
             throw new PageValidateException('Niepoprawne aktualne hasło');
+        }
+
+        if ($old === $new) {
+            throw new PageValidateException('Nowe hasło musi być inne od aktualnego');
         }
 
         $passValid = $this->validatePasswords($new, $newRepeat);

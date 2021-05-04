@@ -4,7 +4,7 @@ if (empty($params['access'])) {
     exit;
 }
 
-$ListOfPlaces = $params['listOfPlaces'] ?? [];
+$listOfPlaces = $params['listOfPlaces'] ?? [];
 
 $uData = $params['uData'] ?? [];
 $name = $uData['name'] ?? null;
@@ -16,76 +16,147 @@ $changeData = $params['change'] ?? null;
 
 $subpage = "/?action=userPanel&subpage=myData";
 ?>
-<?php if ($uData) : ?>
-    <table>
-        <tr>
-            <th>Imie</th>
-            <th>Numer Telefonu</th>
-            <th>Miejscowość</th>
-            <th>Adres email</th>
-        </tr>
-        <tr>
-            <td><?php echo $name ?></td>
-            <td><?php echo $phone ?></td>
-            <td><?php echo $place ?></td>
-            <td><?php echo $email ?></td>
-        </tr>
-        <tr>
-            <td><a href="<?php echo $subpage ?>&change=name">Zmień</a></td>
-            <td><a href="<?php echo $subpage ?>&change=phone">Zmień</a></td>
-            <td><a href="<?php echo $subpage ?>&change=place">Zmień</a></td>
-        </tr>
-    </table>
 
-<?php else : ?>
-    <!-- When user did not add its data -->
-    <form action="<?php echo $subpage ?>" method="POST">
-        <label for="first-name">Imie: </label>
-        <input type="text" name="first-name" id="first-name" required>
-        <label for="phone-number">Numer telefonu: </label>
-        <p>+48 <input type="tel" name="phone-number" id="phone-number" value="" required></p>
-        <select name="place" id="place" required>
-            <option disabled selected value> -- Wybierz swoją miejscowość -- </option>
-            <?php
-            foreach ($params['listOfPlaces'] as $key) {
-                echo '<option value="' . $key['id'] . '">' . $key['place'] . ' (gmina: ' . $key['community'] . ')</option>';
-            } ?>
-        </select>
-        <input type="submit" name="save" value="Dodaj">
-    </form>
-    <p class="message">Uzupełnij swoje dane aby móc w pełni korzystać z serwisu!!</p>
-<?php endif ?>
+<section class="user-data">
+    <div class="container text-center">
+        <div class="user-title flex-column flex-md-row text-dark py-3 py-md-5">
+            <i class="fas fa-address-card px-4"></i>
+            <h2>Moje dane</h2>
+        </div>
+        <!-- Display form with content which user wants to change -->
+        <?php if ($changeData) : ?>
+            <div class="change-data border border-dark my-5 py-5 px-3 px-md-5">
+                <form action="<?php echo $subpage ?>&change=<?php echo $changeData ?>" method="POST">
+                    <?php switch ($changeData):
+                        case 'name': ?>
+                            <div class="form-group mb-4">
+                                <label for="name">Imię: </label>
+                                <input type="text" name="name" id="name" class="form-control" required>
+                            </div>
+                        <?php break;
+                        case 'phone': ?>
+                            <label for="phone">Numer telefonu: </label>
+                            <div class="input-group mb-4">
+                                <div class="input-group-prepend">
+                                    <p class="input-group-text">+48</p>
+                                </div>
+                                <input type="tel" name="phone" id="phone" class="form-control" required>
+                            </div>
+                        <?php break;
+                        case 'place': ?>
+                            <div class="form-group mb-4">
+                                <select name="place" id="place" class="form-control" required>
+                                    <option disabled selected value> -- Wybierz swoją miejscowość -- </option>
+                                    <?php
+                                    foreach ($params['listOfPlaces'] as $key) {
+                                        echo '<option value="' . $key['id'] . '">' . $key['place'] . ' (gmina: ' . $key['community'] . ')</option>';
+                                    } ?>
+                                </select>
+                            </div>
+                    <?php break;
+                    endswitch ?>
 
-<!-- Display form with content which user wants to change -->
-<?php if ($changeData) : ?>
-    <form action="<?php echo $subpage ?>&change=<?php echo $changeData ?>" method="POST">
-        <?php switch ($changeData):
-            case 'name': ?>
+                    <input class="btn btn-outline-dark my-3" type="submit" name="save" value="Zmień">
+                </form>
+                <a class="btn c-d-red" href="<?php echo $subpage ?>">
+                    <i class="fas fa-arrow-up"></i> schowaj <i class="fas fa-arrow-up"></i>
+                </a>
+            </div>
+        <?php endif ?>
+        <?php if ($uData) : ?>
+            <div class="destination"></div>
+            <div class="show-data mt-5 d-flex flex-column flex-md-row">
+                <table class="table mx-md-2">
+                    <thead class=" b-d-red text-light">
+                        <tr>
+                            <th scope="col">Imię</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><?php echo $name ?></td>
+                        </tr>
+                        <tr>
+                            <td><a class="btn btn-dark" href="<?php echo $subpage ?>&change=name">Zmień</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table mx-md-2">
+                    <thead class=" b-d-red text-light">
+                        <tr>
+                            <th scope="col">Numer Telefonu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>+48 <?php echo $phone ?></td>
+                        </tr>
+                        <tr>
+                            <td><a class="btn btn-dark" href="<?php echo $subpage ?>&change=phone">Zmień</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table mx-md-2">
+                    <thead class=" b-d-red text-light">
+                        <tr>
+                            <th scope="col">Miejscowość</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><?php echo $place ?></td>
+                        </tr>
+                        <tr>
+                            <td><a class="btn btn-dark" href="<?php echo $subpage ?>&change=place">Zmień</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table mx-md-2">
+                    <thead class=" b-d-red text-light">
+                        <tr>
+                            <th scope="col">Adres email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-muted"><?php echo $email ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                <label for="name">Imie: </label>
-                <input type="text" name="name" id="name" required>
-
-            <?php break;
-            case 'phone': ?>
-
-                <label for="phone">Numer telefonu: </label>
-                <p>+48 <input type="tel" name="phone" id="phone" value="" required></p>
-
-            <?php break;
-            case 'place': ?>
-
-                <select name="place" id="place" required>
-                    <option disabled selected value> -- Wybierz swoją miejscowość -- </option>
-                    <?php
-                    foreach ($params['listOfPlaces'] as $key) {
-                        echo '<option value="' . $key['id'] . '">' . $key['place'] . ' (gmina: ' . $key['community'] . ')</option>';
-                    } ?>
-                </select>
-
-        <?php break;
-        endswitch ?>
-
-        <input type="submit" name="save" value="Zmień">
-    </form>
-    <a href="<?php echo $subpage ?>">zwiń</a>
-<?php endif ?>
+        <?php else : ?>
+            <!-- When user did not add its data -->
+            <div class="add-data row text-center justify-content-center mb-5">
+                <div class="col-sm-7 col-lg-5 border border-dark m-4 py-5">
+                    <p class="alert alert-info">Uzupełnij swoje dane aby móc w pełni korzystać z serwisu!!</p>
+                    <div class="destination py-5 px-2 px-sm-5">
+                        <form action="<?php echo $subpage ?>" method="POST">
+                            <div class="form-group mb-4">
+                                <label for="first-name">Imie: </label>
+                                <input type="text" name="first-name" id="first-name" class="form-control" required>
+                            </div>
+                            <label for="phone-number">Numer telefonu:</label>
+                            <div class="input-group mb-4">
+                                <div class="input-group-prepend">
+                                    <p class="input-group-text">+48</p>
+                                </div>
+                                <input type="tel" name="phone-number" id="phone-number" class="form-control" required>
+                            </div>
+                            <div class="form-group mb-4 mt-5">
+                                <select name="place" id="place" class="form-control" required>
+                                    <option disabled selected value> -- Wybierz swoją miejscowość -- </option>
+                                    <?php
+                                    foreach ($listOfPlaces as $key) {
+                                        echo '<option value="' . $key['id'] . '">' . $key['place'] . ' (gmina: ' . $key['community'] . ')</option>';
+                                    } ?>
+                                </select>
+                            </div>
+                            <input class="btn btn-outline-dark mt-4" type="submit" name="save" value="Dodaj">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php endif ?>
+    </div>
+</section>

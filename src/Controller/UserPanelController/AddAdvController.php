@@ -25,6 +25,7 @@ class AddAdvController extends AbstractController
     {
         if (!$this->readModel->getUserData()) {
             $this->subpage = 'myData';
+            $this->params['listOfPlaces'] = $this->readModel->getListOfPlaces();
         }
     }
 
@@ -37,7 +38,7 @@ class AddAdvController extends AbstractController
         ];
 
         if ($this->createModel->addAdvertisement($advData) === true) {
-            $this->params['messageWindow'] = 'Dodałeś ogłoszenie';
+            $this->params['success'] = 'Dodałeś ogłoszenie';
         }
     }
 }

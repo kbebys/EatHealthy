@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Market\Model;
 
-use Error;
 use Exception;
 use Market\Exception\DatabaseException;
 use Market\Exception\PageValidateException;

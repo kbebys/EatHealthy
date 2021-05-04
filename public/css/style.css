@@ -69,7 +69,9 @@ body {
 main>section.login,
 main>section.register,
 main>section.detail-advert,
-main>.user-panel-header {
+main>.user-adverts,
+main>.user-data,
+main>.add-advert {
     min-height: calc(100vh - 82.92px - 60px);
 }
 
@@ -97,7 +99,8 @@ section.board-hero {
     font-size: 2.5rem;
 }
 
-.board-filter .input-group-text {
+.board-filter .input-group-text,
+.user-data .input-group-text {
     border: 1px solid #343a40;
     border-radius: 0;
     background-color: #343a40;
@@ -215,6 +218,22 @@ section.board-hero {
 /* ---- USER PANEL ---- */
 /* ------------------------ */
 
+.user-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.user-title i {
+    font-size: 4rem;
+}
+
+.user-title h2 {
+    margin: 0;
+    font-size: 3rem;
+}
+
 /* ------------------------ header */
 
 .user-panel-header .options a {
@@ -222,6 +241,7 @@ section.board-hero {
     font-size: 2rem;
     text-decoration: none;
     color: #23272b;
+    transition: color .3s, background-color .3s;
 }
 
 .user-panel-header .options a:hover {
@@ -238,6 +258,114 @@ section.board-hero {
 .user-panel-header .navbar-toggler i {
     font-size: 5rem;
 }
+
+/* ------------------------ user-adverts */
+
+.user-adverts .btn {
+    padding: 1rem 2rem;
+    font-size: 1.8rem;
+    text-decoration: none;
+}
+
+/* ------------------------ user-data */
+
+/* add-data */
+
+.user-data .add-data label {
+    font-size: 2.2rem;
+}
+
+.user-data .add-data .form-control {
+    font-size: 2rem;
+}
+
+.user-data .add-data select.form-control {
+    font-size: 1.4rem;
+}
+
+.user-data .add-data .btn {
+    padding: .2em .8em;
+    font-size: 2.4rem;
+    text-transform: uppercase;
+}
+
+/* show-data */
+
+.user-data .show-data th:first-of-type {
+    border: none;
+}
+
+.user-data .show-data td {
+    padding: 1rem 0;
+    font-weight: bold;
+}
+
+.user-data .show-data .btn {
+    padding: .5em 1em;
+    font-size: 1.4rem;
+}
+
+/* change-data */
+
+.user-data .change-data {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.user-data .change-data label {
+    font-size: 2rem;
+}
+
+.user-data .change-data .form-control {
+    font-size: 1.8rem;
+}
+
+.user-data .change-data select.form-control {
+    font-size: 1.4rem;
+}
+
+.user-data .change-data .btn {
+    padding: .5em 1em;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* ------------------------ add-advert */
+
+.add-advert label {
+    font-size: 2rem;
+}
+
+.add-advert .form-control {
+    font-size: 1.4rem;
+}
+
+.add-advert .btn {
+    padding: .5em 1em;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* ------------------------ change-pass */
+
+.change-pass label {
+    font-size: 2rem;
+}
+
+.change-pass .form-control {
+    font-size: 1.8rem;
+}
+
+
+.change-pass .btn {
+    padding: .5em 1em;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
 
 /* ------------------------ */
 /* ---- FOOTER ---- */
