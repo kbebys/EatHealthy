@@ -19,7 +19,7 @@ if (!$loggedin) {
                     <div class="user-options d-flex flex-column">
                         <a href=" /?action=userPanel&subpage=myData"><i class="fas fa-address-card"></i> Moje dane</a>
                         <a href="/?action=userPanel&subpage=changePass"><i class="fas fa-lock"></i> Zmień Hasło</a>
-                        <a href="/?action=userPanel&subpage=deleteAcc">Usuń konto</a>
+                        <a href="/?action=userPanel&subpage=deleteAcc"><i class="fas fa-trash-alt"></i> Usuń konto</a>
                     </div>
                 </div>
             </div>

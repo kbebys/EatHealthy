@@ -25,7 +25,6 @@ class DeleteAccController extends AbstractController
                         $this->params['confirm'] = true;
                     }
                     break;
-                    dump($this->params);
             }
         }
         $this->view->render($this->page, $this->subpage, $this->params);

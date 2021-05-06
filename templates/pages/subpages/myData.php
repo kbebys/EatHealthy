@@ -152,7 +152,7 @@ $subpage = "/?action=userPanel&subpage=myData";
                                     } ?>
                                 </select>
                             </div>
-                            <input class="btn btn-outline-dark mt-4" type="submit" name="save" value="Dodaj">
+                            <input class="btn btn-dark mt-4" type="submit" name="save" value="Dodaj">
                         </form>
                     </div>
                 </div>

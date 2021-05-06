@@ -150,7 +150,7 @@ class ReadModel extends AbstractModel
         $offset = ($pageNumber * $pageSize) - $pageSize;
         $id = (int) $_SESSION['id'];
         try {
-            $query =  "SELECT ud.first_name, a.id, a.title, p.place, a.date
+            $query =  "SELECT a.id, a.title, a.date
             FROM user AS u 
             INNER JOIN user_data AS ud ON u.id = ud.id_user
             INNER JOIN places AS p ON ud.id_places = p.id

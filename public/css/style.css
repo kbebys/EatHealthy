@@ -71,7 +71,9 @@ main>section.register,
 main>section.detail-advert,
 main>.user-adverts,
 main>.user-data,
-main>.add-advert {
+main>.add-advert,
+main>.change-pass,
+main>.delete-acc {
     min-height: calc(100vh - 82.92px - 60px);
 }
 
@@ -107,7 +109,7 @@ section.board-hero {
     color: #fff;
 }
 
-/* ------------------------ nav pagination*/
+/* ------------------------ nav pagination (user-adverts pagination)*/
 
 .pagination .page-item {
     padding: .5rem;
@@ -140,8 +142,14 @@ section.board-hero {
 }
 
 /* ------------------------ section advertisements*/
+
 .board-adverts a {
     text-decoration: none;
+}
+
+.board-adverts a>p {
+    padding: 1em 0;
+    font-weight: bold;
 }
 
 .board-adverts a>p:hover {
@@ -262,10 +270,58 @@ section.board-hero {
 /* ------------------------ user-adverts */
 
 .user-adverts .btn {
-    padding: 1rem 2rem;
+    padding: .6em 1em;
     font-size: 1.8rem;
     text-decoration: none;
+    text-transform: uppercase;
 }
+
+/* display-adverts */
+
+.user-adverts .display-adverts a {
+    text-decoration: none;
+}
+
+.user-adverts .display-adverts a>p {
+    padding: 1em 0;
+    font-weight: bold;
+}
+
+.user-adverts .display-adverts a>p:hover {
+    color: #000 !important;
+}
+
+/* display-advert */
+.user-adverts .display-advert .content {
+    white-space: pre-line;
+}
+
+.user-adverts .display-advert h2 {
+    font-weight: bold;
+}
+
+.user-adverts .display-advert h3 {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+/* edit-advert */
+
+.user-adverts .edit-advert label {
+    font-size: 2rem;
+}
+
+.user-adverts .edit-advert .form-control {
+    font-size: 1.4rem;
+}
+
+.user-adverts .edit-advert .btn {
+    padding: .5em 1em;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
 
 /* ------------------------ user-data */
 
@@ -284,8 +340,9 @@ section.board-hero {
 }
 
 .user-data .add-data .btn {
-    padding: .2em .8em;
-    font-size: 2.4rem;
+    padding: .5em 1em;
+    font-size: 1.4rem;
+    font-weight: bold;
     text-transform: uppercase;
 }
 
@@ -366,6 +423,28 @@ section.board-hero {
     text-transform: uppercase;
 }
 
+/* ------------------------ delete-acc */
+
+.delete-acc p.question {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.delete-acc label {
+    font-size: 2rem;
+}
+
+.delete-acc .form-control {
+    font-size: 1.8rem;
+}
+
+
+.delete-acc .btn {
+    padding: .5em 1em;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
 
 /* ------------------------ */
 /* ---- FOOTER ---- */

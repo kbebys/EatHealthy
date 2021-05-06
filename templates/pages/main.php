@@ -150,7 +150,7 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
             <?php for ($i = 0; $i < count($adverts); $i++) :
                 $advert = $adverts[$i]; ?>
                 <div class="jumbotron jumbotron-fluid pb-4 my-5">
-                    <div class="advert px-sm-5">
+                    <div class="advert px-2 px-sm-5">
                         <div class="title pb-4">
                             <a href="/?action=main&id=<?php echo $advert['id'] ?>">
                                 <p class="h2 text-dark"><?php echo $advert['title'] ?></p>
@@ -159,7 +159,7 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
                         <hr class="my-sm-4">
                         <div class="advert-data d-flex flex-wrap justify-content-between text-muted pt-4">
                             <p class="mb-0 mr-3"><i class="fas fa-map-marker-alt"></i> <?php echo $advert['place'] ?></p>
-                            <p><?php echo $advert['date'] ?> <i class="fas fa-calendar-alt"></i></p>
+                            <p><i class="fas fa-calendar-alt"></i> <?php echo $advert['date'] ?></p>
                         </div>
                     </div>
                 </div>
