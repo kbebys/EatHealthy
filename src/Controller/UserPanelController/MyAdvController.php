@@ -28,14 +28,15 @@ class MyAdvController extends AbstractController
     }
 
     //get all of the user advertisement
-    private function getUserAdverts(): void
+    public function getUserAdverts(): void
     {
         $countOfAdverts = $this->readModel->getCountUserAdvertisements();
 
         //when user doesn't have adverts don't get them from database
         if ($countOfAdverts !== 0) {
             $countOfPages = (int) ceil($countOfAdverts / self::PAGE_SIZE);
-            $pageNumber = $this->getPageNumber() > $countOfPages ? 1 : $this->getPageNumber();
+            $pageNumber = $this->getPageNumber();
+            $pageNumber = (($pageNumber > $countOfPages) || ($pageNumber < $countOfPages)) ? 1 : $pageNumber;
 
             $this->params['pageNumber'] = $pageNumber;
             $this->params['countOfPages'] = $countOfPages;

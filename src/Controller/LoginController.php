@@ -12,6 +12,8 @@ class LoginController extends AbstractController
 
     public function run(): void
     {
+        $this->ifLoggedIn();
+
         if ($this->request->postParam('save')) {
             $this->loginUser();
         }
@@ -41,6 +43,15 @@ class LoginController extends AbstractController
 
             $this->params['countOfPages'] = $countOfPages;
             $this->params['userAdverts'] = $this->readModel->getUserAdvertisements();
+        }
+    }
+
+    //When user is already logged in and try to enter to login page
+    private function ifLoggedIn(): void
+    {
+        if (isset($_SESSION['loggedin'])) {
+            header('Location: /?action=userPanel');
+            exit;
         }
     }
 }

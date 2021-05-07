@@ -62,6 +62,20 @@ body {
 }
 
 /* ------------------------ */
+/* ---- ERROR---- */
+/* ------------------------ */
+
+main>.error p.display-4 {
+    text-transform: uppercase;
+}
+
+main>.error .btn {
+    padding: 0.5rem 1rem;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+}
+
+/* ------------------------ */
 /* ---- MAIN ---- */
 /* ------------------------ */
 
@@ -73,10 +87,23 @@ main>.user-adverts,
 main>.user-data,
 main>.add-advert,
 main>.change-pass,
-main>.delete-acc {
+main>.delete-acc,
+main>.error,
+main>.board-empty {
     min-height: calc(100vh - 82.92px - 60px);
 }
 
+
+/* ------------------------ section board-empty*/
+
+.board-empty {
+    text-transform: uppercase;
+}
+
+.board-empty .btn {
+    padding: 0.5em 1em;
+    font-size: 1.8rem;
+}
 
 /* ------------------------ section board hero & filter*/
 

@@ -11,7 +11,6 @@ class View
         $params = $this->escape($params);
 
         $params['access'] = true;
-        $params['wiadomosc'] = 'jestem w view';
         // dump($params);
         require_once('templates/layout.php');
     }

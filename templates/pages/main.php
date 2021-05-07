@@ -200,5 +200,10 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
         </div>
     </nav>
 <?php else : ?>
-    <p class="message">Nie znaleziono ogłoszeń</p>
+    <section class="board-empty pt-5">
+        <div class="container text-center">
+            <p class="display-4">Nie mamy jeszcze ogłoszeń na stronie!!</p>
+            <a class="btn btn-dark mt-4" href="/?action=login"><i class="fas fa-plus"></i> Dodaj pierwsze ogłoszenie</a>
+        </div>
+    </section>
 <?php endif ?>

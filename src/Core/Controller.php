@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Market\Core;
 
 use Market\Controller\AbstractController;
+use Market\Controller\UserPanelController\MyAdvController;
 use Market\Exception\ErrorException;
 use Market\Exception\PageValidateException;
 use Market\Exception\SubpageValidateException;
@@ -74,7 +75,6 @@ class Controller extends AbstractController
             $this->view->render($this->page, $this->subpage, $this->params);
         } catch (SubpageValidateException $e) {
             $this->params['error'] = $e->getMessage();
-
             //errors about myAdv subpage
             if ($this->subpage === 'myAdv') {
                 $this->myAdvhandleException($e);
@@ -88,6 +88,10 @@ class Controller extends AbstractController
             $this->view->render($this->page, $this->subpage, $this->params);
         } catch (ValidateException $e) {
             $this->params['error'] = $e->getMessage();
+
+            if ($this->page === 'main') {
+                $this->page = 'error';
+            }
             $this->view->render($this->page, $this->subpage, $this->params);
         }
     }
@@ -100,7 +104,9 @@ class Controller extends AbstractController
             $this->params['edit'] = true;
             $this->params['userAdvert'] = $this->readModel->getUserAdvertisement($idAdv);
         } else {
-            $this->params['userAdverts'] = ($this->readModel->getCountUserAdvertisements() > 0) ? $this->readModel->getUserAdvertisements() : null;
+            $countOfAdverts = $this->readModel->getCountUserAdvertisements();
+            $this->params['countOfPages'] = (int) ceil($countOfAdverts / 20);
+            $this->params['userAdverts'] = ($countOfAdverts > 0) ? $this->readModel->getUserAdvertisements() : null;
         }
     }
 
