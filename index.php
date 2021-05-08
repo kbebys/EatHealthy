@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 //Autoloader
 spl_autoload_register(function (string $classNamespace) {
-    //str_rplace replaces sings in string|array
     $path = str_replace(['\\', 'Market'], ['/', ''], $classNamespace);
     $path = "src/$path.php";
     require($path);

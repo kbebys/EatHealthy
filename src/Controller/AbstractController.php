@@ -50,12 +50,12 @@ abstract class AbstractController
         $this->view = new View();
     }
 
-    abstract public function run(): void;
-
     protected function logout(): void
     {
         session_destroy();
         header("Location: /?action=main");
         exit;
     }
+
+    abstract public function run(): void;
 }

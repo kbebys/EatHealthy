@@ -50,7 +50,7 @@ class LoginController extends AbstractController
     private function ifLoggedIn(): void
     {
         if (isset($_SESSION['loggedin'])) {
-            header('Location: /?action=userPanel');
+            header('Location: /?action=userPanel&subpage=addAdv');
             exit;
         }
     }

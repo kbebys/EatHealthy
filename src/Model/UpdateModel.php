@@ -33,12 +33,12 @@ class UpdateModel extends AbstractModel
             $stmt->execute();
 
             if ($stmt->rowCount() === 0) {
-                throw new ValidateException('Problem ze zmianą wartości w bazie danych');
+                throw new SubpageValidateException('Podałeś te same dane');
             }
 
             return true;
-        } catch (ValidateException $e) {
-            throw new ValidateException($e->getMessage());
+        } catch (SubpageValidateException $e) {
+            throw new SubpageValidateException($e->getMessage());
         } catch (Exception $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
@@ -63,7 +63,7 @@ class UpdateModel extends AbstractModel
             $stmt->execute();
 
             if ($stmt->rowCount() === 0) {
-                throw new SubpageValidateException('Problem ze zmianą wartości w bazie danych');
+                throw new SubpageValidateException('Podałeś te same dane');
             }
 
             return true;
@@ -91,7 +91,7 @@ class UpdateModel extends AbstractModel
             $stmt->execute();
 
             if ($stmt->rowCount() === 0) {
-                throw new SubpageValidateException('Problem ze zmianą wartości w bazie danych');
+                throw new SubpageValidateException('Podałeś te same dane');
             }
 
             return true;

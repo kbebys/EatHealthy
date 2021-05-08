@@ -26,6 +26,9 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
 </section>
 <section class="board-filter">
     <div class="container">
+        <div class="text-center">
+            <a class="btn btn-outline-dark my-4" href="/?action=login"><i class="fas fa-plus"></i> Dodaj ogłoszenie</a>
+        </div>
         <div class="menu-filter border border-dark my-5 mx-sm-n4 py-5 px-2 px-sm-5 text-center">
             <form action="/?action=main" method="GET">
                 <div class="row justify-content-center">
@@ -103,7 +106,7 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
                         </div>
                     </div>
                     <div class="col-9">
-                        <input class="btn btn-dark btn-lg" type="submit" value="Szukaj" name="search">
+                        <input class="btn btn-dark" type="submit" value="Szukaj" name="search">
                     </div>
                 </div>
             </form>
@@ -201,9 +204,8 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
     </nav>
 <?php else : ?>
     <section class="board-empty pt-5">
-        <div class="container text-center">
-            <p class="display-4">Nie mamy jeszcze ogłoszeń na stronie!!</p>
-            <a class="btn btn-dark mt-4" href="/?action=login"><i class="fas fa-plus"></i> Dodaj pierwsze ogłoszenie</a>
+        <div class="container">
+            <p class="alert alert-danger">Nie znaleziono ogłoszeń!!</p>
         </div>
     </section>
 <?php endif ?>

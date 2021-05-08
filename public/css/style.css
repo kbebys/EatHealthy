@@ -114,7 +114,6 @@ section.board-hero {
 
 .board-filter input {
     font-size: 1.4rem;
-    font-weight: bold;
 }
 
 .board-filter select,
@@ -123,9 +122,9 @@ section.board-hero {
 }
 
 .board-filter .btn {
-    padding: 0.5rem -1rem;
+    padding: 0.5em 1em;
+    font-size: 1.8rem;
     text-transform: uppercase;
-    font-size: 2.5rem;
 }
 
 .board-filter .input-group-text,

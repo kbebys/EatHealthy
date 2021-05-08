@@ -28,9 +28,10 @@ if (!$loggedin) {
     <nav class="navbar navbar-light bg-light border-bottom">
         <div class="container">
             <div class="navbar-toggler w-100" type="button" data-toggle="collapse" data-target="#navbarUserPanel" aria-controls="navbarUserPanel" aria-expanded="false" aria-label="Toggle navigation">
-                <div class="d-flex flex-column flex-md-row align-items-center justify-content-md-between">
+                <div class="user-panel d-flex flex-column flex-md-row align-items-center justify-content-md-between">
                     <i class="fas fa-user-circle order-md-1 pb-2 pb-md-0"></i>
                     <p class="m-0 c-red"><?php echo $_SESSION['login'] ?></p>
+                    <i id="arrow" class="fas fa-chevron-down mt-4 mt-md-0 c-orange"></i>
                 </div>
             </div>
         </div>

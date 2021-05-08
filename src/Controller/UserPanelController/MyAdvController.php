@@ -28,7 +28,7 @@ class MyAdvController extends AbstractController
     }
 
     //get all of the user advertisement
-    public function getUserAdverts(): void
+    private function getUserAdverts(): void
     {
         $countOfAdverts = $this->readModel->getCountUserAdvertisements();
 
