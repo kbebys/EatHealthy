@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Market\Model;
 
-use Exception;
 use Market\Exception\DatabaseException;
 use Market\Exception\PageValidateException;
 use Market\Exception\SubpageValidateException;
@@ -27,7 +26,7 @@ class DeleteModel extends AbstractModel
             }
         } catch (PageValidateException $e) {
             throw new PageValidateException($e->getMessage());
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }

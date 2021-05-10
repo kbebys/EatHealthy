@@ -22,7 +22,7 @@ abstract class AbstractModel
             $this->validateConfig($config);
             $this->createConneciton($config);
         } catch (PDOException $e) {
-            throw new Exception('Błąd połączenia');
+            throw new Exception('Błąd połączenia', 400, $e);
         }
     }
 
@@ -66,7 +66,7 @@ abstract class AbstractModel
                 $stmt->bindParam(1, $user, PDO::PARAM_STR);
             }
             $stmt->execute();
-            //checking if this row exist
+
             if ($stmt->rowCount() === 0) {
                 return false;
             } else {
