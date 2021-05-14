@@ -122,7 +122,6 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
                         </div>
                     <?php endfor ?>
                 </section>
-
                 <nav class="pagination pb-5">
                     <ul class="pagination w-100 d-flex justify-content-center">
                         <?php if ($pageNumber !== 1) : ?>
@@ -160,7 +159,6 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
                         <?php endif ?>
                     </ul>
                 </nav>
-
             <?php break;
                 //Display one chosen advertisement with available options
             case ($userAdvert): ?>
@@ -205,7 +203,6 @@ $previous = ($pageNumber > 1) ? ($pageNumber - 1) : 1;
                     </div>
                 </section>
             <?php break;
-
             default: ?>
                 <a class="btn btn-dark mt-4" href="/?action=userPanel&subpage=addAdv">Dodaj swoje pierwsze ogłoszenie</a>
         <?php endswitch ?>

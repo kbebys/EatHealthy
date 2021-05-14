@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Market\Model;
 
-use Exception;
 use Market\Exception\DatabaseException;
 use Market\Exception\PageValidateException;
 use Market\Exception\SubpageValidateException;
@@ -14,12 +13,10 @@ use Throwable;
 
 class CreateModel extends AbstractModel
 {
-    //Register new User
     public function register(array $data): bool
     {
-        //trim() delete  whitespaces from beginning and end fo string
         $data = array_map('trim', $data);
-        //check if given data are empty
+
         if ($this->validateEmpty($data)) {
             throw new ValidateException('Wprowadź wszystkie dane do formularza');
         }
@@ -30,7 +27,7 @@ class CreateModel extends AbstractModel
         $email = $data['email'];
         $recaptcha = $data['recaptcha'];
 
-        //Username characters validation
+        //Login has to contain only lower and upper letters and numbers (without polish chars)
         if (preg_match('/^[a-zA-Z0-9]+$/', $login) == 0) {
             throw new ValidateException('Niepoprawna nazwa użytkownika');
         }
@@ -40,12 +37,11 @@ class CreateModel extends AbstractModel
             throw new ValidateException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
         }
 
-        //Check i email contains uppercase
+        //Email cannot contain uppercase
         if (preg_match('/[A-Z]/', $email)) {
             throw new ValidateException('Niepoprawny adres email');
         }
 
-        //Email validation
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new ValidateException('Niepoprawny adres email');
         }
@@ -62,11 +58,9 @@ class CreateModel extends AbstractModel
 
         $this->recaptchaVerify($recaptcha);
 
-        //hash password
         $passwordHashed = password_hash($password, PASSWORD_DEFAULT);
 
         try {
-            //insert new account
             $query = "INSERT INTO user (login, password, email) VALUES (?, ?, ?)";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $login, PDO::PARAM_STR);
@@ -84,7 +78,6 @@ class CreateModel extends AbstractModel
         }
     }
 
-    //Creating new advertisement
     public function addAdvertisement(array $advData): bool
     {
         $advData = array_map('trim', $advData);
@@ -128,11 +121,11 @@ class CreateModel extends AbstractModel
         }
     }
 
-    //Insert user data
     public function addUserData(array $uData): bool
     {
         $idPlace = $uData['idPlace'];
-        if ($idPlace === 0) {
+
+        if ($idPlace < 1) {
             throw new SubpageValidateException('Problem z odczytaniem wartości. Spróbuj jeszce raz');
         }
 

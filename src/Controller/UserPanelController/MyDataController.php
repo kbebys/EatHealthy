@@ -69,6 +69,7 @@ class MyDataController extends AbstractController
         }
     }
 
+    //calling appropriate function to change chosen user data and set params
     private function changeUserData(string $userData): array
     {
         $param['change'] = $userData;

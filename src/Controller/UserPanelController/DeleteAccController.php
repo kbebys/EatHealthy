@@ -20,7 +20,7 @@ class DeleteAccController extends AbstractController
                     $this->logout();
                     break;
                 case 'usuń':
-                    $password = $this->request->postParam('password');
+                    $password = $this->request->postParam('password', '');
                     if ($this->readModel->checkPassword($password) === true) {
                         $this->params['confirm'] = true;
                     }

@@ -10,6 +10,7 @@ use Market\Exception\PageValidateException;
 use Market\Exception\SubpageValidateException;
 use PDO;
 use PDOException;
+use PDOStatement;
 use Throwable;
 
 abstract class AbstractModel
@@ -55,15 +56,15 @@ abstract class AbstractModel
         }
     }
 
-    protected function checkUserExist(string $param, $user)
+    protected function checkUserExist(string $dbColumnName, int | string $dataToCompare): bool | PDOStatement
     {
         try {
-            $query = "SELECT id, password FROM user WHERE BINARY $param = ?";
+            $query = "SELECT id, password FROM user WHERE BINARY $dbColumnName = ?";
             $stmt = $this->conn->prepare($query);
-            if (is_int($user)) {
-                $stmt->bindParam(1, $user, PDO::PARAM_INT);
+            if (is_int($dataToCompare)) {
+                $stmt->bindParam(1, $dataToCompare, PDO::PARAM_INT);
             } else {
-                $stmt->bindParam(1, $user, PDO::PARAM_STR);
+                $stmt->bindParam(1, $dataToCompare, PDO::PARAM_STR);
             }
             $stmt->execute();
 
@@ -77,7 +78,7 @@ abstract class AbstractModel
         }
     }
 
-
+    //check if given data is empty
     protected function validateEmpty(array $data): bool
     {
         foreach ($data as $value) {
@@ -88,7 +89,7 @@ abstract class AbstractModel
         return false;
     }
 
-    protected function validateName(string $uName)
+    protected function validateName(string $uName): string
     {
         $uName = trim($uName);
 
@@ -100,16 +101,12 @@ abstract class AbstractModel
             throw new SubpageValidateException('Niedozwolone znaki w imieniu');
         }
 
-        //string to lowercase
-        $uName = strtolower($uName);
-        //first letter of string to uppercase
-        $uName = ucfirst($uName);
-
+        $uName = mb_convert_case($uName, MB_CASE_TITLE, "UTF-8");
 
         return $uName;
     }
 
-    protected function validatePhone(string $phone)
+    protected function validatePhone(string $phone): int
     {
         $phone = trim($phone);
 
@@ -141,26 +138,6 @@ abstract class AbstractModel
             throw new PageValidateException('podane hasła nie są takie same!!');
         } else {
             return true;
-        }
-    }
-
-    protected function checkAdvertisementExist(int $idUser, int $idAdv): bool
-    {
-        try {
-            $query = "SELECT count(*) AS count FROM advertisements WHERE id = ? AND id_user = ?";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(1, $idAdv, PDO::PARAM_INT);
-            $stmt->bindParam(2, $idUser, PDO::PARAM_INT);
-            $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($result['count'] === 1) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Throwable $e) {
-            throw new DatabaseException('Problem z połączeniem z bazą danych ', 400, $e);
         }
     }
 }

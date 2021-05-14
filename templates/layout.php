@@ -42,8 +42,6 @@ $error = $params['error'] ?? null;
             <?php endif ?>
         </div>
     </nav>
-
-
     <main>
         <?php if ($success) : ?>
             <div class="alert alert-success message m-4" role="alert">
@@ -65,33 +63,7 @@ $error = $params['error'] ?? null;
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
 
-    <script>
-        $(init);
-        var arrow = $('i#arrow');
-
-        function init() {
-            $('.destination').prepend($('.message'));
-        }
-
-        $('.user-panel').click(function(event) {
-            var open = $('.collapse').hasClass("show");
-            console.log(open);
-            if (!open) {
-                arrow.removeClass('fas fa-chevron-down').addClass('fas fa-chevron-up');
-            } else {
-                arrow.removeClass('fas fa-chevron-up').addClass('fas fa-chevron-down');
-            }
-        })
-
-        $(document).click(function(event) {
-            var clickover = $(event.target);
-            var _opened = $(".collapse").hasClass("show");
-            if (_opened === true && !clickover.hasClass("navbar-toggler")) {
-                $(".navbar-toggler").click();
-                arrow.removeClass('fas fa-chevron-up').addClass('fas fa-chevron-down');
-            }
-        })
-    </script>
+    <script src="../public/js/function.js"></script>
 </body>
 
 </html>

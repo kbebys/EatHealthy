@@ -55,7 +55,6 @@ $subpage = "/?action=userPanel&subpage=myData";
                             </div>
                     <?php break;
                     endswitch ?>
-
                     <input class="btn btn-outline-dark my-3" type="submit" name="save" value="Zmień">
                 </form>
                 <a class="btn c-d-red" href="<?php echo $subpage ?>">
@@ -64,6 +63,7 @@ $subpage = "/?action=userPanel&subpage=myData";
             </div>
         <?php endif ?>
         <?php if ($uData) : ?>
+            <!-- Table with user data -->
             <div class="destination"></div>
             <div class="show-data mt-5 d-flex flex-column flex-md-row">
                 <table class="table mx-md-2">
@@ -124,7 +124,6 @@ $subpage = "/?action=userPanel&subpage=myData";
                     </tbody>
                 </table>
             </div>
-
         <?php else : ?>
             <!-- When user did not add its data -->
             <div class="add-data row text-center justify-content-center mb-5">

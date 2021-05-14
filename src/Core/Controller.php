@@ -24,7 +24,6 @@ class Controller extends AbstractController
         }
 
         if (!$this->ifPageExist($page)) {
-            echo 'jestem';
             $page = $this->page;
         }
 
@@ -67,7 +66,6 @@ class Controller extends AbstractController
             $className->run();
             //Handle Errors throwing during exchange data between database and page
         } catch (PageValidateException $e) {
-            //It is here because register and changePass use the same fun() 
             $this->params['error'] = $e->getMessage();
 
             $this->view->render($this->page, $this->subpage, $this->params);

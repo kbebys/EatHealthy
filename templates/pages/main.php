@@ -40,7 +40,6 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
                             <input type="search" id="searchContent" class="form-control" name="searchContent" value="<?php echo $searchContent ?>">
                         </div>
                     </div>
-
                     <div class="place col-12 col-md-6 col-lg-4 mb-4 mb-md-5">
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -56,7 +55,6 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
                             </select>
                         </div>
                     </div>
-
                     <div class="type-of-transaction col-12 col-md-6 col-lg-4 mb-4 mb-md-5">
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -69,7 +67,6 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
                             </select>
                         </div>
                     </div>
-
                     <div class="last-days col-12 col-md-6 col-lg-4 mb-4 mb-md-5">
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -89,7 +86,6 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
                             </div>
                         </div>
                     </div>
-
                     <div class="page-size col-9 mb-4 mb-md-5">
                         <p class="m-0">Ilość wyświetlanych ogłoszeń na stronie: </p>
                         <div class="form-check-inline">
@@ -113,7 +109,6 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
         </div>
     </div>
 </section>
-
 <?php if ($countOfPages !== 0) : ?>
     <nav class="board-pagination pt-5">
         <div class="container">
@@ -147,7 +142,6 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
             </ul>
         </div>
     </nav>
-
     <section class="board-adverts destination">
         <div class="container">
             <?php for ($i = 0; $i < count($adverts); $i++) :
@@ -169,7 +163,6 @@ $url = '/?action=main&searchContent=' . $searchContent . '&place=' . $idPlace . 
             <?php endfor; ?>
         </div>
     </section>
-
     <nav class="board-pagination pb-5">
         <div class="container">
             <ul class="pagination d-flex justify-content-center">

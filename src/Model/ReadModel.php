@@ -13,12 +13,10 @@ use Throwable;
 
 class ReadModel extends AbstractModel
 {
-    //Validate login system
     public function login(array $data): bool
     {
-        //trim() delete  whitespaces from beginning and end fo string
         $data = array_map('trim', $data);
-        //check if given data are empty
+
         if ($this->validateEmpty($data)) {
             throw new ValidateException('Wprowadź dane logowania');
         }
@@ -32,7 +30,7 @@ class ReadModel extends AbstractModel
         }
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        //veryfing passwords, both given from user and hashed from db
+
         if (!password_verify($password, $result['password'])) {
             throw new ValidateException('Niepoprawna nazwa użytkownika lub hasło');
         }

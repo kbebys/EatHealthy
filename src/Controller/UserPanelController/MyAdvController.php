@@ -36,11 +36,11 @@ class MyAdvController extends AbstractController
         if ($countOfAdverts !== 0) {
             $countOfPages = (int) ceil($countOfAdverts / self::PAGE_SIZE);
             $pageNumber = $this->getPageNumber();
-            $pageNumber = (($pageNumber > $countOfPages) || ($pageNumber < $countOfPages)) ? 1 : $pageNumber;
+            $pageNumber = (($pageNumber > $countOfPages) || ($pageNumber < 1)) ? 1 : $pageNumber;
 
             $this->params['pageNumber'] = $pageNumber;
             $this->params['countOfPages'] = $countOfPages;
-            $this->params['userAdverts'] = $this->readModel->getUserAdvertisements($pageNumber, self::PAGE_SIZE);
+            $this->params['userAdverts'] = $this->readModel->getUserAdvertisements($this->params['pageNumber'], self::PAGE_SIZE);
         }
     }
 

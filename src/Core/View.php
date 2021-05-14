@@ -11,7 +11,7 @@ class View
         $params = $this->escape($params);
 
         $params['access'] = true;
-        // dump($params);
+
         require_once('templates/layout.php');
     }
 

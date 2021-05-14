@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Market\Controller;
 
-use Market\Core\Controller;
-
 class LoginController extends AbstractController
 {
     private const PAGE_SIZE = 20;

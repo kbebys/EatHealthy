@@ -29,9 +29,9 @@ class Request
     public function getClassesList(string $dir): array
     {
         $dir = __DIR__ . $dir;
-        $filesNames = scandir($dir);
+        $filesName = scandir($dir);
 
-        foreach ($filesNames as $value) {
+        foreach ($filesName as $value) {
             if ($value !== '.' && $value !== '..') {
                 $filesList[] = str_replace('.php', '', $value);
             }

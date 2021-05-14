@@ -116,7 +116,7 @@ class MainController extends AbstractController
     {
         $pageNumber = (int) $this->request->getParam('pageNumber', 1);
 
-        $pageNumber = ($pageNumber > $this->params['countOfPages']) ? 1 : $pageNumber;
+        $pageNumber = (($pageNumber > $this->params['countOfPages'])  || ($pageNumber < 1)) ? 1 : $pageNumber;
 
         $this->params['pageNumber'] = $pageNumber;
     }
