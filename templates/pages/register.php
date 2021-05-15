@@ -35,7 +35,7 @@ if (empty($params['access'])) {
                             <label for="email">Email:</label>
                             <input type="email" name="email" id="email" class="form-control" required>
                         </div>
-                        <div class="g-recaptcha d-flex justify-content-center" data-sitekey="6Ldn7rUaAAAAAErm09DnXWSAUA4iFSyTE2tJPjHY"></div>
+                        <div class="g-recaptcha d-flex justify-content-center" data-sitekey="6Ldn3NUaAAAAAKFIYnlsr7aP101fgxCMFrsEPQcd"></div>
                         <input class="btn btn-outline-dark mt-4" type="submit" name="save" value="Zarejestruj">
                     </form>
                 </div>

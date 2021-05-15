@@ -13,7 +13,7 @@ use Throwable;
 
 class CreateModel extends AbstractModel
 {
-    public function register(array $data): bool
+    public function register(array $data, array $recaptchaSecret): bool
     {
         $data = array_map('trim', $data);
 
@@ -25,7 +25,7 @@ class CreateModel extends AbstractModel
         $password = $data['password'];
         $passRepeat = $data['pass-repeat'];
         $email = $data['email'];
-        $recaptcha = $data['recaptcha'];
+        $recaptcha = ['userResponse' => $data['recaptcha'], 'secretKey' => $recaptchaSecret['secretKey']];
 
         //Login has to contain only lower and upper letters and numbers (without polish chars)
         if (preg_match('/^[a-zA-Z0-9]+$/', $login) == 0) {
@@ -162,10 +162,11 @@ class CreateModel extends AbstractModel
         }
     }
 
-    private function recaptchaVerify(string $recaptcha): void
+    private function recaptchaVerify(array $recaptcha): void
     {
-        $secretKey = '6Ldn7rUaAAAAAL9MHl4PeKXsNt7X-0opBhNoZwqv';
-        $url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($secretKey) . '&response=' . urlencode($recaptcha);
+        $secretKey = $recaptcha['secretKey'];
+        $userResponse = $recaptcha['userResponse'];
+        $url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($secretKey) . '&response=' . urlencode($userResponse);
         $responseData = file_get_contents($url);
         $responseData = json_decode($responseData, true);
 

@@ -14,7 +14,7 @@ use Market\Core\View;
 
 abstract class AbstractController
 {
-    private static array $configuration = [];
+    protected static array $configuration = [];
 
     protected string $page;
     protected string $subpage = '';
@@ -38,7 +38,6 @@ abstract class AbstractController
         if (empty(self::$configuration['db'])) {
             throw new Exception("Błąd konfiguracji");
         }
-
         $this->page = $page;
 
         $this->createModel = new CreateModel(self::$configuration['db']);
