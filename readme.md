@@ -9,7 +9,7 @@ I created this project to learn PHP.
 
 This is an advertising service, where people can sell and buy their own local farm products such as vegetables and fruits. 
 
-The project is based on MVC design pattern. It uses PHP v8.01 for back end and Bootstrap v4.6.x for responsive front end.
+The project is based on MVC design pattern. It uses PHP v8.01 for backend and Bootstrap v4.6.x for responsive frontend.
 
 All data is store in connected MySQL database, implemented with CRUD approach.
 
