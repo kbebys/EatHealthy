@@ -2,12 +2,7 @@
 
 declare(strict_types=1);
 
-//Autoloader
-spl_autoload_register(function (string $classNamespace) {
-    $path = str_replace(['\\', 'Market'], ['/', ''], $classNamespace);
-    $path = "src/$path.php";
-    require($path);
-});
+require_once __DIR__ . "/vendor/autoload.php";
 
 require_once("src/Utils/debug.php");
 $configuration = require_once("config/config.php");

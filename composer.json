@@ -1,0 +1,16 @@
+{
+    "name": "kbebys/eathealthy",
+    "description": "advertising service",
+    "authors": [
+        {
+            "name": "kbebys",
+            "email": "kbebys@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Market\\": "src/"
+        }
+    },
+    "require": {}   
+}

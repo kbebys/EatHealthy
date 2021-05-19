@@ -29,7 +29,7 @@ abstract class AbstractModel
 
     private function createConneciton(array $config): void
     {
-        $dsn = "mysql:host={$config['host']};dbname={$config['database']}";
+        $dsn = "mysql:host={$config['host']};dbname={$config['database']};charset=UTF8";
 
         $this->conn = new PDO(
             $dsn,

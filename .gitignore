@@ -2,3 +2,4 @@
 config/
 public/img
 files/
+/vendor/
